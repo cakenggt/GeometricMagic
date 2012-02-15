@@ -1,0 +1,31 @@
+name: GeometricMagic
+main: me.cakenggt.GeometricMagic.GeometricMagic
+version: 2.13
+author: cakenggt
+permissions:
+    GeometricMagic.circle.*:
+        description: Gives access to all circles
+        children:
+            circle.teleportation: true
+            circle.micro: true
+            circle.transmutation: true
+            circle.set.*: true
+    circle.teleportation:
+        description: Allows you to use teleportation circles
+        default: true
+    circle.micro:
+        description: Allows you to use micro circles
+        default: true
+    circle.transmutation:
+        description: Allows you to use transmutation circles
+        default: true
+    circle.set.*:
+        description: Allows you to use all set circles
+        default: true
+        children:
+            circle.set.1234: true
+commands:
+  setcircle:
+    description: This command sets a sacrifice's right-click circle.
+    permission: GeometricMagic.setcircle
+    usage: /setcircle 3344
