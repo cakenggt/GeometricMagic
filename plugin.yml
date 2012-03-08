@@ -1,6 +1,6 @@
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.13
+version: 2.14
 author: cakenggt
 permissions:
     GeometricMagic.circle.*:
@@ -9,7 +9,7 @@ permissions:
             circle.teleportation: true
             circle.micro: true
             circle.transmutation: true
-            circle.set.*: true
+            circle.set: true
     circle.teleportation:
         description: Allows you to use teleportation circles
         default: true
@@ -19,11 +19,59 @@ permissions:
     circle.transmutation:
         description: Allows you to use transmutation circles
         default: true
+    circle.set:
+        description: Allows you to use set circles
+        default: true
+        children:
+            circle.set.*: true
     circle.set.*:
         description: Allows you to use all set circles
         default: true
         children:
+            circle.set.1133: true
+            circle.set.1222: true
+            circle.set.1233: true
             circle.set.1234: true
+            circle.set.2223: true
+            circle.set.2224: true
+            circle.set.2244: true
+            circle.set.2333: true
+            circle.set.3334: true
+            circle.set.3344: true
+            circle.set.3444: true
+    circle.set.1133:
+        description: Allows you to use set circle 1133
+        default: true
+    circle.set.1222:
+        description: Allows you to use set circle 1222
+        default: true
+    circle.set.1233:
+        description: Allows you to use set circle 1233
+        default: true
+    circle.set.1234:
+        description: Allows you to use set circle 1234
+        default: true
+    circle.set.2223:
+        description: Allows you to use set circle 2223
+        default: true
+    circle.set.2224:
+        description: Allows you to use set circle 2224
+        default: true
+    circle.set.2244:
+        description: Allows you to use set circle 2244
+        default: true
+    circle.set.2333:
+        description: Allows you to use set circle 2333
+        default: true
+    circle.set.3334:
+        description: Allows you to use set circle 3334
+        default: true
+    circle.set.3344:
+        description: Allows you to use set circle 1133
+        default: true
+    circle.set.3444:
+        description: Allows you to use set circle 3444
+        default: true
 commands:
   setcircle:
     description: This command sets a sacrifice's right-click circle.

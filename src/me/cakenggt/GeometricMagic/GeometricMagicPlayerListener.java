@@ -667,7 +667,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					Location spawnLoc = effectBlock.getLocation();
 					spawnLoc.add(0.5, 0, 0.5);
-					effectBlock.getWorld().spawnCreature(spawnLoc, CreatureType.ENDERMAN);
+					effectBlock.getWorld().spawn(spawnLoc, Enderman.class);
 				} else
 					return;
 			}
@@ -1344,7 +1344,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		int stackCount = 0;
 		PlayerInventory inventory = player.getInventory();
 		for (int i = 0; i < inventory.getSize(); i++ ){
-			if (inventory.getItem(i).getType() == Material.PORTAL)
+			if (inventory.getItem(i) != null && inventory.getItem(i).getType() == Material.PORTAL)
 				stackCount += inventory.getItem(i).getAmount();
 		}
 		modifier = 1/(Math.pow(2, stackCount));
