@@ -39,6 +39,10 @@ permissions:
             circle.set.3334: true
             circle.set.3344: true
             circle.set.3444: true
+            circle.set.4040: true
+            circle.set.4041: true
+            circle.set.4042: true
+            circle.set.4043: true
     circle.set.1133:
         description: Allows you to use set circle 1133
         default: true
@@ -71,6 +75,18 @@ permissions:
         default: true
     circle.set.3444:
         description: Allows you to use set circle 3444
+        default: true
+    circle.set.4040:
+        description: Allows you to use set circle 4040
+        default: true
+    circle.set.4041:
+        description: Allows you to use set circle 4041
+        default: true
+    circle.set.4042:
+        description: Allows you to use set circle 4042
+        default: true
+    circle.set.4043:
+        description: Allows you to use set circle 4043
         default: true
 commands:
   setcircle:

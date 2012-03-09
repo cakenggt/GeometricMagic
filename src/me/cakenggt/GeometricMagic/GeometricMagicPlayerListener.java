@@ -800,6 +800,46 @@ public class GeometricMagicPlayerListener implements Listener {
 				} else
 					return;
 			}
+			else if (arrayString.equals("[4, 0, 4, 0]") && player.hasPermission("circle.set.4040")){
+				cost = 10;
+				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+					Location spawnLoc = effectBlock.getLocation();
+					spawnLoc.add(0.5, 0, 0.5);
+					effectBlock.getWorld().spawn(spawnLoc, Pig.class);
+				} else
+					return;
+			}
+			else if (arrayString.equals("[4, 0, 4, 1]") && player.hasPermission("circle.set.4041")){
+				cost = 10;
+				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+					Location spawnLoc = effectBlock.getLocation();
+					spawnLoc.add(0.5, 0, 0.5);
+					effectBlock.getWorld().spawn(spawnLoc, Sheep.class);
+				} else
+					return;
+			}
+			else if (arrayString.equals("[4, 0, 4, 2]") && player.hasPermission("circle.set.4042")){
+				cost = 10;
+				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+					Location spawnLoc = effectBlock.getLocation();
+					spawnLoc.add(0.5, 0, 0.5);
+					effectBlock.getWorld().spawn(spawnLoc, Cow.class);
+				} else
+					return;
+			}
+			else if (arrayString.equals("[4, 0, 4, 3]") && player.hasPermission("circle.set.4043")){
+				cost = 10;
+				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+					Location spawnLoc = effectBlock.getLocation();
+					spawnLoc.add(0.5, 0, 0.5);
+					effectBlock.getWorld().spawn(spawnLoc, Chicken.class);
+				} else
+					return;
+			}
 			else{
 				player.sendMessage("You do not have permission to use " + arrayString + " or set circle does not exist");
 			}
