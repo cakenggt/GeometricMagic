@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -976,8 +979,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		return;
 	}
 	
-	public static void alchemyFiller(Material a, Material b, Location start,
-			Location end, Player player) {
+	public static void alchemyFiller(Material a, Material b, Location start, Location end, Player player) {
 		//System.out.println("alchemyFiller");
 		Block startBlock = start.getBlock();
 		int xIteration = 0;
@@ -1062,13 +1064,39 @@ public class GeometricMagicPlayerListener implements Listener {
 		return;
 	}
 
-	public static void transmuteBlock(Material a, Material b, Block startBlock,
-			Player player) {
+	public static void transmuteBlock(Material a, Material b, Block startBlock, Player player) {
+		BlockState startBlockState = startBlock.getState();
 		if (startBlock.getType() == a) {
 			int exp = calculateEXP(a, b);
 			if (-1 * player.getLevel() < (exp * philosopherStoneModifier(player))) { 
 				player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
-				startBlock.setType(b);
+				
+				//Create fake block break event for compatibility with logging plugins
+				if (a != Material.AIR && b == Material.AIR){
+					BlockBreakEvent break_event = new BlockBreakEvent(startBlock, player);
+					Bukkit.getServer().getPluginManager().callEvent(break_event);
+					
+					startBlock.setType(b);
+				}
+				
+				//Create fake block place event for compatibility with logging plugins
+				else if (a == Material.AIR && b != Material.AIR){
+					startBlock.setType(b);
+					
+					BlockPlaceEvent place_event = new BlockPlaceEvent(startBlock, startBlockState, startBlock, new ItemStack(b.getId()), player, true);
+					Bukkit.getServer().getPluginManager().callEvent(place_event);
+				}
+				
+				//Create fake block break and place events for compatibility with logging plugins
+				else if (a != Material.AIR && b != Material.AIR){
+					BlockBreakEvent break_event = new BlockBreakEvent(startBlock, player);
+					Bukkit.getServer().getPluginManager().callEvent(break_event);
+					
+					startBlock.setType(b);
+					
+					BlockPlaceEvent place_event = new BlockPlaceEvent(startBlock, startBlockState, startBlock, new ItemStack(b.getId()), player, true);
+					Bukkit.getServer().getPluginManager().callEvent(place_event);
+				}
 				//System.out.println("transmuted block");
 				//System.out.println(startBlock.getX() + " " + startBlock.getY() + " " + startBlock.getZ());
 				return;
