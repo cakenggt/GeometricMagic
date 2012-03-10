@@ -800,7 +800,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				} else
 					return;
 			}
-			else if (arrayString.equals("[4, 0, 4, 0]") && player.hasPermission("circle.set.4040")){
+			else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("circle.set.0044")){
 				cost = 10;
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -810,7 +810,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				} else
 					return;
 			}
-			else if (arrayString.equals("[4, 0, 4, 1]") && player.hasPermission("circle.set.4041")){
+			else if (arrayString.equals("[0, 1, 4, 4]") && player.hasPermission("circle.set.0144")){
 				cost = 10;
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -820,7 +820,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				} else
 					return;
 			}
-			else if (arrayString.equals("[4, 0, 4, 2]") && player.hasPermission("circle.set.4042")){
+			else if (arrayString.equals("[0, 2, 4, 4]") && player.hasPermission("circle.set.0244")){
 				cost = 10;
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -830,7 +830,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				} else
 					return;
 			}
-			else if (arrayString.equals("[4, 0, 4, 3]") && player.hasPermission("circle.set.4043")){
+			else if (arrayString.equals("[0, 3, 4, 4]") && player.hasPermission("circle.set.0344")){
 				cost = 10;
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
