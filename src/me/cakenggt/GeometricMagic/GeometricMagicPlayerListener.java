@@ -802,7 +802,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("circle.set.0044")){
 				cost = 10;
-				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+				if (!hasLearnedCircle(player, arrayString)){
+					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					return;
+				}
+				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					Location spawnLoc = effectBlock.getLocation();
 					spawnLoc.add(0.5, 0, 0.5);
@@ -812,7 +816,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			else if (arrayString.equals("[0, 1, 4, 4]") && player.hasPermission("circle.set.0144")){
 				cost = 10;
-				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+				if (!hasLearnedCircle(player, arrayString)){
+					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					return;
+				}
+				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					Location spawnLoc = effectBlock.getLocation();
 					spawnLoc.add(0.5, 0, 0.5);
@@ -822,7 +830,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			else if (arrayString.equals("[0, 2, 4, 4]") && player.hasPermission("circle.set.0244")){
 				cost = 10;
-				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+				if (!hasLearnedCircle(player, arrayString)){
+					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					return;
+				}
+				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					Location spawnLoc = effectBlock.getLocation();
 					spawnLoc.add(0.5, 0, 0.5);
@@ -832,7 +844,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			else if (arrayString.equals("[0, 3, 4, 4]") && player.hasPermission("circle.set.0344")){
 				cost = 10;
-				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
+				if (!hasLearnedCircle(player, arrayString)){
+					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					return;
+				}
+				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					Location spawnLoc = effectBlock.getLocation();
 					spawnLoc.add(0.5, 0, 0.5);
