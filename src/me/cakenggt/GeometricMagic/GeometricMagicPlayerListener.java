@@ -800,6 +800,19 @@ public class GeometricMagicPlayerListener implements Listener {
 				} else
 					return;
 			}
+			else if (arrayString.equals("[0, 1, 1, 1]") && player.hasPermission("circle.set.0111")){
+				cost = 16;
+				if (!hasLearnedCircle(player, arrayString)){
+					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					return;
+				}
+				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))){
+					player.setFoodLevel((int) (player.getFoodLevel() -(cost * philosopherStoneModifier(player))));
+					Location playerSpawn = player.getBedSpawnLocation();
+					player.teleport(playerSpawn);
+				} else
+					return;
+			}
 			else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("circle.set.0044")){
 				cost = 10;
 				if (!hasLearnedCircle(player, arrayString)){

@@ -39,6 +39,7 @@ permissions:
             circle.set.3334: true
             circle.set.3344: true
             circle.set.3444: true
+            circle.set.0111: true
             circle.set.0044: true
             circle.set.0144: true
             circle.set.0244: true
@@ -75,6 +76,9 @@ permissions:
         default: true
     circle.set.3444:
         description: Allows you to use set circle 3444
+        default: true
+    circle.set.0111:
+        description: Allows you to use set circle 0111
         default: true
     circle.set.0044:
         description: Allows you to use set circle 0044
