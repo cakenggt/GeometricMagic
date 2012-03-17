@@ -476,7 +476,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			if (arrayString.equals("[1, 1, 3, 3]") && player.hasPermission("circle.set.1133")){
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				List<Entity> repairEntities = player.getNearbyEntities(9, 10, 9);
@@ -549,7 +549,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[1, 2, 2, 2]") && player.hasPermission("circle.set.1222")){
 				cost = 1;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -574,7 +574,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[1, 2, 3, 3]") && player.hasPermission("circle.set.1233")){
 				cost = 20;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				ItemStack onePortal = new ItemStack(90, 1);
@@ -602,7 +602,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[1, 2, 3, 4]") && player.hasPermission("circle.set.1234")){
 				cost = 1;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -616,7 +616,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[2, 2, 2, 3]") && player.hasPermission("circle.set.2223")){
 				cost = 10;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				ItemStack oneRedstone = new ItemStack(331, 1);
@@ -676,7 +676,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			else if (arrayString.equals("[2, 2, 4, 4]") && player.hasPermission("circle.set.2244")){
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				Location actPoint = effectBlock.getLocation();
@@ -750,7 +750,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				int size = setCircleSize(actBlock);
 				cost = 2 + size/2;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -762,7 +762,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[3, 3, 3, 4]") && player.hasPermission("circle.set.3334")){
 				cost = 2;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -775,7 +775,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				int size = setCircleSize(actBlock);
 				cost = 4 + size/2;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -787,7 +787,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[3, 4, 4, 4]") && player.hasPermission("circle.set.3444")){
 				cost = 20;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -803,20 +803,46 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[0, 1, 1, 1]") && player.hasPermission("circle.set.0111")){
 				cost = 16;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))){
-					player.setFoodLevel((int) (player.getFoodLevel() -(cost * philosopherStoneModifier(player))));
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					Location playerSpawn = player.getBedSpawnLocation();
-					player.teleport(playerSpawn);
+					if(playerSpawn != null){
+						if(playerSpawn.getBlock().getType() == Material.AIR){
+							player.teleport(playerSpawn);
+						}
+						else{
+							if(new Location(player.getWorld(), playerSpawn.getX() + 1, playerSpawn.getY(), playerSpawn.getZ()).getBlock().getType() == Material.AIR){
+								player.teleport(new Location(player.getWorld(), playerSpawn.getX() + 1, playerSpawn.getY(), playerSpawn.getZ()));
+							}
+							else if(new Location(player.getWorld(), playerSpawn.getX() - 1, playerSpawn.getY(), playerSpawn.getZ()).getBlock().getType() == Material.AIR){
+								player.teleport(new Location(player.getWorld(), playerSpawn.getX() - 1, playerSpawn.getY(), playerSpawn.getZ()));
+							}
+							else if(new Location(player.getWorld(), playerSpawn.getX(), playerSpawn.getY(), playerSpawn.getZ() + 1).getBlock().getType() == Material.AIR){
+								player.teleport(new Location(player.getWorld(), playerSpawn.getX(), playerSpawn.getY(), playerSpawn.getZ() + 1));
+							}
+							else if(new Location(player.getWorld(), playerSpawn.getX(), playerSpawn.getY(), playerSpawn.getZ() - 1).getBlock().getType() == Material.AIR){
+								player.teleport(new Location(player.getWorld(), playerSpawn.getX(), playerSpawn.getY(), playerSpawn.getZ() - 1));
+							}
+							else{
+								player.sendMessage("Your bed is not safe to teleport to!");
+								player.setFoodLevel((int) (player.getFoodLevel() + (cost * philosopherStoneModifier(player))));
+							}
+						}
+					}
+					else{
+						player.sendMessage("You do not have a spawn set!");
+						player.setFoodLevel((int) (player.getFoodLevel() + (cost * philosopherStoneModifier(player))));
+					}
 				} else
 					return;
 			}
 			else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("circle.set.0044")){
 				cost = 10;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -830,7 +856,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[0, 1, 4, 4]") && player.hasPermission("circle.set.0144")){
 				cost = 10;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -844,7 +870,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[0, 2, 4, 4]") && player.hasPermission("circle.set.0244")){
 				cost = 10;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
@@ -858,7 +884,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			else if (arrayString.equals("[0, 3, 4, 4]") && player.hasPermission("circle.set.0344")){
 				cost = 10;
 				if (!hasLearnedCircle(player, arrayString)){
-					player.sendMessage("you have not yet learned circle " + arrayString + "!");
+					player.sendMessage("You have not yet learned circle " + arrayString + "!");
 					return;
 				}
 				else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) { 
