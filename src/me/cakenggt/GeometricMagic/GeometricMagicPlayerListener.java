@@ -1164,7 +1164,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (startBlock.getType() == a) {
 			int exp = calculateEXP(a, b);
 			if (-1 * player.getLevel() < (exp * philosopherStoneModifier(player))) { 
-				player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
 				
 				//Create fake block break event for compatibility with logging plugins
 				if (a != Material.AIR && b == Material.AIR && a != Material.CHEST && a != Material.WALL_SIGN && a!= Material.SIGN_POST && a != Material.FURNACE && a != Material.BURNING_FURNACE && a != Material.BREWING_STAND && a != Material.WOODEN_DOOR && a != Material.IRON_DOOR_BLOCK){
@@ -1172,11 +1171,13 @@ public class GeometricMagicPlayerListener implements Listener {
 					Bukkit.getServer().getPluginManager().callEvent(break_event);
 					
 					startBlock.setType(b);
+					player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
 				}
 				
 				//Create fake block place event for compatibility with logging plugins
 				else if (a == Material.AIR && b != Material.AIR){
 					startBlock.setType(b);
+					player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
 					
 					BlockPlaceEvent place_event = new BlockPlaceEvent(startBlock, startBlockState, startBlock, new ItemStack(b.getId()), player, true);
 					Bukkit.getServer().getPluginManager().callEvent(place_event);
@@ -1188,6 +1189,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					Bukkit.getServer().getPluginManager().callEvent(break_event);
 					
 					startBlock.setType(b);
+					player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
 					
 					BlockPlaceEvent place_event = new BlockPlaceEvent(startBlock, startBlockState, startBlock, new ItemStack(b.getId()), player, true);
 					Bukkit.getServer().getPluginManager().callEvent(place_event);
@@ -1195,7 +1197,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				//System.out.println("transmuted block");
 				//System.out.println(startBlock.getX() + " " + startBlock.getY() + " " + startBlock.getZ());
 				else {
-					System.out.println(player + " tried to transmute a blacklisted material!");
+					System.out.println(player.getName() + " tried to transmute a blacklisted material!");
 				}
 				return;
 			} else
