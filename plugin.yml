@@ -1,6 +1,6 @@
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.19.2
+version: 2.19.3
 author: cakenggt
 permissions:
     GeometricMagic.circle.*:
