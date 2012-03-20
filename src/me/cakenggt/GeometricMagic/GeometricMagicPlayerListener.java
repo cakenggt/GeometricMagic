@@ -1197,7 +1197,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				//System.out.println("transmuted block");
 				//System.out.println(startBlock.getX() + " " + startBlock.getY() + " " + startBlock.getZ());
 				else if (a != Material.AIR && b != Material.AIR) {
-					System.out.println(player.getName() + " tried to transmute a blacklisted material!");
+					System.out.println("[GeometricMagic] " + player.getName() + " tried to transmute a blacklisted material:");
+					System.out.println("[GeometricMagic] " + a.name() + " into " + b.name());
 				}
 				return;
 			} else

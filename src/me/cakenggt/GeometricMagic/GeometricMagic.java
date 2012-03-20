@@ -15,6 +15,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GeometricMagic extends JavaPlugin {
+	public static GeometricMagic plugin;
 	private Listener playerListener;
 	private Listener entityListener;
 	private Listener deathListener;
