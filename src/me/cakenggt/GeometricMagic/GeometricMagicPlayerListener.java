@@ -136,11 +136,33 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& southBlock.getType() != Material.REDSTONE_WIRE
 						&& eastBlock.getType() == Material.REDSTONE_WIRE && westBlock
 						.getType() == Material.REDSTONE_WIRE)) {
-			if (player.hasPermission("circle.transmutation")) {
-				// System.out.println("transmutation");
-				transmutationCircle(player, world, actBlock);
-			} else
+
+			// transmutation circle size permissions
+			// - allows use of all circles smaller than then the max
+			// size permission node they have
+			int circleSize = 1;
+			if (player.hasPermission("circle.transmutation.*")
+					|| player.hasPermission("circle.transmutation.9")) {
+				circleSize = 9;
+			} else if (player.hasPermission("circle.transmutation.7")) {
+				circleSize = 7;
+			} else if (player.hasPermission("circle.transmutation.5")) {
+				circleSize = 5;
+			} else if (player.hasPermission("circle.transmutation.3")) {
+				circleSize = 3;
+			} else if (player.hasPermission("circle.transmutation.1")) {
+				circleSize = 1;
+			} else {
+				circleSize = 0;
 				player.sendMessage("You do not have permission to use this circle");
+			}
+
+			//System.out.println("circleSize:" + circleSize);
+
+			if (circleSize > 0) {
+				transmutationCircle(player, world, actBlock, circleSize);
+			}
+
 		} else if (northBlock.getType() != Material.REDSTONE_WIRE
 				&& southBlock.getType() != Material.REDSTONE_WIRE
 				&& eastBlock.getType() != Material.REDSTONE_WIRE
@@ -292,7 +314,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void transmutationCircle(Player player, World world,
-			Block actBlock) {
+			Block actBlock, int circleSize) {
 		int halfWidth = 0;
 		int fullWidth = 0;
 		Location startLoc = actBlock.getLocation();
@@ -305,6 +327,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
 			while (actBlock.getRelative(0, 0, -1 * halfWidth).getType() == Material.REDSTONE_WIRE) {
+				if (halfWidth > circleSize) {
+					break;
+				}
 				halfWidth++;
 			}
 			fullWidth = (halfWidth * 2) - 1;
@@ -353,6 +378,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
 			while (actBlock.getRelative(halfWidth, 0, 0).getType() == Material.REDSTONE_WIRE) {
+				if (halfWidth > circleSize) {
+					break;
+				}
 				halfWidth++;
 			}
 			fullWidth = (halfWidth * 2) - 1;

@@ -2,6 +2,7 @@ name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
 version: 2.20
 author: cakenggt
+depend: [Vault]
 permissions:
     GeometricMagic.circle.*:
         description: Gives access to all circles
@@ -16,9 +17,30 @@ permissions:
     circle.micro:
         description: Allows you to use micro circles
         default: true
-    circle.transmutation:
-        description: Allows you to use transmutation circles
+    circle.transmutation.*:
+        description: Allows you to use all transmutation circles
+        default: false
+        children:
+            circle.transmutation.1: true
+            circle.transmutation.3: false
+            circle.transmutation.4: false
+            circle.transmutation.7: false
+            circle.transmutation.9: false
+    circle.transmutation.1:
+        description: Allows you to use transmutation circle 1
         default: true
+    circle.transmutation.3:
+        description: Allows you to use transmutation circle 3
+        default: false
+    circle.transmutation.5:
+        description: Allows you to use transmutation circle 5
+        default: false
+    circle.transmutation.7:
+        description: Allows you to use transmutation circle 7
+        default: false
+    circle.transmutation.9:
+        description: Allows you to use transmutation circle 9
+        default: false
     circle.set:
         description: Allows you to use set circles
         default: true
