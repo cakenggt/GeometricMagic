@@ -38,6 +38,22 @@ public class GeometricMagic extends JavaPlugin {
 	public static GeometricMagic plugin;
 	private Listener playerListener;
 	private Listener entityListener;
+<<<<<<< HEAD
+	private Listener deathListener;
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+    	if(cmd.getName().equalsIgnoreCase("setcircle")){ // If the player typed /set then do the following...
+    		//[1, 1, 3, 3]
+    		Player player = null;
+    		if (sender instanceof Player) {
+    			player = (Player) sender;
+    		}
+    		if (player == null) {
+    			sender.sendMessage("This command can only be run by a player");
+    			return false;
+    		}
+    		if (args.length == 0){
+    			ItemStack oneFlint = new ItemStack(318, 1);
+=======
 	private static Economy economy;
 
 	public boolean onCommand(CommandSender sender, Command cmd,
@@ -56,6 +72,7 @@ public class GeometricMagic extends JavaPlugin {
 			}
 			if (args.length == 0) {
 				ItemStack oneFlint = new ItemStack(318, 1);
+>>>>>>> dev
 				player.getWorld().dropItem(player.getLocation(), oneFlint);
 				return true;
 			}
