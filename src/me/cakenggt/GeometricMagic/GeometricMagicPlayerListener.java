@@ -106,6 +106,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		Block southBlock = actBlock.getRelative(0, 0, 1);
 		Block eastBlock = actBlock.getRelative(1, 0, 0);
 		Block westBlock = actBlock.getRelative(-1, 0, 0);
+
+		// teleportation circle
 		if (northBlock.getType() == Material.REDSTONE_WIRE
 				&& southBlock.getType() == Material.REDSTONE_WIRE
 				&& eastBlock.getType() == Material.REDSTONE_WIRE
@@ -115,6 +117,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				teleportationCircle(player, world, actBlock);
 			} else
 				player.sendMessage("You do not have permission to use this circle");
+
+			// micro circle
 		} else if (northBlock.getType() != Material.REDSTONE_WIRE
 				&& southBlock.getType() != Material.REDSTONE_WIRE
 				&& eastBlock.getType() != Material.REDSTONE_WIRE
@@ -128,6 +132,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				microCircle(player, world, actBlock);
 			} else
 				player.sendMessage("You do not have permission to use this circle");
+
+			// transmutation circle
 		} else if ((northBlock.getType() == Material.REDSTONE_WIRE
 				&& southBlock.getType() == Material.REDSTONE_WIRE
 				&& eastBlock.getType() != Material.REDSTONE_WIRE && westBlock
@@ -157,12 +163,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You do not have permission to use this circle");
 			}
 
-			//System.out.println("circleSize:" + circleSize);
+			// System.out.println("circleSize:" + circleSize);
 
 			if (circleSize > 0) {
 				transmutationCircle(player, world, actBlock, circleSize);
 			}
 
+			// set circle
 		} else if (northBlock.getType() != Material.REDSTONE_WIRE
 				&& southBlock.getType() != Material.REDSTONE_WIRE
 				&& eastBlock.getType() != Material.REDSTONE_WIRE
@@ -172,12 +179,14 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
 			if (player.hasPermission("circle.set")) {
-				// System.out.println("set");
 				setCircleRemote(player, world, actBlock);
 			} else
 				player.sendMessage("You do not have permission to use this circle");
-		} else
+
+			// no circle
+		} else {
 			return;
+		}
 	}
 
 	public static void teleportationCircle(Player player, World world,
@@ -260,72 +269,71 @@ public class GeometricMagicPlayerListener implements Listener {
 			wc++;
 			fineBlock = fineBlock.getRelative(0, 0, -1);
 		}
-		
+
 		// set all redstone to air
 		curBlock = actBlock.getRelative(0, 0, -1);
-		for(int c = 0; c < na; c++) {
+		for (int c = 0; c < na; c++) {
 			curBlock = curBlock.getRelative(0, 0, -1);
 			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < nb; c++) {
+		for (int c = 0; c < nb; c++) {
 			fineBlock = fineBlock.getRelative(-1, 0, 0);
 			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < nc; c++) {
+		for (int c = 0; c < nc; c++) {
 			fineBlock = fineBlock.getRelative(1, 0, 0);
 			fineBlock.setType(Material.AIR);
 		}
 
 		curBlock = actBlock.getRelative(1, 0, 0);
-		for(int c = 0; c < ea; c++) {
+		for (int c = 0; c < ea; c++) {
 			curBlock = curBlock.getRelative(1, 0, 0);
 			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < eb; c++) {
+		for (int c = 0; c < eb; c++) {
 			fineBlock = fineBlock.getRelative(0, 0, -1);
 			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < ec; c++) {
+		for (int c = 0; c < ec; c++) {
 			fineBlock = fineBlock.getRelative(0, 0, 1);
 			fineBlock.setType(Material.AIR);
 		}
 
 		curBlock = actBlock.getRelative(0, 0, 1);
-		for(int c = 0; c < sa; c++) {
+		for (int c = 0; c < sa; c++) {
 			curBlock = curBlock.getRelative(0, 0, 1);
 			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < sb; c++) {
+		for (int c = 0; c < sb; c++) {
 			fineBlock = fineBlock.getRelative(1, 0, 0);
 			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < sc; c++) {
+		for (int c = 0; c < sc; c++) {
 			fineBlock = fineBlock.getRelative(-1, 0, 0);
 			fineBlock.setType(Material.AIR);
 		}
 
 		curBlock = actBlock.getRelative(-1, 0, 0);
-		for(int c = 0; c < wa; c++) {
+		for (int c = 0; c < wa; c++) {
 			curBlock = curBlock.getRelative(-1, 0, 0);
 			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < wb; c++) {
+		for (int c = 0; c < wb; c++) {
 			fineBlock = fineBlock.getRelative(0, 0, 1);
 			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
-		for(int c = 0; c < wc; c++) {
+		for (int c = 0; c < wc; c++) {
 			fineBlock = fineBlock.getRelative(0, 0, -1);
 			fineBlock.setType(Material.AIR);
 		}
-		
 
 		// find out teleport location and modify it
 
@@ -481,8 +489,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				halfWidth++;
 			}
 			fullWidth = (halfWidth * 2) - 1;
-			//System.out
-			//		.println("half is " + halfWidth + " full is " + fullWidth);
+			// System.out
+			// .println("half is " + halfWidth + " full is " + fullWidth);
 			int dimensionOfEffect = (fullWidth - 2) * (fullWidth - 2);
 			if (actBlock.getRelative(0, 0, -1 * (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// north

@@ -24,7 +24,8 @@ public class GeometricMagic extends JavaPlugin {
 
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
-		// If the player typed /set then do the following...
+
+		// If the player typed /setcircle then do the following...
 		if (cmd.getName().equalsIgnoreCase("setcircle")) {
 			// [1, 1, 3, 3]
 			Player player = null;
@@ -32,7 +33,7 @@ public class GeometricMagic extends JavaPlugin {
 				player = (Player) sender;
 			}
 			if (player == null) {
-				sender.sendMessage("this command can only be run by a player");
+				sender.sendMessage("This command can only be run by a player");
 				return false;
 			}
 			if (args.length == 0) {
@@ -126,13 +127,13 @@ public class GeometricMagic extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		
+
 		// Vault Support
 		if (!setupEconomy()) {
 			System.out
 					.println("Economy system not found! GeometricMagic uses Vault to plug into economy systems.");
 		}
-		
+
 		playerListener = new GeometricMagicPlayerListener();
 		entityListener = new GeometricMagicDamageListener();
 		getServer().getPluginManager().registerEvents(playerListener, this);
