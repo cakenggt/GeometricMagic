@@ -339,29 +339,37 @@ public class GeometricMagicPlayerListener implements Listener {
 				fromType = actBlock.getLocation()
 						.add(halfWidth - 1, 0, -1 * (halfWidth + 1)).getBlock()
 						.getType();
-				toType = actBlock.getLocation()
-						.add(halfWidth - 1, 0, halfWidth + 1).getBlock()
-						.getType();
+				Block toBlock = actBlock.getLocation()
+						.add(halfWidth - 1, 0, halfWidth + 1).getBlock();
+				toType = toBlock.getType();
+				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(fullWidth, 0,
-						-1 * dimensionOfEffect / 2 + 1);
+						-1 * dimensionOfEffect / 2);
+				// System.out.println(startLoc);
 				endLoc = actBlock.getLocation().add(
 						fullWidth + dimensionOfEffect - 1,
 						dimensionOfEffect - 1, dimensionOfEffect / 2 - 1);
+				// System.out.println(endLoc);
 				circleStart = actBlock.getLocation().add(1, 0,
 						-1 * (halfWidth - 2));
+				// System.out.println(circleStart);
 				circleEnd = actBlock.getLocation().add(fullWidth - 2,
 						fullWidth - 3, halfWidth - 2);
-				alchemyCheck(fromType, toType, circleStart, circleEnd,
+				// System.out.println(circleEnd);
+				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0)
 					.getType() == Material.REDSTONE_WIRE) {
 				// west
+				// System.out.println("transmutationCircle west");
 				fromType = actBlock.getLocation()
 						.add(-1 * (halfWidth - 1), 0, halfWidth + 1).getBlock()
 						.getType();
-				toType = actBlock.getLocation()
+				Block toBlock = actBlock.getLocation()
 						.add((-1) * (halfWidth - 1), 0, (-1) * (halfWidth + 1))
-						.getBlock().getType();
+						.getBlock();
+				toType = toBlock.getType();
+				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(-1 * fullWidth, 0,
 						dimensionOfEffect / 2);
 				endLoc = actBlock.getLocation().add(
@@ -371,7 +379,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						.add(-1, 0, (halfWidth - 2));
 				circleEnd = actBlock.getLocation().add(-1 * (fullWidth - 2),
 						fullWidth - 3, -1 * (halfWidth - 2));
-				alchemyCheck(fromType, toType, circleStart, circleEnd,
+				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
 			}
 		} else if (actBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE
@@ -384,8 +392,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				halfWidth++;
 			}
 			fullWidth = (halfWidth * 2) - 1;
-			// System.out.println("half is " + halfWidth + " full is " +
-			// fullWidth);
+			//System.out
+			//		.println("half is " + halfWidth + " full is " + fullWidth);
 			int dimensionOfEffect = (fullWidth - 2) * (fullWidth - 2);
 			if (actBlock.getRelative(0, 0, -1 * (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// north
@@ -393,9 +401,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				fromType = actBlock.getLocation()
 						.add(-1 * (halfWidth + 1), 0, -1 * (halfWidth - 1))
 						.getBlock().getType();
-				toType = actBlock.getLocation()
-						.add(halfWidth + 1, 0, -1 * (halfWidth - 1)).getBlock()
-						.getType();
+				Block toBlock = actBlock.getLocation()
+						.add(halfWidth + 1, 0, -1 * (halfWidth - 1)).getBlock();
+				toType = toBlock.getType();
+				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(
 						-1 * dimensionOfEffect / 2, 0, -1 * fullWidth);
 				endLoc = actBlock.getLocation().add(dimensionOfEffect / 2 - 1,
@@ -405,7 +414,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						0, -1);
 				circleEnd = actBlock.getLocation().add((halfWidth - 2),
 						fullWidth - 3, -1 * (fullWidth - 2));
-				alchemyCheck(fromType, toType, circleStart, circleEnd,
+				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
@@ -413,9 +422,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				fromType = actBlock.getLocation()
 						.add(halfWidth + 1, 0, halfWidth - 1).getBlock()
 						.getType();
-				toType = actBlock.getLocation()
-						.add(-1 * (halfWidth + 1), 0, halfWidth - 1).getBlock()
-						.getType();
+				Block toBlock = actBlock.getLocation()
+						.add(-1 * (halfWidth + 1), 0, halfWidth - 1).getBlock();
+				toType = toBlock.getType();
+				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(dimensionOfEffect / 2, 0,
 						fullWidth);
 				endLoc = actBlock.getLocation().add(
@@ -424,7 +434,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				circleStart = actBlock.getLocation().add(halfWidth - 2, 0, 1);
 				circleEnd = actBlock.getLocation().add(-1 * (halfWidth - 2),
 						fullWidth - 3, (fullWidth - 2));
-				alchemyCheck(fromType, toType, circleStart, circleEnd,
+				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
 			}
 		}
@@ -888,9 +898,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				alchemyFiller(Material.AIR, Material.FIRE, effectBlock
-						.getRelative(-10, 0, -10).getLocation(), effectBlock
-						.getRelative(10, 20, 10).getLocation(), player);
+				alchemyFiller(Material.AIR, Material.FIRE, (byte) 0,
+						effectBlock.getRelative(-10, 0, -10).getLocation(),
+						effectBlock.getRelative(10, 20, 10).getLocation(),
+						player);
 			} else
 				return;
 		} else if (arrayString.equals("[3, 3, 4, 4]")
@@ -1108,7 +1119,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		return size;
 	}
 
-	public static void alchemyCheck(Material a, Material b,
+	public static void alchemyCheck(Material a, Material b, byte toData,
 			Location circleStart, Location circleEnd, Location start,
 			Location end, Player player, int width) {
 		Block startBlock = circleStart.getBlock();
@@ -1126,6 +1137,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								alchemyFiller(
 										a,
 										b,
+										toData,
 										start.getBlock()
 												.getRelative(
 														xIteration * width,
@@ -1164,6 +1176,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								alchemyFiller(
 										a,
 										b,
+										toData,
 										start.getBlock()
 												.getRelative(
 														xIteration * width,
@@ -1207,6 +1220,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								alchemyFiller(
 										a,
 										b,
+										toData,
 										start.getBlock()
 												.getRelative(
 														xIteration * width,
@@ -1245,6 +1259,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								alchemyFiller(
 										a,
 										b,
+										toData,
 										start.getBlock()
 												.getRelative(
 														xIteration * width,
@@ -1281,8 +1296,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		return;
 	}
 
-	public static void alchemyFiller(Material a, Material b, Location start,
-			Location end, Player player) {
+	public static void alchemyFiller(Material a, Material b, byte toData,
+			Location start, Location end, Player player) {
 		// System.out.println("alchemyFiller");
 		Block startBlock = start.getBlock();
 		int xIteration = 0;
@@ -1295,7 +1310,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getX() <= end.getX()) {
 						while (startBlock.getZ() <= end.getZ()) {
-							transmuteBlock(a, b, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player);
 							startBlock = startBlock.getRelative(0, 0, 1);
 						}
 						xIteration++;
@@ -1312,7 +1327,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getZ() >= end.getZ()) {
 						while (startBlock.getX() <= end.getX()) {
-							transmuteBlock(a, b, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player);
 							startBlock = startBlock.getRelative(1, 0, 0);
 						}
 						zIteration--;
@@ -1331,7 +1346,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getX() >= end.getX()) {
 						while (startBlock.getZ() >= end.getZ()) {
-							transmuteBlock(a, b, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player);
 							startBlock = startBlock.getRelative(0, 0, -1);
 						}
 						xIteration--;
@@ -1348,7 +1363,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getZ() <= end.getZ()) {
 						while (startBlock.getX() >= end.getX()) {
-							transmuteBlock(a, b, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player);
 							startBlock = startBlock.getRelative(-1, 0, 0);
 							// System.out.println("xloopfiller");
 						}
@@ -1376,8 +1391,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		return balance;
 	}
 
-	public static void transmuteBlock(Material a, Material b, Block startBlock,
-			Player player) {
+	public static void transmuteBlock(Material a, Material b, byte toData,
+			Block startBlock, Player player) {
 
 		Economy econ = GeometricMagic.getEconomy();
 
@@ -1405,7 +1420,10 @@ public class GeometricMagicPlayerListener implements Listener {
 					Bukkit.getServer().getPluginManager()
 							.callEvent(break_event);
 
+					// change block
 					startBlock.setType(b);
+					if (toData != 0)
+						startBlock.setData(toData);
 
 					// deposit or withdraw to players Vault account
 					if (pay > 0) {
@@ -1418,7 +1436,11 @@ public class GeometricMagicPlayerListener implements Listener {
 				// Create fake block place event for compatibility with logging
 				// plugins
 				else if (a == Material.AIR && b != Material.AIR) {
+
+					// change block
 					startBlock.setType(b);
+					if (toData != 0)
+						startBlock.setData(toData);
 
 					// deposit or withdraw to players Vault account
 					if (pay > 0) {
@@ -1448,7 +1470,10 @@ public class GeometricMagicPlayerListener implements Listener {
 					Bukkit.getServer().getPluginManager()
 							.callEvent(break_event);
 
+					// change block
 					startBlock.setType(b);
+					if (toData != 0)
+						startBlock.setData(toData);
 
 					// deposit or withdraw to players Vault account
 					if (pay > 0) {
