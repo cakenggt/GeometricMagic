@@ -1919,8 +1919,11 @@ public class GeometricMagicPlayerListener implements Listener {
 		Scanner inputFile = new Scanner(myFile);
 		while (inputFile.hasNextLine()) {
 			String name = inputFile.nextLine();
-			if (name.equals(player.getName()))
+			if (name.equals(player.getName())) {
+				// close this before we return
+				inputFile.close();
 				return true;
+			}
 			inputFile.nextLine();
 		}
 		inputFile.close();
@@ -1931,7 +1934,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static void humanTransmutation(Player player) throws IOException {
 		if (new File("plugins/GeometricMagic/").mkdirs())
-			System.out.println("sacrifices file created");
+			System.out.println("[GeometricMagic] Sacrifices file created.");
 		File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
 		if (myFile.exists()) {
 			Scanner inputFile = new Scanner(myFile);
@@ -1950,7 +1953,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else {
 			PrintWriter outputFile = new PrintWriter(
 					"plugins/GeometricMagic/sacrifices.txt");
-			System.out.println("sacrifices file created");
+			System.out.println("[GeometricMagic] Sacrifices file created.");
 			outputFile.close();
 		}
 		FileWriter fWriter = new FileWriter(
@@ -1970,8 +1973,11 @@ public class GeometricMagicPlayerListener implements Listener {
 		Scanner inputFile = new Scanner(myFile);
 		while (inputFile.hasNextLine()) {
 			String name = inputFile.nextLine();
-			if (name.equals(player.getName()))
+			if (name.equals(player.getName())) {
+				// close this before we return
+				inputFile.close();
 				return true;
+			}
 		}
 		inputFile.close();
 		return false;
@@ -1988,8 +1994,10 @@ public class GeometricMagicPlayerListener implements Listener {
 		Scanner inputFile = new Scanner(myFile);
 		while (inputFile.hasNextLine()) {
 			String name = inputFile.nextLine();
-			if (name.equals(circle))
+			if (name.equals(circle)) {
+				inputFile.close();
 				return true;
+			}
 		}
 		inputFile.close();
 		return false;
@@ -2006,7 +2014,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		for (int i = 0; i < entityList.size(); i++) {
 			if (entityList.get(i) instanceof Enderman) {
 				if (new File("plugins/GeometricMagic/").mkdirs())
-					System.out.println("file created for " + player.getName());
+					System.out.println("[GeometricMagic] File created for "
+							+ player.getName());
 				File myFile = new File("plugins/GeometricMagic/"
 						+ player.getName() + ".txt");
 				if (myFile.exists()) {
