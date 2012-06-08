@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class GeometricMagicPlayerListener implements Listener {
+	public static Economy economy = null;
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		// System.out.println("is playerinteractevent");
@@ -270,8 +274,10 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void microCircle(Player player, World world, Block actBlock) {
-		// have it print to console what level is
-		player.sendMessage("Your experience level is " + player.getLevel());
+		Economy econ = GeometricMagic.getEconomy();
+
+		player.sendMessage("You have " + econ.format(getBalance(player)));
+
 		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
 		for (int i = 0; i < entitiesList.size(); i++) {
 			if (entitiesList.get(i) instanceof Arrow) {
@@ -611,13 +617,25 @@ public class GeometricMagicPlayerListener implements Listener {
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Item) {
 						Item droppedItem = (Item) entityList.get(i);
-						calculateEXP(Material.AIR, Material.AIR);
+						calculatePay(Material.AIR, Material.AIR);
 						int[] valueArray = new int[2266];
 						getValueArray(valueArray);
-						player.setLevel((valueArray[droppedItem.getItemStack()
+
+						int pay = (valueArray[droppedItem.getItemStack()
 								.getTypeId()] * droppedItem.getItemStack()
-								.getAmount())
-								+ player.getLevel());
+								.getAmount());
+
+						Economy econ = GeometricMagic.getEconomy();
+						if (pay > 0) {
+							econ.depositPlayer(player.getName(), pay);
+						} else if (pay < 0) {
+							econ.withdrawPlayer(player.getName(), pay * -1);
+						}
+						/*
+						 * player.setLevel((valueArray[droppedItem.getItemStack()
+						 * .getTypeId()] * droppedItem.getItemStack()
+						 * .getAmount()) + player.getLevel());
+						 */
 						droppedItem.remove();
 					}
 				}
@@ -1321,12 +1339,29 @@ public class GeometricMagicPlayerListener implements Listener {
 		return;
 	}
 
+	public static double getBalance(Player player) {
+
+		Economy econ = GeometricMagic.getEconomy();
+
+		double balance = econ.getBalance(player.getName());
+
+		return balance;
+	}
+
 	public static void transmuteBlock(Material a, Material b, Block startBlock,
 			Player player) {
+
+		Economy econ = GeometricMagic.getEconomy();
+
+		double balance = getBalance(player);
+
+		int pay = calculatePay(a, b);
+		pay = (int) (pay * philosopherStoneModifier(player));
+
 		BlockState startBlockState = startBlock.getState();
 		if (startBlock.getType() == a) {
-			int exp = calculateEXP(a, b);
-			if (-1 * player.getLevel() < (exp * philosopherStoneModifier(player))) {
+
+			if (-1 * balance < pay) {
 
 				// Create fake block break event for compatibility with logging
 				// plugins
@@ -1343,14 +1378,26 @@ public class GeometricMagicPlayerListener implements Listener {
 							.callEvent(break_event);
 
 					startBlock.setType(b);
-					player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
+
+					// deposit or withdraw to players Vault account
+					if (pay > 0) {
+						econ.depositPlayer(player.getName(), pay);
+					} else if (pay < 0) {
+						econ.withdrawPlayer(player.getName(), pay * -1);
+					}
 				}
 
 				// Create fake block place event for compatibility with logging
 				// plugins
 				else if (a == Material.AIR && b != Material.AIR) {
 					startBlock.setType(b);
-					player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
+
+					// deposit or withdraw to players Vault account
+					if (pay > 0) {
+						econ.depositPlayer(player.getName(), pay);
+					} else if (pay < 0) {
+						econ.withdrawPlayer(player.getName(), pay * -1);
+					}
 
 					BlockPlaceEvent place_event = new BlockPlaceEvent(
 							startBlock, startBlockState, startBlock,
@@ -1374,7 +1421,13 @@ public class GeometricMagicPlayerListener implements Listener {
 							.callEvent(break_event);
 
 					startBlock.setType(b);
-					player.setLevel((int) (player.getLevel() + (exp * philosopherStoneModifier(player))));
+
+					// deposit or withdraw to players Vault account
+					if (pay > 0) {
+						econ.depositPlayer(player.getName(), pay);
+					} else if (pay < 0) {
+						econ.withdrawPlayer(player.getName(), pay * -1);
+					}
 
 					BlockPlaceEvent place_event = new BlockPlaceEvent(
 							startBlock, startBlockState, startBlock,
@@ -1398,7 +1451,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 	}
 
-	public static int calculateEXP(Material a, Material b) {
+	public static int calculatePay(Material a, Material b) {
 		int[] valueArray = new int[2266];
 		// array index is block id, value in array is xp
 		Arrays.fill(valueArray, 0);

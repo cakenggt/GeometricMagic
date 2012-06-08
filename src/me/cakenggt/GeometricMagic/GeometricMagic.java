@@ -5,18 +5,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Material;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GeometricMagic extends JavaPlugin {
 	public static GeometricMagic plugin;
 	private Listener playerListener;
 	private Listener entityListener;
+	private static Economy economy;
 
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
@@ -122,6 +126,13 @@ public class GeometricMagic extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		
+		// Vault Support
+		if (!setupEconomy()) {
+			System.out
+					.println("Economy system not found! GeometricMagic uses Vault to plug into economy systems.");
+		}
+		
 		playerListener = new GeometricMagicPlayerListener();
 		entityListener = new GeometricMagicDamageListener();
 		getServer().getPluginManager().registerEvents(playerListener, this);
@@ -130,6 +141,23 @@ public class GeometricMagic extends JavaPlugin {
 				Material.FIRE, 64)).addIngredient(Material.PORTAL);
 		getServer().addRecipe(portalRecipe);
 		System.out.println(this + " is now enabled!");
+	}
+
+	// Vault Support
+	private boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer()
+				.getServicesManager().getRegistration(
+						net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
+
+		return (economy != null);
+	}
+
+	// Vault Support
+	public static Economy getEconomy() {
+		return economy;
 	}
 
 }
