@@ -409,6 +409,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		Location circleEnd = actBlock.getLocation();
 		Material fromType = actBlock.getType();
 		Material toType = actBlock.getType();
+		boolean lightning = false;
 		if (actBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
@@ -444,6 +445,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				// System.out.println(circleEnd);
 				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
+				lightning = true;
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0)
 					.getType() == Material.REDSTONE_WIRE) {
 				// west
@@ -467,6 +469,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						fullWidth - 3, -1 * (halfWidth - 2));
 				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
+				lightning = true;
 			}
 		} else if (actBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
@@ -502,6 +505,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						fullWidth - 3, -1 * (fullWidth - 2));
 				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
+				lightning = true;
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
 				// System.out.println("transmutationCircle south");
@@ -522,9 +526,11 @@ public class GeometricMagicPlayerListener implements Listener {
 						fullWidth - 3, (fullWidth - 2));
 				alchemyCheck(fromType, toType, toData, circleStart, circleEnd,
 						startLoc, endLoc, player, fullWidth - 2);
+				lightning = true;
 			}
 		}
-		actBlock.getWorld().strikeLightningEffect(actBlock.getLocation());
+		if (lightning)
+			actBlock.getWorld().strikeLightningEffect(actBlock.getLocation());
 	}
 
 	public static void setCircleRemote(Player player, World world,
