@@ -17,7 +17,6 @@ public class GeometricMagic extends JavaPlugin {
 	public static GeometricMagic plugin;
 	private Listener playerListener;
 	private Listener entityListener;
-	private Listener deathListener;
 
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
@@ -125,10 +124,8 @@ public class GeometricMagic extends JavaPlugin {
 	public void onEnable() {
 		playerListener = new GeometricMagicPlayerListener();
 		entityListener = new GeometricMagicDamageListener();
-		deathListener = new GeometricMagicPlayerDeathListener();
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
-		getServer().getPluginManager().registerEvents(deathListener, this);
 		ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
 				Material.FIRE, 64)).addIngredient(Material.PORTAL);
 		getServer().addRecipe(portalRecipe);
