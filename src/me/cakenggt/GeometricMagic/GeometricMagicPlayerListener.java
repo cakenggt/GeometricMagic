@@ -182,116 +182,202 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static void teleportationCircle(Player player, World world,
 			Block actBlock) {
+
+		// activation block in center
 		Location actPoint = actBlock.getLocation();
+
+		// init some variables
 		int na = 0, nb = 0, ea = 0, eb = 0, sa = 0, sb = 0, wa = 0, wb = 0, nc = 0, ec = 0, sc = 0, wc = 0;
+
+		// set core blocks to air
 		actBlock.setType(Material.AIR);
 		actBlock.getRelative(1, 0, 0).setType(Material.AIR);
 		actBlock.getRelative(-1, 0, 0).setType(Material.AIR);
 		actBlock.getRelative(0, 0, 1).setType(Material.AIR);
 		actBlock.getRelative(0, 0, -1).setType(Material.AIR);
+
+		// count and track all redstone blocks
 		Block curBlock = actBlock.getRelative(0, 0, -1);
 		while (curBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
 			na++;
 			curBlock = curBlock.getRelative(0, 0, -1);
-			curBlock.setType(Material.AIR);
 		}
 		Block fineBlock = curBlock;
 		while (fineBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			nb++;
 			fineBlock = fineBlock.getRelative(-1, 0, 0);
-			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			nc++;
 			fineBlock = fineBlock.getRelative(1, 0, 0);
-			fineBlock.setType(Material.AIR);
 		}
+
 		curBlock = actBlock.getRelative(1, 0, 0);
 		while (curBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			ea++;
 			curBlock = curBlock.getRelative(1, 0, 0);
-			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
 			eb++;
 			fineBlock = fineBlock.getRelative(0, 0, -1);
-			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			ec++;
 			fineBlock = fineBlock.getRelative(0, 0, 1);
-			fineBlock.setType(Material.AIR);
 		}
+
 		curBlock = actBlock.getRelative(0, 0, 1);
 		while (curBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			sa++;
 			curBlock = curBlock.getRelative(0, 0, 1);
-			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			sb++;
 			fineBlock = fineBlock.getRelative(1, 0, 0);
-			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			sc++;
 			fineBlock = fineBlock.getRelative(-1, 0, 0);
-			fineBlock.setType(Material.AIR);
 		}
+
 		curBlock = actBlock.getRelative(-1, 0, 0);
 		while (curBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			wa++;
 			curBlock = curBlock.getRelative(-1, 0, 0);
-			curBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			wb++;
 			fineBlock = fineBlock.getRelative(0, 0, 1);
-			fineBlock.setType(Material.AIR);
 		}
 		fineBlock = curBlock;
 		while (fineBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
 			wc++;
 			fineBlock = fineBlock.getRelative(0, 0, -1);
+		}
+		
+		// set all redstone to air
+		curBlock = actBlock.getRelative(0, 0, -1);
+		for(int c = 0; c < na; c++) {
+			curBlock = curBlock.getRelative(0, 0, -1);
+			curBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < nb; c++) {
+			fineBlock = fineBlock.getRelative(-1, 0, 0);
 			fineBlock.setType(Material.AIR);
 		}
-		// north negative z, south positive z, east positive x, west
-		// negative x
+		fineBlock = curBlock;
+		for(int c = 0; c < nc; c++) {
+			fineBlock = fineBlock.getRelative(1, 0, 0);
+			fineBlock.setType(Material.AIR);
+		}
+
+		curBlock = actBlock.getRelative(1, 0, 0);
+		for(int c = 0; c < ea; c++) {
+			curBlock = curBlock.getRelative(1, 0, 0);
+			curBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < eb; c++) {
+			fineBlock = fineBlock.getRelative(0, 0, -1);
+			fineBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < ec; c++) {
+			fineBlock = fineBlock.getRelative(0, 0, 1);
+			fineBlock.setType(Material.AIR);
+		}
+
+		curBlock = actBlock.getRelative(0, 0, 1);
+		for(int c = 0; c < sa; c++) {
+			curBlock = curBlock.getRelative(0, 0, 1);
+			curBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < sb; c++) {
+			fineBlock = fineBlock.getRelative(1, 0, 0);
+			fineBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < sc; c++) {
+			fineBlock = fineBlock.getRelative(-1, 0, 0);
+			fineBlock.setType(Material.AIR);
+		}
+
+		curBlock = actBlock.getRelative(-1, 0, 0);
+		for(int c = 0; c < wa; c++) {
+			curBlock = curBlock.getRelative(-1, 0, 0);
+			curBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < wb; c++) {
+			fineBlock = fineBlock.getRelative(0, 0, 1);
+			fineBlock.setType(Material.AIR);
+		}
+		fineBlock = curBlock;
+		for(int c = 0; c < wc; c++) {
+			fineBlock = fineBlock.getRelative(0, 0, -1);
+			fineBlock.setType(Material.AIR);
+		}
+		
+
+		// find out teleport location and modify it
+
+		// north negative z
+		// south positive z
+		// east positive x
+		// west negative x
 		int z = ((sa * 100 + sb) - (na * 100 + nb));
 		int x = ((ea * 100 + eb) - (wa * 100 + wb));
 		int y = nc + ec + sc + wc;
+
 		double actPointX = actPoint.getX();
 		double actPointZ = actPoint.getZ();
+
 		Location teleLoc = actPoint.add(x, y, z);
+
 		float yaw = player.getLocation().getYaw();
 		float pitch = player.getLocation().getPitch();
+
 		teleLoc.setYaw(yaw);
 		teleLoc.setPitch(pitch);
+
 		double distance = Math.sqrt(Math.pow(teleLoc.getX() - actPointX, 2)
 				+ Math.pow(teleLoc.getZ() - actPointZ, 2));
+
 		double mathRandX = philosopherStoneModifier(player) * distance / 10
 				* Math.random();
 		double mathRandZ = philosopherStoneModifier(player) * distance / 10
 				* Math.random();
+
 		double randX = (teleLoc.getX() - (0.5 * mathRandX)) + (mathRandX);
 		double randZ = (teleLoc.getZ() - (0.5 * mathRandZ)) + (mathRandZ);
+
 		teleLoc.setX(randX);
 		teleLoc.setZ(randZ);
+
+		// wait for chunk to be loaded before teleporting player
 		while (teleLoc.getWorld().getChunkAt(teleLoc).isLoaded() == false) {
 			teleLoc.getWorld().getChunkAt(teleLoc).load(true);
 		}
+
+		// teleport player
 		player.teleport(teleLoc);
+
 		ItemStack redstonePile = new ItemStack(331, 5 + na + nb + nc + sa + sb
 				+ sc + ea + eb + ec + wa + wb + wc);
+
 		teleLoc.getWorld().dropItem(teleLoc, redstonePile);
+
 		actBlock.getWorld().strikeLightningEffect(actBlock.getLocation());
 		actBlock.getWorld().strikeLightningEffect(teleLoc);
+
 		return;
 	}
 
