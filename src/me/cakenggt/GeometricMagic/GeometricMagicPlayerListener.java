@@ -1498,15 +1498,19 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			if (-1 * balance < pay) {
 
-				// Create fake block break event for compatibility with logging
-				// plugins
+				// disallow transmuting of mob spawners completely
+				// block break
 				if (a != Material.AIR && b == Material.AIR
 						&& a != Material.CHEST && a != Material.WALL_SIGN
 						&& a != Material.SIGN_POST && a != Material.FURNACE
 						&& a != Material.BURNING_FURNACE
 						&& a != Material.BREWING_STAND
 						&& a != Material.WOODEN_DOOR
-						&& a != Material.IRON_DOOR_BLOCK) {
+						&& a != Material.IRON_DOOR_BLOCK
+						&& a != Material.MOB_SPAWNER
+						&& b != Material.MOB_SPAWNER) {
+
+					// block break event
 					BlockBreakEvent break_event = new BlockBreakEvent(
 							startBlock, player);
 					Bukkit.getServer().getPluginManager()
@@ -1525,9 +1529,10 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 
-				// Create fake block place event for compatibility with logging
-				// plugins
-				else if (a == Material.AIR && b != Material.AIR) {
+				// block place
+				else if (a == Material.AIR && b != Material.AIR
+						&& a != Material.MOB_SPAWNER
+						&& b != Material.MOB_SPAWNER) {
 
 					// change block
 					startBlock.setType(b);
@@ -1541,6 +1546,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						econ.withdrawPlayer(player.getName(), pay * -1);
 					}
 
+					// block place event
 					BlockPlaceEvent place_event = new BlockPlaceEvent(
 							startBlock, startBlockState, startBlock,
 							new ItemStack(b.getId()), player, true);
@@ -1548,15 +1554,18 @@ public class GeometricMagicPlayerListener implements Listener {
 							.callEvent(place_event);
 				}
 
-				// Create fake block break and place events for compatibility
-				// with logging plugins
+				// block break and place
 				else if (a != Material.AIR && b != Material.AIR
 						&& a != Material.CHEST && a != Material.WALL_SIGN
 						&& a != Material.SIGN_POST && a != Material.FURNACE
 						&& a != Material.BURNING_FURNACE
 						&& a != Material.BREWING_STAND
 						&& a != Material.WOODEN_DOOR
+						&& a != Material.MOB_SPAWNER
+						&& b != Material.MOB_SPAWNER
 						&& a != Material.IRON_DOOR_BLOCK) {
+
+					// block break event
 					BlockBreakEvent break_event = new BlockBreakEvent(
 							startBlock, player);
 					Bukkit.getServer().getPluginManager()
@@ -1574,16 +1583,18 @@ public class GeometricMagicPlayerListener implements Listener {
 						econ.withdrawPlayer(player.getName(), pay * -1);
 					}
 
+					// block place event
 					BlockPlaceEvent place_event = new BlockPlaceEvent(
 							startBlock, startBlockState, startBlock,
 							new ItemStack(b.getId()), player, true);
 					Bukkit.getServer().getPluginManager()
 							.callEvent(place_event);
 				}
-				// System.out.println("transmuted block");
-				// System.out.println(startBlock.getX() + " " +
-				// startBlock.getY() + " " + startBlock.getZ());
-				else if (a != Material.AIR && b != Material.AIR) {
+
+				// output to console
+				else if ((a != Material.AIR && b != Material.AIR)
+						|| a == Material.MOB_SPAWNER
+						|| b == Material.MOB_SPAWNER) {
 					System.out.println("[GeometricMagic] " + player.getName()
 							+ " tried to transmute a blacklisted material:");
 					System.out.println("[GeometricMagic] " + a.name()
