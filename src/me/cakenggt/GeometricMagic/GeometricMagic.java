@@ -27,7 +27,7 @@ public class GeometricMagic extends JavaPlugin {
     			player = (Player) sender;
     		}
     		if (player == null) {
-    			sender.sendMessage("this command can only be run by a player");
+    			sender.sendMessage("This command can only be run by a player");
     			return false;
     		}
     		if (args.length == 0){
