@@ -725,8 +725,10 @@ public class GeometricMagicPlayerListener implements Listener {
 							droppedItem.remove();
 							effectBlock.getWorld().dropItem(
 									effectBlock.getLocation(), newItem);
-						} else
+						} else {
+							player.sendMessage("You feel so hungry...");
 							return;
+						}
 					}
 				}
 			}
@@ -770,8 +772,10 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 				redStack.remove();
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[1, 2, 3, 3]")
 				&& player.hasPermission("circle.set.1233")) {
 			cost = 20;
@@ -799,6 +803,8 @@ public class GeometricMagicPlayerListener implements Listener {
 					effectBlock.getWorld().dropItem(effectBlock.getLocation(),
 							onePortal);
 				}
+			} else {
+				player.sendMessage("You feel so hungry...");
 			}
 			ItemStack diamondStack = new ItemStack(264, fires);
 			effectBlock.getWorld().dropItem(effectBlock.getLocation(),
@@ -818,8 +824,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				ItemStack oneRedstone = new ItemStack(331, 10);
 				effectBlock.getWorld().dropItem(effectBlock.getLocation(),
 						oneRedstone);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[2, 2, 2, 3]")
 				&& player.hasPermission("circle.set.2223")) {
 			cost = 10;
@@ -879,8 +887,10 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 				redStack.remove();
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[2, 2, 2, 4]")
 				&& player.hasPermission("circle.set.2224")) {
 			cost = 10;
@@ -889,8 +899,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				Location spawnLoc = effectBlock.getLocation();
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Enderman.class);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[2, 2, 4, 4]")
 				&& player.hasPermission("circle.set.2244")) {
 			if (!hasLearnedCircle(player, arrayString)) {
@@ -979,8 +991,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				effectBlock.getWorld().createExplosion(
 						effectBlock.getLocation(), (4 + size));
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[3, 3, 3, 4]")
 				&& player.hasPermission("circle.set.3334")) {
 			cost = 2;
@@ -994,8 +1008,10 @@ public class GeometricMagicPlayerListener implements Listener {
 						effectBlock.getRelative(-10, 0, -10).getLocation(),
 						effectBlock.getRelative(10, 20, 10).getLocation(),
 						player);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[3, 3, 4, 4]")
 				&& player.hasPermission("circle.set.3344")) {
 			cost = 4;
@@ -1010,8 +1026,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				effectBlock.getWorld().createExplosion(
 						effectBlock.getLocation(), 8 + size, true);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[3, 4, 4, 4]")
 				&& player.hasPermission("circle.set.3444")) {
 			cost = 20;
@@ -1027,8 +1045,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[0, 1, 1, 1]")
 				&& player.hasPermission("circle.set.0111")) {
 			cost = 16;
@@ -1076,8 +1096,10 @@ public class GeometricMagicPlayerListener implements Listener {
 					player.sendMessage("You do not have a spawn set!");
 					player.setFoodLevel((int) (player.getFoodLevel() + (cost * philosopherStoneModifier(player))));
 				}
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[0, 0, 4, 4]")
 				&& player.hasPermission("circle.set.0044")) {
 			cost = 10;
@@ -1090,8 +1112,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				Location spawnLoc = effectBlock.getLocation();
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Pig.class);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[0, 1, 4, 4]")
 				&& player.hasPermission("circle.set.0144")) {
 			cost = 10;
@@ -1104,8 +1128,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				Location spawnLoc = effectBlock.getLocation();
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Sheep.class);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[0, 2, 4, 4]")
 				&& player.hasPermission("circle.set.0244")) {
 			cost = 10;
@@ -1118,8 +1144,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				Location spawnLoc = effectBlock.getLocation();
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Cow.class);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else if (arrayString.equals("[0, 3, 4, 4]")
 				&& player.hasPermission("circle.set.0344")) {
 			cost = 10;
@@ -1132,8 +1160,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				Location spawnLoc = effectBlock.getLocation();
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Chicken.class);
-			} else
+			} else {
+				player.sendMessage("You feel so hungry...");
 				return;
+			}
 		} else {
 			player.sendMessage("You do not have permission to use "
 					+ arrayString + " or set circle does not exist");
