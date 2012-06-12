@@ -20,7 +20,7 @@ name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
 version: 2.3
 author: cakenggt, Hoot215
-depend: [Vault]
+softdepend: [Vault]
 permissions:
     GeometricMagic.circle.*:
         description: Gives access to all circles
