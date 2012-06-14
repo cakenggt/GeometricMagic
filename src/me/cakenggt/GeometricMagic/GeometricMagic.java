@@ -19,7 +19,10 @@
 package me.cakenggt.GeometricMagic;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -35,10 +38,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GeometricMagic extends JavaPlugin {
-	public static GeometricMagic plugin;
 	private Listener playerListener;
 	private Listener entityListener;
 	private static Economy economy;
+	File configFile;
 
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
@@ -140,26 +143,69 @@ public class GeometricMagic extends JavaPlugin {
 		}
 	}
 
+	@Override
 	public void onDisable() {
 		System.out.println(this + " is now disabled!");
 	}
 
+	@Override
 	public void onEnable() {
-
-		// Vault Support
-		if (!setupEconomy()) {
-			System.out
-					.println("Economy system not found! GeometricMagic uses Vault to plug into economy systems.");
+		
+		configFile = new File(getDataFolder(), "config.yml");
+		
+		// Copy default config file if it doesn't exist
+		if (!configFile.exists()) {
+			configFile.getParentFile().mkdirs();
+			copy(this.getResource("config.yml"), configFile);
 		}
-
-		playerListener = new GeometricMagicPlayerListener();
-		entityListener = new GeometricMagicDamageListener();
-		getServer().getPluginManager().registerEvents(playerListener, this);
-		getServer().getPluginManager().registerEvents(entityListener, this);
-		ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
-				Material.FIRE, 64)).addIngredient(Material.PORTAL);
-		getServer().addRecipe(portalRecipe);
-		System.out.println(this + " is now enabled!");
+		
+		// Copy config defaults
+		getConfig().options().copyDefaults(true);
+		
+		// Transmutation mode: Vault
+		if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("vault")) {
+			// Vault Support
+			if (!setupEconomy()) {
+				System.out
+						.println("[" + this + "] ERROR: You have your transmutation system set to Vault, and yet you don't have Vault. Disabling plugin!");
+				getServer().getPluginManager().disablePlugin(this);
+			}
+			else {
+				System.out
+						.println("[" + this + "] Transmutation cost system set to Vault");
+				
+				// Register events
+				playerListener = new GeometricMagicPlayerListener(this);
+				entityListener = new GeometricMagicDamageListener();
+				getServer().getPluginManager().registerEvents(playerListener, this);
+				getServer().getPluginManager().registerEvents(entityListener, this);
+				ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
+						Material.FIRE, 64)).addIngredient(Material.PORTAL);
+				getServer().addRecipe(portalRecipe);
+				System.out.println(this + " is now enabled!");
+			}
+		}
+		// Transmutation mode: XP
+		else if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("xp")) {
+			System.out
+					.println("[" + this + "] Transmutation cost system set to XP");
+			
+			// Register events
+			playerListener = new GeometricMagicPlayerListener(this);
+			entityListener = new GeometricMagicDamageListener();
+			getServer().getPluginManager().registerEvents(playerListener, this);
+			getServer().getPluginManager().registerEvents(entityListener, this);
+			ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
+					Material.FIRE, 64)).addIngredient(Material.PORTAL);
+			getServer().addRecipe(portalRecipe);
+			System.out.println(this + " is now enabled!");
+		}
+		// Transmutation mode: Unknown
+		else {
+			System.out
+					.println("[" + this + "] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
+			getServer().getPluginManager().disablePlugin(this);
+		}
 	}
 
 	// Vault Support
@@ -178,5 +224,21 @@ public class GeometricMagic extends JavaPlugin {
 	public static Economy getEconomy() {
 		return economy;
 	}
-
+	
+	// Copy method
+	private void copy(InputStream in, File file) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while((len=in.read(buf))>0){
+                out.write(buf,0,len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
 }
