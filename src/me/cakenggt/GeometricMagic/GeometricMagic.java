@@ -206,6 +206,9 @@ public class GeometricMagic extends JavaPlugin {
 					.println("[" + this + "] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
 			getServer().getPluginManager().disablePlugin(this);
 		}
+		
+		// Plugin metrics
+		startPluginMetrics();
 	}
 
 	// Vault Support
@@ -241,4 +244,12 @@ public class GeometricMagic extends JavaPlugin {
         }
     }
 	
+	private void startPluginMetrics() {
+		try {
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
+		}
+	}
 }
