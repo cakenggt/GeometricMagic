@@ -755,6 +755,10 @@ public class GeometricMagicPlayerListener implements Listener {
 						if (droppedItem.getItemStack().getTypeId() == 261)
 							cost = droppedItem.getItemStack().getDurability();
 						cost = cost / 50;
+						
+						// Make sure cost is not more than 20
+						if (cost > 20) cost = 20;
+						
 						if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 							player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 							ItemStack newItem = new ItemStack(droppedItem
@@ -1026,6 +1030,10 @@ public class GeometricMagicPlayerListener implements Listener {
 			cost = 2;
 			int size = setCircleSize(actBlock);
 			cost = 2 + size / 2;
+			
+			// Make sure cost is not more than 20
+			if (cost > 20) cost = 20;
+			
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1061,6 +1069,10 @@ public class GeometricMagicPlayerListener implements Listener {
 			cost = 4;
 			int size = setCircleSize(actBlock);
 			cost = 4 + size / 2;
+			
+			// Make sure cost is not more than 20
+			if (cost > 20) cost = 20;
+			
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
