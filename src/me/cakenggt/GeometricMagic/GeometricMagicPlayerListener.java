@@ -44,6 +44,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class GeometricMagicPlayerListener implements Listener {
+	static GeometricMagic plugin = new GeometricMagic();
+	public GeometricMagicPlayerListener(GeometricMagic instance) {
+		plugin = instance;
+	}
 	public static Economy economy = null;
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -408,9 +412,16 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void microCircle(Player player, World world, Block actBlock) {
-		Economy econ = GeometricMagic.getEconomy();
+		if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+			Economy econ = GeometricMagic.getEconomy();
 
-		player.sendMessage("You have " + econ.format(getBalance(player)));
+			// Tell the player how much money they have
+			player.sendMessage("You have " + econ.format(getBalance(player)));
+		}
+		else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+			// Tell the player how many levels they have
+			player.sendMessage("Your experience level is " + player.getLevel());
+		}
 
 		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
 		for (int i = 0; i < entitiesList.size(); i++) {
@@ -783,11 +794,18 @@ public class GeometricMagicPlayerListener implements Listener {
 								.getTypeId()] * droppedItem.getItemStack()
 								.getAmount());
 
-						Economy econ = GeometricMagic.getEconomy();
-						if (pay > 0) {
-							econ.depositPlayer(player.getName(), pay);
-						} else if (pay < 0) {
-							econ.withdrawPlayer(player.getName(), pay * -1);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							Economy econ = GeometricMagic.getEconomy();
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((valueArray[droppedItem.getItemStack()
+														.getTypeId()] * droppedItem.getItemStack()
+														.getAmount()));
 						}
 						/*
 						 * player.setLevel((valueArray[droppedItem.getItemStack()
@@ -1532,27 +1550,31 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static double getBalance(Player player) {
 
-		Economy econ = GeometricMagic.getEconomy();
+		if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+			Economy econ = GeometricMagic.getEconomy();
 
-		double balance = econ.getBalance(player.getName());
+			double balance = econ.getBalance(player.getName());
 
-		return balance;
+			return balance;
+		}
+		else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+			double balance = player.getLevel();
+			
+			return balance;
+		}
+		return 0;
 	}
 
 	public static void transmuteBlock(Material a, Material b, byte toData,
 			Block startBlock, Player player) {
-
-		Economy econ = GeometricMagic.getEconomy();
-
-		double balance = getBalance(player);
-
+		
 		int pay = calculatePay(a, b);
 		pay = (int) (pay * philosopherStoneModifier(player));
 
 		BlockState startBlockState = startBlock.getState();
 		if (startBlock.getType() == a) {
 
-			if (-1 * balance < pay) {
+			if (-1 * getBalance(player) < pay) {
 
 				// disallow transmuting of mob spawners completely
 				// block break
@@ -1563,8 +1585,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& a != Material.BREWING_STAND
 						&& a != Material.WOODEN_DOOR
 						&& a != Material.IRON_DOOR_BLOCK
-						&& a != Material.MOB_SPAWNER
-						&& b != Material.MOB_SPAWNER) {
+						&& a != Material.MOB_SPAWNER) {
 
 					// block break event
 					BlockBreakEvent break_event = new BlockBreakEvent(
@@ -1577,17 +1598,25 @@ public class GeometricMagicPlayerListener implements Listener {
 					if (toData != 0)
 						startBlock.setData(toData);
 
-					// deposit or withdraw to players Vault account
-					if (pay > 0) {
-						econ.depositPlayer(player.getName(), pay);
-					} else if (pay < 0) {
-						econ.withdrawPlayer(player.getName(), pay * -1);
+					if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+						
+						Economy econ = GeometricMagic.getEconomy();
+
+
+						// deposit or withdraw to players Vault account
+						if (pay > 0) {
+							econ.depositPlayer(player.getName(), pay);
+						} else if (pay < 0) {
+							econ.withdrawPlayer(player.getName(), pay * -1);
+						}
+					}
+					else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+						player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
 					}
 				}
 
 				// block place
 				else if (a == Material.AIR && b != Material.AIR
-						&& a != Material.MOB_SPAWNER
 						&& b != Material.MOB_SPAWNER) {
 
 					// change block
@@ -1595,13 +1624,22 @@ public class GeometricMagicPlayerListener implements Listener {
 					if (toData != 0)
 						startBlock.setData(toData);
 
-					// deposit or withdraw to players Vault account
-					if (pay > 0) {
-						econ.depositPlayer(player.getName(), pay);
-					} else if (pay < 0) {
-						econ.withdrawPlayer(player.getName(), pay * -1);
-					}
+					if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+						
+						Economy econ = GeometricMagic.getEconomy();
 
+						
+						// deposit or withdraw to players Vault account
+						if (pay > 0) {
+							econ.depositPlayer(player.getName(), pay);
+						} else if (pay < 0) {
+							econ.withdrawPlayer(player.getName(), pay * -1);
+						}
+					}
+					else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+						player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+					}
+					
 					// block place event
 					BlockPlaceEvent place_event = new BlockPlaceEvent(
 							startBlock, startBlockState, startBlock,
@@ -1632,11 +1670,20 @@ public class GeometricMagicPlayerListener implements Listener {
 					if (toData != 0)
 						startBlock.setData(toData);
 
-					// deposit or withdraw to players Vault account
-					if (pay > 0) {
-						econ.depositPlayer(player.getName(), pay);
-					} else if (pay < 0) {
-						econ.withdrawPlayer(player.getName(), pay * -1);
+					if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+						
+						Economy econ = GeometricMagic.getEconomy();
+
+						
+						// deposit or withdraw to players Vault account
+						if (pay > 0) {
+							econ.depositPlayer(player.getName(), pay);
+						} else if (pay < 0) {
+							econ.withdrawPlayer(player.getName(), pay * -1);
+						}
+					}
+					else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+						player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
 					}
 
 					// block place event
@@ -2063,5 +2110,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		redStack.remove();
 		return status;
+	}
+	
+	public static String getTransmutationCostSystem(GeometricMagic plugin) {
+		return plugin.getConfig().getString("transmutation.cost").toString();
 	}
 }
