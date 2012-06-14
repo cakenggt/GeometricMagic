@@ -3,6 +3,7 @@ package me.cakenggt.GeometricMagic;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import net.milkbowl.vault.economy.Economy;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 //import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -646,94 +648,94 @@ public class GeometricMagicPlayerListener implements Listener {
 						+ arrayString + "!");
 				return;
 			}
+
 			List<Entity> repairEntities = player.getNearbyEntities(9, 10, 9);
 			for (int i = 0; i < repairEntities.size(); i++) {
 				if (repairEntities.get(i) instanceof Item) {
 					Item droppedItem = (Item) repairEntities.get(i);
-					if ((256 <= droppedItem.getItemStack().getTypeId() && droppedItem
-							.getItemStack().getTypeId() <= 258)
-							|| (267 <= droppedItem.getItemStack().getTypeId() && droppedItem
-									.getItemStack().getTypeId() <= 279)
-							|| (283 <= droppedItem.getItemStack().getTypeId() && droppedItem
-									.getItemStack().getTypeId() <= 286)
-							|| (290 <= droppedItem.getItemStack().getTypeId() && droppedItem
-									.getItemStack().getTypeId() <= 294)
-							|| (298 <= droppedItem.getItemStack().getTypeId() && droppedItem
-									.getItemStack().getTypeId() <= 317)
-							|| droppedItem.getItemStack().getTypeId() == 259
-							|| droppedItem.getItemStack().getTypeId() == 346
-							|| droppedItem.getItemStack().getTypeId() == 359
-							|| droppedItem.getItemStack().getTypeId() == 261) {
-						if ((256 <= droppedItem.getItemStack().getTypeId() && droppedItem
-								.getItemStack().getTypeId() <= 258)
-								|| droppedItem.getItemStack().getTypeId() == 267
-								|| droppedItem.getItemStack().getTypeId() == 292)
+
+					// item data value
+					int itemCode = droppedItem.getItemStack().getTypeId();
+
+					// enchants
+					Map<Enchantment, Integer> effects = droppedItem.getItemStack().getEnchantments();
+
+					// get cost
+					if ((256 <= itemCode && itemCode <= 258)
+							|| (267 <= itemCode && itemCode <= 279)
+							|| (283 <= itemCode && itemCode <= 286)
+							|| (290 <= itemCode && itemCode <= 294)
+							|| (298 <= itemCode && itemCode <= 317)
+							|| itemCode == 259 || itemCode == 346
+							|| itemCode == 359 || itemCode == 261) {
+						if ((256 <= itemCode && itemCode <= 258)
+								|| itemCode == 267 || itemCode == 292)
 							cost = droppedItem.getItemStack().getDurability();
-						if ((268 <= droppedItem.getItemStack().getTypeId() && droppedItem
-								.getItemStack().getTypeId() <= 271)
-								|| droppedItem.getItemStack().getTypeId() == 290)
+						if ((268 <= itemCode && itemCode <= 271)
+								|| itemCode == 290)
 							cost = droppedItem.getItemStack().getDurability();
-						if ((272 <= droppedItem.getItemStack().getTypeId() && droppedItem
-								.getItemStack().getTypeId() <= 275)
-								|| droppedItem.getItemStack().getTypeId() == 291)
+						if ((272 <= itemCode && itemCode <= 275)
+								|| itemCode == 291)
 							cost = droppedItem.getItemStack().getDurability();
-						if ((276 <= droppedItem.getItemStack().getTypeId() && droppedItem
-								.getItemStack().getTypeId() <= 279)
-								|| droppedItem.getItemStack().getTypeId() == 293)
+						if ((276 <= itemCode && itemCode <= 279)
+								|| itemCode == 293)
 							cost = droppedItem.getItemStack().getDurability();
-						if ((283 <= droppedItem.getItemStack().getTypeId() && droppedItem
-								.getItemStack().getTypeId() <= 286)
-								|| droppedItem.getItemStack().getTypeId() == 294)
+						if ((283 <= itemCode && itemCode <= 286)
+								|| itemCode == 294)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 298)
+						if (itemCode == 298)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 299)
+						if (itemCode == 299)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 300)
+						if (itemCode == 300)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 301)
+						if (itemCode == 301)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 306)
+						if (itemCode == 306)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 307)
+						if (itemCode == 307)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 308)
+						if (itemCode == 308)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 309)
+						if (itemCode == 309)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 310)
+						if (itemCode == 310)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 311)
+						if (itemCode == 311)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 312)
+						if (itemCode == 312)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 313)
+						if (itemCode == 313)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 314)
+						if (itemCode == 314)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 315)
+						if (itemCode == 315)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 316)
+						if (itemCode == 316)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 317)
+						if (itemCode == 317)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 259)
+						if (itemCode == 259)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 346)
+						if (itemCode == 346)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 359)
+						if (itemCode == 359)
 							cost = droppedItem.getItemStack().getDurability();
-						if (droppedItem.getItemStack().getTypeId() == 261)
+						if (itemCode == 261)
 							cost = droppedItem.getItemStack().getDurability();
 						cost = cost / 50;
-						
+
 						// make sure cost is not more than 20
-						if(cost > 20) cost = 20;
-						
+						if (cost > 20)
+							cost = 20;
+
 						if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 							player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
-							ItemStack newItem = new ItemStack(droppedItem
-									.getItemStack().getTypeId(), 1);
+							ItemStack newItem = new ItemStack(itemCode, 1);
+							
+							// enchant the item
+							newItem.addEnchantments(effects);
+							
 							droppedItem.remove();
 							effectBlock.getWorld().dropItem(
 									effectBlock.getLocation(), newItem);
@@ -994,9 +996,10 @@ public class GeometricMagicPlayerListener implements Listener {
 			cost = 2;
 			int size = setCircleSize(actBlock);
 			cost = 2 + size / 2;
-			
+
 			// make sure cost is not more than 20
-			if(cost > 20) cost = 20;
+			if (cost > 20)
+				cost = 20;
 
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1033,9 +1036,10 @@ public class GeometricMagicPlayerListener implements Listener {
 			cost = 4;
 			int size = setCircleSize(actBlock);
 			cost = 4 + size / 2;
-			
+
 			// make sure cost is not more than 20
-			if(cost > 20) cost = 20;
+			if (cost > 20)
+				cost = 20;
 
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
