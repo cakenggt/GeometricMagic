@@ -2154,7 +2154,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static boolean checkBlockBreakSimulation(BlockLocation target, Player player) {
 		Block block = target.getBlock();
 		BlockBreakEvent breakEvent = new ArtificialBlockBreakEvent(block, player);
-		getPluginManager.callEvent(breakEvent);
+		getPluginManager(GeometricMagic).callEvent(breakEvent);
 		if (breakEvent.isCancelled())
 			return false;
 		return true;
