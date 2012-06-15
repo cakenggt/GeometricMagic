@@ -2131,4 +2131,37 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static String getTransmutationCostSystem(GeometricMagic plugin) {
 		return plugin.getConfig().getString("transmutation.cost").toString();
 	}
+	
+	// Lyneira's Code Start
+	public static boolean checkBlockPlaceSimulation(BlockLocation target, int typeId, byte data, BlockLocation 				placedAgainst, Player player) {
+		Block placedBlock = target.getBlock();
+		Block replacedBlock = placedBlock.getState();
+                  int oldType = replacedBlockState.getTypeId();
+		byte oldData = replacedBlockState.getRawData();
+		
+		// Set the new state without physics.
+		placedBlock.setTypeIdAndData(typeId, data, false);
+		BlockPlaceEvent placeEvent = new ArtificialBlockPlaceEvent(placedBlock, replacedBlockState, 					placedAgainst.getBlock(), null, player, true);
+		getPluginManager(GeometricMagic).callEvent(placeEvent);
+		
+		// Revert to the old state without physics.
+		placedBlock.setTypeIdAndData(oldType, oldData, false);
+		if (placeEvent.isCancelled())
+			return false;
+		return true;
+	}
+	
+	public static boolean checkBlockBreakSimulation(BlockLocation target, Player player) {
+		Block block = target.getBlock();
+		BlockBreakEvent breakEvent = new ArtificialBlockBreakEvent(block, player);
+		getPluginManager.callEvent(breakEvent);
+		if (breakEvent.isCancelled())
+			return false;
+		return true;
+	}
+	// Lyneira's Code End
+	
+	public static getPluginManager(GeometricMagic plugin) {
+		return plugin.getServer().getPluginManger();
+	}
 }
