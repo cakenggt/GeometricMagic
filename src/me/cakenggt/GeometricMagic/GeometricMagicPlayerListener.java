@@ -792,12 +792,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Item) {
 						Item droppedItem = (Item) entityList.get(i);
-						calculatePay(Material.AIR, Material.AIR);
-						int[] valueArray = new int[2266];
-						getValueArray(valueArray);
+						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId());
 
-						int pay = (valueArray[droppedItem.getItemStack()
-								.getTypeId()] * droppedItem.getItemStack()
+						int pay = (valueArray * droppedItem.getItemStack()
 								.getAmount());
 
 						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
@@ -809,9 +806,8 @@ public class GeometricMagicPlayerListener implements Listener {
 							}
 						}
 						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-							player.setLevel((valueArray[droppedItem.getItemStack()
-														.getTypeId()] * droppedItem.getItemStack()
-														.getAmount()));
+							player.setLevel((valueArray * droppedItem.getItemStack().getAmount())
+									+ player.getLevel());
 						}
 						/*
 						 * player.setLevel((valueArray[droppedItem.getItemStack()
@@ -1715,133 +1711,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static int calculatePay(Material a, Material b) {
-		int[] valueArray = new int[2266];
-		// array index is block id, value in array is xp
-		Arrays.fill(valueArray, 0);
-		valueArray[0] = 0;
-		valueArray[1] = 6;
-		valueArray[2] = 1;
-		valueArray[3] = 1;
-		valueArray[4] = 4;
-		valueArray[5] = 4;
-		valueArray[6] = 8;
-		valueArray[7] = 0;
-		valueArray[8] = 0;
-		valueArray[9] = 1;
-		valueArray[10] = 0;
-		valueArray[11] = 200;
-		valueArray[12] = 1;
-		valueArray[13] = 2;
-		valueArray[14] = 384;
-		valueArray[15] = 96;
-		valueArray[16] = 16;
-		valueArray[17] = 16;
-		valueArray[18] = 1;
-		valueArray[19] = 0;
-		valueArray[20] = 3;
-		valueArray[21] = 144;
-		valueArray[22] = 216;
-		valueArray[23] = 51;
-		valueArray[24] = 4;
-		valueArray[25] = 40;
-		valueArray[26] = 48;
-		valueArray[27] = 384;
-		valueArray[28] = 96;
-		valueArray[29] = 153;
-		valueArray[30] = 24;
-		valueArray[31] = 1;
-		valueArray[32] = 1;
-		valueArray[33] = 132;
-		valueArray[34] = 0;
-		valueArray[35] = 12;
-		valueArray[36] = 0;
-		valueArray[37] = 48;
-		valueArray[38] = 48;
-		valueArray[39] = 32;
-		valueArray[40] = 32;
-		valueArray[41] = 3456;
-		valueArray[42] = 864;
-		valueArray[43] = 8;
-		valueArray[44] = 4;
-		valueArray[45] = 24;
-		valueArray[46] = 484;
-		valueArray[47] = 96;
-		valueArray[48] = 4;
-		valueArray[49] = 192;
-		valueArray[50] = 4;
-		valueArray[51] = 1;
-		valueArray[52] = 0;
-		valueArray[53] = 6;
-		valueArray[54] = 32;
-		valueArray[55] = 8;
-		valueArray[56] = 1536;
-		valueArray[57] = 13824;
-		valueArray[58] = 16;
-		valueArray[59] = 4;
-		valueArray[60] = 1;
-		valueArray[61] = 32;
-		valueArray[62] = 32;
-		valueArray[63] = 0;
-		valueArray[64] = 24;
-		valueArray[65] = 7;
-		valueArray[66] = 36;
-		valueArray[67] = 6;
-		valueArray[68] = 0;
-		valueArray[69] = 6;
-		valueArray[70] = 12;
-		valueArray[71] = 576;
-		valueArray[72] = 8;
-		valueArray[73] = 32;
-		valueArray[74] = 32;
-		valueArray[75] = 10;
-		valueArray[76] = 10;
-		valueArray[77] = 12;
-		valueArray[78] = 1;
-		valueArray[79] = 4;
-		valueArray[80] = 4;
-		valueArray[81] = 8;
-		valueArray[82] = 16;
-		valueArray[83] = 8;
-		valueArray[84] = 1568;
-		valueArray[85] = 6;
-		valueArray[86] = 64;
-		valueArray[87] = 1;
-		valueArray[88] = 2;
-		valueArray[89] = 128;
-		valueArray[90] = 0;
-		valueArray[91] = 68;
-		valueArray[92] = 163;
-		valueArray[93] = 46;
-		valueArray[94] = 46;
-		valueArray[95] = 0;
-		valueArray[96] = 12;
-		valueArray[97] = 0;
-		valueArray[98] = 6;
-		valueArray[99] = 32;
-		valueArray[100] = 32;
-		valueArray[101] = 36;
-		valueArray[102] = 1;
-		valueArray[103] = 64;
-		valueArray[104] = 16;
-		valueArray[105] = 7;
-		valueArray[106] = 1;
-		valueArray[107] = 16;
-		valueArray[108] = 36;
-		valueArray[109] = 9;
-		valueArray[110] = 1;
-		valueArray[111] = 0;
-		valueArray[112] = 0;
-		valueArray[113] = 0;
-		valueArray[114] = 0;
-		valueArray[115] = 8;
-		valueArray[116] = 0;
-		valueArray[117] = 0;
-		valueArray[118] = 0;
-		valueArray[119] = 0;
-		valueArray[120] = 0;
-		valueArray[121] = 1;
-		valueArray[122] = 0;
-		int valueDifference = valueArray[a.getId()] - valueArray[b.getId()];
+		int valueDifference = getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId());
 		return valueDifference;
 	}
 
@@ -2118,6 +1988,10 @@ public class GeometricMagicPlayerListener implements Listener {
 	
 	public static String getTransmutationCostSystem(GeometricMagic plugin) {
 		return plugin.getConfig().getString("transmutation.cost").toString();
+	}
+	
+	public static Integer getBlockValue(GeometricMagic plugin, int i) {
+		return plugin.getConfig().getInt("values." + i);
 	}
 	
 	// Lyneira's Code Start
