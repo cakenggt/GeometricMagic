@@ -44,6 +44,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.PluginManager;
 
 public class GeometricMagicPlayerListener implements Listener {
 	static GeometricMagic plugin = new GeometricMagic();
@@ -136,7 +137,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& southBlock.getType() == Material.REDSTONE_WIRE
 				&& eastBlock.getType() == Material.REDSTONE_WIRE
 				&& westBlock.getType() == Material.REDSTONE_WIRE) {
-			if (player.hasPermission("circle.teleportation")) {
+			if (player.hasPermission("geometricmagic.teleportation")) {
 				// System.out.println("teleportation");
 				teleportationCircle(player, world, actBlock);
 			} else
@@ -151,7 +152,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(3, 0, 0).getType() != Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, -3).getType() != Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() != Material.REDSTONE_WIRE) {
-			if (player.hasPermission("circle.micro")) {
+			if (player.hasPermission("geometricmagic.micro")) {
 				// System.out.println("micro");
 				microCircle(player, world, actBlock);
 			} else
@@ -171,16 +172,16 @@ public class GeometricMagicPlayerListener implements Listener {
 			// - allows use of all circles smaller than then the max
 			// size permission node they have
 			int circleSize = 1;
-			if (player.hasPermission("circle.transmutation.*")
-					|| player.hasPermission("circle.transmutation.9")) {
+			if (player.hasPermission("geometricmagic.transmutation.*")
+					|| player.hasPermission("geometricmagic.transmutation.9")) {
 				circleSize = 9;
-			} else if (player.hasPermission("circle.transmutation.7")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.7")) {
 				circleSize = 7;
-			} else if (player.hasPermission("circle.transmutation.5")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.5")) {
 				circleSize = 5;
-			} else if (player.hasPermission("circle.transmutation.3")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.3")) {
 				circleSize = 3;
-			} else if (player.hasPermission("circle.transmutation.1")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.1")) {
 				circleSize = 1;
 			} else {
 				circleSize = 0;
@@ -202,7 +203,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(3, 0, 0).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
-			if (player.hasPermission("circle.set")) {
+			if (player.hasPermission("geometricmagic.set")) {
 				setCircleRemote(player, world, actBlock);
 			} else
 				player.sendMessage("You do not have permission to use this circle");
@@ -671,7 +672,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (arrayString.equals("0"))
 			return;
 		if (arrayString.equals("[1, 1, 3, 3]")
-				&& player.hasPermission("circle.set.1133")) {
+				&& player.hasPermission("geometricmagic.set.1133")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -776,7 +777,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		} else if (arrayString.equals("[1, 2, 2, 2]")
-				&& player.hasPermission("circle.set.1222")) {
+				&& player.hasPermission("geometricmagic.set.1222")) {
 			cost = 1;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -827,7 +828,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[1, 2, 3, 3]")
-				&& player.hasPermission("circle.set.1233")) {
+				&& player.hasPermission("geometricmagic.set.1233")) {
 			cost = 20;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -860,7 +861,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			effectBlock.getWorld().dropItem(effectBlock.getLocation(),
 					diamondStack);
 		} else if (arrayString.equals("[1, 2, 3, 4]")
-				&& player.hasPermission("circle.set.1234")) {
+				&& player.hasPermission("geometricmagic.set.1234")) {
 			cost = 1;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -879,7 +880,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[2, 2, 2, 3]")
-				&& player.hasPermission("circle.set.2223")) {
+				&& player.hasPermission("geometricmagic.set.2223")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -942,7 +943,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[2, 2, 2, 4]")
-				&& player.hasPermission("circle.set.2224")) {
+				&& player.hasPermission("geometricmagic.set.2224")) {
 			cost = 10;
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -954,7 +955,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[2, 2, 4, 4]")
-				&& player.hasPermission("circle.set.2244")) {
+				&& player.hasPermission("geometricmagic.set.2244")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1028,7 +1029,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					+ highestBlock);
 			return;
 		} else if (arrayString.equals("[2, 3, 3, 3]")
-				&& player.hasPermission("circle.set.2333")) {
+				&& player.hasPermission("geometricmagic.set.2333")) {
 			cost = 2;
 			int size = setCircleSize(actBlock);
 			cost = 2 + size / 2;
@@ -1051,7 +1052,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[3, 3, 3, 4]")
-				&& player.hasPermission("circle.set.3334")) {
+				&& player.hasPermission("geometricmagic.set.3334")) {
 			cost = 2;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1068,7 +1069,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[3, 3, 4, 4]")
-				&& player.hasPermission("circle.set.3344")) {
+				&& player.hasPermission("geometricmagic.set.3344")) {
 			cost = 4;
 			int size = setCircleSize(actBlock);
 			cost = 4 + size / 2;
@@ -1091,7 +1092,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[3, 4, 4, 4]")
-				&& player.hasPermission("circle.set.3444")) {
+				&& player.hasPermission("geometricmagic.set.3444")) {
 			cost = 20;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1110,7 +1111,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 1, 1, 1]")
-				&& player.hasPermission("circle.set.0111")) {
+				&& player.hasPermission("geometricmagic.set.0111")) {
 			cost = 16;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1161,7 +1162,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 0, 4, 4]")
-				&& player.hasPermission("circle.set.0044")) {
+				&& player.hasPermission("geometricmagic.set.0044")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1177,7 +1178,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 1, 4, 4]")
-				&& player.hasPermission("circle.set.0144")) {
+				&& player.hasPermission("geometricmagic.set.0144")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1193,7 +1194,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 2, 4, 4]")
-				&& player.hasPermission("circle.set.0244")) {
+				&& player.hasPermission("geometricmagic.set.0244")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1209,7 +1210,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 3, 4, 4]")
-				&& player.hasPermission("circle.set.0344")) {
+				&& player.hasPermission("geometricmagic.set.0344")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -2133,16 +2134,18 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 	
 	// Lyneira's Code Start
-	public static boolean checkBlockPlaceSimulation(BlockLocation target, int typeId, byte data, BlockLocation 				placedAgainst, Player player) {
+	public static boolean checkBlockPlaceSimulation(Location target, int typeId, byte data,
+			Location placedAgainst, Player player) {
 		Block placedBlock = target.getBlock();
-		Block replacedBlock = placedBlock.getState();
-                  int oldType = replacedBlockState.getTypeId();
+		BlockState replacedBlockState = placedBlock.getState();
+        int oldType = replacedBlockState.getTypeId();
 		byte oldData = replacedBlockState.getRawData();
 		
 		// Set the new state without physics.
 		placedBlock.setTypeIdAndData(typeId, data, false);
-		BlockPlaceEvent placeEvent = new ArtificialBlockPlaceEvent(placedBlock, replacedBlockState, 					placedAgainst.getBlock(), null, player, true);
-		getPluginManager(GeometricMagic).callEvent(placeEvent);
+		BlockPlaceEvent placeEvent = new BlockPlaceEvent(placedBlock, replacedBlockState,
+				placedAgainst.getBlock(), null, player, true);
+		((PluginManager) getPluginManager(plugin)).callEvent(placeEvent);
 		
 		// Revert to the old state without physics.
 		placedBlock.setTypeIdAndData(oldType, oldData, false);
@@ -2151,17 +2154,17 @@ public class GeometricMagicPlayerListener implements Listener {
 		return true;
 	}
 	
-	public static boolean checkBlockBreakSimulation(BlockLocation target, Player player) {
+	public static boolean checkBlockBreakSimulation(Location target, Player player) {
 		Block block = target.getBlock();
-		BlockBreakEvent breakEvent = new ArtificialBlockBreakEvent(block, player);
-		getPluginManager(GeometricMagic).callEvent(breakEvent);
+		BlockBreakEvent breakEvent = new BlockBreakEvent(block, player);
+		((PluginManager) getPluginManager(plugin)).callEvent(breakEvent);
 		if (breakEvent.isCancelled())
 			return false;
 		return true;
 	}
 	// Lyneira's Code End
 	
-	public static getPluginManager(GeometricMagic plugin) {
-		return plugin.getServer().getPluginManger();
+	public static Object getPluginManager(GeometricMagic plugin) {
+		return plugin.getServer().getPluginManager();
 	}
 }

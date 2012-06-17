@@ -48,47 +48,53 @@ public class GeometricMagic extends JavaPlugin {
 
 		// If the player typed /setcircle then do the following...
 		if (cmd.getName().equalsIgnoreCase("setcircle")) {
-			// [1, 1, 3, 3]
 			Player player = null;
+			
 			if (sender instanceof Player) {
 				player = (Player) sender;
+				
+				if (args.length == 0) {
+					ItemStack oneFlint = new ItemStack(318, 1);
+					player.getWorld().dropItem(player.getLocation(), oneFlint);
+					return true;
+				}
+				
+				if (args.length != 1) {
+					sender.sendMessage(cmd.getUsage());
+					return false;
+				}
+				
+				if (args[0].length() != 4 && args[0].length() != 1) {
+					sender.sendMessage(cmd.getUsage());
+					return false;
+				}
+				
+				if (args[0].length() == 1 && args[0].equalsIgnoreCase("0")) {
+					sender.sendMessage("Casting circles on right click now disabled, set right click to a viable circle to enable");
+					String inputString = args[0];
+					try {
+						sacrificeCircle(sender, inputString);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return true;
+					
+				} else {
+					String inputString = "[" + args[0].charAt(0) + ", "
+							+ args[0].charAt(1) + ", " + args[0].charAt(2) + ", "
+							+ args[0].charAt(3) + "]";
+					try {
+						sacrificeCircle(sender, inputString);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return true;
+				}
 			}
+			
 			if (player == null) {
 				sender.sendMessage("This command can only be run by a player");
 				return false;
-			}
-			if (args.length == 0) {
-				ItemStack oneFlint = new ItemStack(318, 1);
-				player.getWorld().dropItem(player.getLocation(), oneFlint);
-				return true;
-			}
-			if (args.length != 1) {
-				sender.sendMessage(cmd.getUsage());
-				return false;
-			}
-			if (args[0].length() != 4 && args[0].length() != 1) {
-				sender.sendMessage(cmd.getUsage());
-				return false;
-			}
-			if (args[0].length() == 1 && args[0].equalsIgnoreCase("0")) {
-				sender.sendMessage("Casting circles on right click now disabled, set right click to a viable circle to enable");
-				String inputString = args[0];
-				try {
-					sacrificeCircle(sender, inputString);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return true;
-			} else {
-				String inputString = "[" + args[0].charAt(0) + ", "
-						+ args[0].charAt(1) + ", " + args[0].charAt(2) + ", "
-						+ args[0].charAt(3) + "]";
-				try {
-					sacrificeCircle(sender, inputString);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return true;
 			}
 		}
 		// If this has happened the function will break and return true. if this
