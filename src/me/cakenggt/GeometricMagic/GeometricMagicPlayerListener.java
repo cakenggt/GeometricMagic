@@ -26,7 +26,6 @@ import java.util.Scanner;
 
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -1588,13 +1587,11 @@ public class GeometricMagicPlayerListener implements Listener {
 		int pay = calculatePay(a, b);
 		pay = (int) (pay * philosopherStoneModifier(player));
 
-		BlockState startBlockState = startBlock.getState();
 		if (startBlock.getType() == a) {
 
 			if (-1 * getBalance(player) < pay) {
 
-				// disallow transmuting of mob spawners completely
-				// block break
+				// Block break
 				if (a != Material.AIR && b == Material.AIR
 						&& a != Material.CHEST && a != Material.WALL_SIGN
 						&& a != Material.SIGN_POST && a != Material.FURNACE
@@ -1603,69 +1600,66 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& a != Material.WOODEN_DOOR
 						&& a != Material.IRON_DOOR_BLOCK
 						&& a != Material.MOB_SPAWNER) {
+					
+					Location blockLocation = startBlock.getLocation();
+					
+					if (checkBlockBreakSimulation(blockLocation, player)) {
+						// Change block
+						startBlock.setType(b);
+						if (toData != 0)
+							startBlock.setData(toData);
 
-					// block break event
-					BlockBreakEvent break_event = new BlockBreakEvent(
-							startBlock, player);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(break_event);
-
-					// change block
-					startBlock.setType(b);
-					if (toData != 0)
-						startBlock.setData(toData);
-
-					if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-						
-						Economy econ = GeometricMagic.getEconomy();
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							
+							Economy econ = GeometricMagic.getEconomy();
 
 
-						// deposit or withdraw to players Vault account
-						if (pay > 0) {
-							econ.depositPlayer(player.getName(), pay);
-						} else if (pay < 0) {
-							econ.withdrawPlayer(player.getName(), pay * -1);
+							// Deposit or withdraw to players Vault account
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
 						}
-					}
-					else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-						player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+						}
 					}
 				}
 
-				// block place
+				// Block place
 				else if (a == Material.AIR && b != Material.AIR
 						&& b != Material.MOB_SPAWNER) {
+					
+					Location blockLocation = startBlock.getLocation();
+					int blockID = b.getId();
+					byte blockData = 0;
+					
+					if (checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
+						// Change block
+						startBlock.setType(b);
+						if (toData != 0)
+							startBlock.setData(toData);
 
-					// change block
-					startBlock.setType(b);
-					if (toData != 0)
-						startBlock.setData(toData);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							
+							Economy econ = GeometricMagic.getEconomy();
 
-					if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-						
-						Economy econ = GeometricMagic.getEconomy();
-
-						
-						// deposit or withdraw to players Vault account
-						if (pay > 0) {
-							econ.depositPlayer(player.getName(), pay);
-						} else if (pay < 0) {
-							econ.withdrawPlayer(player.getName(), pay * -1);
+							
+							// Deposit or withdraw to players Vault account
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
 						}
 					}
-					else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-						player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
-					}
-					
-					// block place event
-					BlockPlaceEvent place_event = new BlockPlaceEvent(
-							startBlock, startBlockState, startBlock,
-							new ItemStack(b.getId()), player, true);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(place_event);
 				}
 
-				// block break and place
+				// Block break and place
 				else if (a != Material.AIR && b != Material.AIR
 						&& a != Material.CHEST && a != Material.WALL_SIGN
 						&& a != Material.SIGN_POST && a != Material.FURNACE
@@ -1675,40 +1669,33 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& a != Material.MOB_SPAWNER
 						&& b != Material.MOB_SPAWNER
 						&& a != Material.IRON_DOOR_BLOCK) {
+					
+					Location blockLocation = startBlock.getLocation();
+					int blockID = b.getId();
+					byte blockData = 0;
+					
+					if (checkBlockBreakSimulation(blockLocation, player) && checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
+						// Change block
+						startBlock.setType(b);
+						if (toData != 0)
+							startBlock.setData(toData);
 
-					// block break event
-					BlockBreakEvent break_event = new BlockBreakEvent(
-							startBlock, player);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(break_event);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							
+							Economy econ = GeometricMagic.getEconomy();
 
-					// change block
-					startBlock.setType(b);
-					if (toData != 0)
-						startBlock.setData(toData);
-
-					if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-						
-						Economy econ = GeometricMagic.getEconomy();
-
-						
-						// deposit or withdraw to players Vault account
-						if (pay > 0) {
-							econ.depositPlayer(player.getName(), pay);
-						} else if (pay < 0) {
-							econ.withdrawPlayer(player.getName(), pay * -1);
+							
+							// Deposit or withdraw to players Vault account
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
 						}
 					}
-					else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-						player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
-					}
-
-					// block place event
-					BlockPlaceEvent place_event = new BlockPlaceEvent(
-							startBlock, startBlockState, startBlock,
-							new ItemStack(b.getId()), player, true);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(place_event);
 				}
 
 				// output to console
