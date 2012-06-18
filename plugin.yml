@@ -18,13 +18,13 @@
 
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.4.2
+version: 2.5.1
 author: cakenggt, Hoot215
 softdepend: [Vault]
 permissions:
     geometricmagic.*:
         description: Gives access to all circles and /setcircle
-        default: false
+        default: op
         children:
             geometricmagic.standard: true
             geometricmagic.transmutation.*: true
@@ -38,13 +38,10 @@ permissions:
             geometricmagic.set: true
     geometricmagic.teleportation:
         description: Allows you to use teleportation circles
-        default: false
     geometricmagic.micro:
         description: Allows you to use micro circles
-        default: false
     geometricmagic.transmutation.*:
         description: Allows you to use all transmutation circles
-        default: false
         children:
             geometricmagic.transmutation.1: true
             geometricmagic.transmutation.3: true
@@ -53,31 +50,23 @@ permissions:
             geometricmagic.transmutation.9: true
     geometricmagic.transmutation.1:
         description: Allows you to use transmutation circles of size 1
-        default: false
     geometricmagic.transmutation.3:
         description: Allows you to use transmutation circles of size 3
-        default: false
     geometricmagic.transmutation.5:
         description: Allows you to use transmutation circles of size 5
-        default: false
     geometricmagic.transmutation.7:
         description: Allows you to use transmutation circles of size 7
-        default: false
     geometricmagic.transmutation.9:
         description: Allows you to use transmutation circles of size 9
-        default: false
     geometricmagic.set:
         description: Allows you to use all set circles and /setcircle
-        default: false
         children:
-            circle.set.*: true
-            circle.setcircle: true
+            geometricmagic.set.*: true
+            geometricmagic.setcircle: true
     geometricmagic.setcircle:
         description: Allows you to use /setcircle
-        default: false
     geometricmagic.set.*:
         description: Allows you to use all set circles
-        default: false
         children:
             geometricmagic.set.1133: true
             geometricmagic.set.1222: true
@@ -97,52 +86,36 @@ permissions:
             geometricmagic.set.0344: true
     geometricmagic.set.1133:
         description: Allows you to use set circle 1133
-        default: false
     geometricmagic.set.1222:
         description: Allows you to use set circle 1222
-        default: false
     geometricmagic.set.1233:
         description: Allows you to use set circle 1233
-        default: false
     geometricmagic.set.1234:
         description: Allows you to use set circle 1234
-        default: false
     geometricmagic.set.2223:
         description: Allows you to use set circle 2223
-        default: false
     geometricmagic.set.2224:
         description: Allows you to use set circle 2224
-        default: false
     geometricmagic.set.2244:
         description: Allows you to use set circle 2244
-        default: false
     geometricmagic.set.2333:
         description: Allows you to use set circle 2333
-        default: false
     geometricmagic.set.3334:
         description: Allows you to use set circle 3334
-        default: false
     geometricmagic.set.3344:
         description: Allows you to use set circle 1133
-        default: false
     geometricmagic.set.3444:
         description: Allows you to use set circle 3444
-        default: false
     geometricmagic.set.0111:
         description: Allows you to use set circle 0111
-        default: false
     geometricmagic.set.0044:
         description: Allows you to use set circle 0044
-        default: false
     geometricmagic.set.0144:
         description: Allows you to use set circle 0144
-        default: false
     geometricmagic.set.0244:
         description: Allows you to use set circle 0244
-        default: false
     geometricmagic.set.0344:
         description: Allows you to use set circle 0344
-        default: false
 commands:
   setcircle:
     description: This command sets a sacrifice's right-click circle.
