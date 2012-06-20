@@ -76,7 +76,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			// System.out.println("right clicked block");
 			if (event.getClickedBlock().getType() == Material.WORKBENCH
-					&& sacrifices)
+					&& sacrifices && checkBlockBreakSimulation(event.getClickedBlock().getLocation(), event.getPlayer()))
 				event.getClickedBlock().setType(Material.AIR);
 			actBlock = event.getClickedBlock();
 		}
