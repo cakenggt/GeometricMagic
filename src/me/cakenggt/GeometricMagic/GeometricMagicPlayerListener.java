@@ -898,6 +898,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
 					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 				}
 				
 				for (int i = 0; i < entityList.size(); i++) {
@@ -946,8 +948,10 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// unexempt player from AntiCheat check
 				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
 				}
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1103,6 +1107,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
 					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 				}
 				
 				effectBlock.getWorld().createExplosion(
@@ -1110,8 +1116,10 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// unexempt player from AntiCheat check
 				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
 				}
 				
 			} else {
@@ -1518,6 +1526,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 			AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
 			AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+			AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+			AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 		}
 
 		if (start.getX() < end.getX()) {
@@ -1599,8 +1609,10 @@ public class GeometricMagicPlayerListener implements Listener {
 
 		// unexempt player from AntiCheat check
 		if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-			AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-			AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+			AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+			AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+			AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+			AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
 		}
 
 		return;
