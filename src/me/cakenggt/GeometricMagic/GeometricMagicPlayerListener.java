@@ -1,3 +1,21 @@
+/**
+ * GeometricMagic allows players to draw redstone circles on the ground to do things such as teleport and transmute blocks.
+ * Copyright (C) 2012  Alec Cox (cakenggt), Andrew Stevanus (Hoot215) <hoot893@gmail.com>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.cakenggt.GeometricMagic;
 
 import java.io.*;
@@ -6,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import net.h31ix.anticheat.api.AnticheatAPI;
+import net.h31ix.anticheat.manage.CheckType;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -26,8 +46,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.PluginManager;
 
 public class GeometricMagicPlayerListener implements Listener {
+	static GeometricMagic plugin = new GeometricMagic();
+	public GeometricMagicPlayerListener(GeometricMagic instance) {
+		plugin = instance;
+	}
 	public static Economy economy = null;
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -54,7 +79,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			// System.out.println("right clicked block");
 			if (event.getClickedBlock().getType() == Material.WORKBENCH
-					&& sacrifices)
+					&& sacrifices && (checkBlockBreakSimulation(event.getClickedBlock().getLocation(), event.getPlayer())))
 				event.getClickedBlock().setType(Material.AIR);
 			actBlock = event.getClickedBlock();
 		}
@@ -114,7 +139,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& southBlock.getType() == Material.REDSTONE_WIRE
 				&& eastBlock.getType() == Material.REDSTONE_WIRE
 				&& westBlock.getType() == Material.REDSTONE_WIRE) {
-			if (player.hasPermission("circle.teleportation")) {
+			if (player.hasPermission("geometricmagic.teleportation")) {
 				// System.out.println("teleportation");
 				teleportationCircle(player, world, actBlock);
 			} else
@@ -129,7 +154,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(3, 0, 0).getType() != Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, -3).getType() != Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() != Material.REDSTONE_WIRE) {
-			if (player.hasPermission("circle.micro")) {
+			if (player.hasPermission("geometricmagic.micro")) {
 				// System.out.println("micro");
 				microCircle(player, world, actBlock);
 			} else
@@ -149,16 +174,16 @@ public class GeometricMagicPlayerListener implements Listener {
 			// - allows use of all circles smaller than then the max
 			// size permission node they have
 			int circleSize = 1;
-			if (player.hasPermission("circle.transmutation.*")
-					|| player.hasPermission("circle.transmutation.9")) {
+			if (player.hasPermission("geometricmagic.transmutation.*")
+					|| player.hasPermission("geometricmagic.transmutation.9")) {
 				circleSize = 9;
-			} else if (player.hasPermission("circle.transmutation.7")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.7")) {
 				circleSize = 7;
-			} else if (player.hasPermission("circle.transmutation.5")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.5")) {
 				circleSize = 5;
-			} else if (player.hasPermission("circle.transmutation.3")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.3")) {
 				circleSize = 3;
-			} else if (player.hasPermission("circle.transmutation.1")) {
+			} else if (player.hasPermission("geometricmagic.transmutation.1")) {
 				circleSize = 1;
 			} else {
 				circleSize = 0;
@@ -180,7 +205,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(3, 0, 0).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
-			if (player.hasPermission("circle.set")) {
+			if (player.hasPermission("geometricmagic.set")) {
 				setCircleRemote(player, world, actBlock);
 			} else
 				player.sendMessage("You do not have permission to use this circle");
@@ -392,9 +417,16 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void microCircle(Player player, World world, Block actBlock) {
-		Economy econ = GeometricMagic.getEconomy();
+		if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+			Economy econ = GeometricMagic.getEconomy();
 
-		player.sendMessage("You have " + econ.format(getBalance(player)));
+			// Tell the player how much money they have
+			player.sendMessage("You have " + econ.format(getBalance(player)));
+		}
+		else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+			// Tell the player how many levels they have
+			player.sendMessage("Your experience level is " + player.getLevel());
+		}
 
 		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
 		for (int i = 0; i < entitiesList.size(); i++) {
@@ -642,37 +674,37 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (arrayString.equals("0"))
 			return;
 		if (arrayString.equals("[1, 1, 3, 3]")
-				&& player.hasPermission("circle.set.1133")) {
+				&& player.hasPermission("geometricmagic.set.1133")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
 				return;
 			}
-
+			
 			List<Entity> repairEntities = player.getNearbyEntities(9, 10, 9);
 			for (int i = 0; i < repairEntities.size(); i++) {
 				if (repairEntities.get(i) instanceof Item) {
 					Item droppedItem = (Item) repairEntities.get(i);
-
-					// item data value
+					
+					// Item data value
 					int itemCode = droppedItem.getItemStack().getTypeId();
 
-					// enchants
+					// Enchantments
 					Map<Enchantment, Integer> effects = droppedItem.getItemStack().getEnchantments();
 
-					// get cost
+					// Get cost
 					if ((256 <= itemCode && itemCode <= 258)
-							|| (267 <= itemCode && itemCode <= 279)
-							|| (283 <= itemCode && itemCode <= 286)
-							|| (290 <= itemCode && itemCode <= 294)
-							|| (298 <= itemCode && itemCode <= 317)
-							|| itemCode == 259 || itemCode == 346
-							|| itemCode == 359 || itemCode == 261) {
+								|| (267 <= itemCode && itemCode <= 279)
+								|| (283 <= itemCode && itemCode <= 286)
+								|| (290 <= itemCode && itemCode <= 294)
+								|| (298 <= itemCode && itemCode <= 317)
+								|| itemCode == 259 || itemCode == 346
+								|| itemCode == 359 || itemCode == 261) {
 						if ((256 <= itemCode && itemCode <= 258)
-								|| itemCode == 267 || itemCode == 292)
+									|| itemCode == 267 || itemCode == 292)
 							cost = droppedItem.getItemStack().getDurability();
 						if ((268 <= itemCode && itemCode <= 271)
-								|| itemCode == 290)
+									|| itemCode == 290)
 							cost = droppedItem.getItemStack().getDurability();
 						if ((272 <= itemCode && itemCode <= 275)
 								|| itemCode == 291)
@@ -724,13 +756,13 @@ public class GeometricMagicPlayerListener implements Listener {
 						if (itemCode == 261)
 							cost = droppedItem.getItemStack().getDurability();
 						cost = cost / 50;
-
-						// make sure cost is not more than 20
+						
+						// Make sure cost is not more than 20
 						if (cost > 20)
 							cost = 20;
-
+						
 						if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-							player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+								player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 							ItemStack newItem = new ItemStack(itemCode, 1);
 							
 							// enchant the item
@@ -747,7 +779,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		} else if (arrayString.equals("[1, 2, 2, 2]")
-				&& player.hasPermission("circle.set.1222")) {
+				&& player.hasPermission("geometricmagic.set.1222")) {
 			cost = 1;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -763,19 +795,22 @@ public class GeometricMagicPlayerListener implements Listener {
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Item) {
 						Item droppedItem = (Item) entityList.get(i);
-						calculatePay(Material.AIR, Material.AIR);
-						int[] valueArray = new int[2266];
-						getValueArray(valueArray);
+						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId());
 
-						int pay = (valueArray[droppedItem.getItemStack()
-								.getTypeId()] * droppedItem.getItemStack()
+						int pay = (valueArray * droppedItem.getItemStack()
 								.getAmount());
 
-						Economy econ = GeometricMagic.getEconomy();
-						if (pay > 0) {
-							econ.depositPlayer(player.getName(), pay);
-						} else if (pay < 0) {
-							econ.withdrawPlayer(player.getName(), pay * -1);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							Economy econ = GeometricMagic.getEconomy();
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((valueArray * droppedItem.getItemStack().getAmount())
+									+ player.getLevel());
 						}
 						/*
 						 * player.setLevel((valueArray[droppedItem.getItemStack()
@@ -791,7 +826,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[1, 2, 3, 3]")
-				&& player.hasPermission("circle.set.1233")) {
+				&& player.hasPermission("geometricmagic.set.1233")) {
 			cost = 20;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -824,7 +859,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			effectBlock.getWorld().dropItem(effectBlock.getLocation(),
 					diamondStack);
 		} else if (arrayString.equals("[1, 2, 3, 4]")
-				&& player.hasPermission("circle.set.1234")) {
+				&& player.hasPermission("geometricmagic.set.1234")) {
 			cost = 1;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -843,7 +878,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[2, 2, 2, 3]")
-				&& player.hasPermission("circle.set.2223")) {
+				&& player.hasPermission("geometricmagic.set.2223")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -858,6 +893,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				int size = setCircleSize(actBlock);
 				List<Entity> entityList = redStack.getNearbyEntities(size + 5,
 						128, size + 5);
+
+				// exempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				}
+				
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Player) {
 						HumanEntity victim = (HumanEntity) entityList.get(i);
@@ -901,12 +943,18 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 				redStack.remove();
+
+				// unexempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				}
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
 		} else if (arrayString.equals("[2, 2, 2, 4]")
-				&& player.hasPermission("circle.set.2224")) {
+				&& player.hasPermission("geometricmagic.set.2224")) {
 			cost = 10;
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -918,7 +966,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[2, 2, 4, 4]")
-				&& player.hasPermission("circle.set.2244")) {
+				&& player.hasPermission("geometricmagic.set.2244")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -992,15 +1040,15 @@ public class GeometricMagicPlayerListener implements Listener {
 					+ highestBlock);
 			return;
 		} else if (arrayString.equals("[2, 3, 3, 3]")
-				&& player.hasPermission("circle.set.2333")) {
+				&& player.hasPermission("geometricmagic.set.2333")) {
 			cost = 2;
 			int size = setCircleSize(actBlock);
 			cost = 2 + size / 2;
-
-			// make sure cost is not more than 20
+			
+			// Make sure cost is not more than 20
 			if (cost > 20)
 				cost = 20;
-
+			
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1015,7 +1063,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[3, 3, 3, 4]")
-				&& player.hasPermission("circle.set.3334")) {
+				&& player.hasPermission("geometricmagic.set.3334")) {
 			cost = 2;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1023,24 +1071,38 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+
+				// exempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				}
+
 				alchemyFiller(Material.AIR, Material.FIRE, (byte) 0,
 						effectBlock.getRelative(-10, 0, -10).getLocation(),
 						effectBlock.getRelative(10, 20, 10).getLocation(),
 						player);
+
+				// unexempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				}
+
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
 		} else if (arrayString.equals("[3, 3, 4, 4]")
-				&& player.hasPermission("circle.set.3344")) {
+				&& player.hasPermission("geometricmagic.set.3344")) {
 			cost = 4;
 			int size = setCircleSize(actBlock);
 			cost = 4 + size / 2;
-
-			// make sure cost is not more than 20
+			
+			// Make sure cost is not more than 20
 			if (cost > 20)
 				cost = 20;
-
+			
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1055,7 +1117,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[3, 4, 4, 4]")
-				&& player.hasPermission("circle.set.3444")) {
+				&& player.hasPermission("geometricmagic.set.3444")) {
 			cost = 20;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1074,7 +1136,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 1, 1, 1]")
-				&& player.hasPermission("circle.set.0111")) {
+				&& player.hasPermission("geometricmagic.set.0111")) {
 			cost = 16;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1125,7 +1187,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 0, 4, 4]")
-				&& player.hasPermission("circle.set.0044")) {
+				&& player.hasPermission("geometricmagic.set.0044")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1141,7 +1203,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 1, 4, 4]")
-				&& player.hasPermission("circle.set.0144")) {
+				&& player.hasPermission("geometricmagic.set.0144")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1157,7 +1219,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 2, 4, 4]")
-				&& player.hasPermission("circle.set.0244")) {
+				&& player.hasPermission("geometricmagic.set.0244")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1173,7 +1235,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 		} else if (arrayString.equals("[0, 3, 4, 4]")
-				&& player.hasPermission("circle.set.0344")) {
+				&& player.hasPermission("geometricmagic.set.0344")) {
 			cost = 10;
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
@@ -1449,6 +1511,13 @@ public class GeometricMagicPlayerListener implements Listener {
 		int xIteration = 0;
 		int yIteration = 0;
 		int zIteration = 0;
+
+		// exempt player from AntiCheat check
+		if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+			AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+			AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+		}
+
 		if (start.getX() < end.getX()) {
 			if (start.getZ() < end.getZ()) {
 				// east
@@ -1525,35 +1594,44 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		}
+
+		// unexempt player from AntiCheat check
+		if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+			AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+			AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+		}
+
 		return;
 	}
 
 	public static double getBalance(Player player) {
 
-		Economy econ = GeometricMagic.getEconomy();
+		if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+			Economy econ = GeometricMagic.getEconomy();
 
-		double balance = econ.getBalance(player.getName());
+			double balance = econ.getBalance(player.getName());
 
-		return balance;
+			return balance;
+		}
+		else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+			double balance = player.getLevel();
+			
+			return balance;
+		}
+		return 0;
 	}
 
 	public static void transmuteBlock(Material a, Material b, byte toData,
 			Block startBlock, Player player) {
-
-		Economy econ = GeometricMagic.getEconomy();
-
-		double balance = getBalance(player);
-
+		
 		int pay = calculatePay(a, b);
 		pay = (int) (pay * philosopherStoneModifier(player));
 
-		BlockState startBlockState = startBlock.getState();
 		if (startBlock.getType() == a) {
 
-			if (-1 * balance < pay) {
+			if (-1 * getBalance(player) < pay) {
 
-				// disallow transmuting of mob spawners completely
-				// block break
+				// Block break
 				if (a != Material.AIR && b == Material.AIR
 						&& a != Material.CHEST && a != Material.WALL_SIGN
 						&& a != Material.SIGN_POST && a != Material.FURNACE
@@ -1561,54 +1639,67 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& a != Material.BREWING_STAND
 						&& a != Material.WOODEN_DOOR
 						&& a != Material.IRON_DOOR_BLOCK
-						&& a != Material.MOB_SPAWNER
-						&& b != Material.MOB_SPAWNER) {
+						&& a != Material.MOB_SPAWNER) {
 
-					// block break event
-					BlockBreakEvent break_event = new BlockBreakEvent(
-							startBlock, player);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(break_event);
+					Location blockLocation = startBlock.getLocation();
+					
+					if (checkBlockBreakSimulation(blockLocation, player)) {
+						// Change block
+						startBlock.setType(b);
+						if (toData != 0)
+							startBlock.setData(toData);
 
-					// change block
-					startBlock.setType(b);
-					if (toData != 0)
-						startBlock.setData(toData);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							
+							Economy econ = GeometricMagic.getEconomy();
 
-					// deposit or withdraw to players Vault account
-					if (pay > 0) {
-						econ.depositPlayer(player.getName(), pay);
-					} else if (pay < 0) {
-						econ.withdrawPlayer(player.getName(), pay * -1);
+
+							// Deposit or withdraw to players Vault account
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+						}
 					}
 				}
 
-				// block place
+				// Block place
 				else if (a == Material.AIR && b != Material.AIR
-						&& a != Material.MOB_SPAWNER
 						&& b != Material.MOB_SPAWNER) {
+					
+					Location blockLocation = startBlock.getLocation();
+					int blockID = b.getId();
+					byte blockData = 0;
+					
+					if (checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
+						// Change block
+						startBlock.setType(b);
+						if (toData != 0)
+							startBlock.setData(toData);
 
-					// change block
-					startBlock.setType(b);
-					if (toData != 0)
-						startBlock.setData(toData);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							
+							Economy econ = GeometricMagic.getEconomy();
 
-					// deposit or withdraw to players Vault account
-					if (pay > 0) {
-						econ.depositPlayer(player.getName(), pay);
-					} else if (pay < 0) {
-						econ.withdrawPlayer(player.getName(), pay * -1);
+							
+							// Deposit or withdraw to players Vault account
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+						}
 					}
-
-					// block place event
-					BlockPlaceEvent place_event = new BlockPlaceEvent(
-							startBlock, startBlockState, startBlock,
-							new ItemStack(b.getId()), player, true);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(place_event);
 				}
 
-				// block break and place
+				// Block break and place
 				else if (a != Material.AIR && b != Material.AIR
 						&& a != Material.CHEST && a != Material.WALL_SIGN
 						&& a != Material.SIGN_POST && a != Material.FURNACE
@@ -1618,31 +1709,33 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& a != Material.MOB_SPAWNER
 						&& b != Material.MOB_SPAWNER
 						&& a != Material.IRON_DOOR_BLOCK) {
+					
+					Location blockLocation = startBlock.getLocation();
+					int blockID = b.getId();
+					byte blockData = 0;
+					
+					if (checkBlockBreakSimulation(blockLocation, player) && checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
+						// Change block
+						startBlock.setType(b);
+						if (toData != 0)
+							startBlock.setData(toData);
 
-					// block break event
-					BlockBreakEvent break_event = new BlockBreakEvent(
-							startBlock, player);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(break_event);
+						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							
+							Economy econ = GeometricMagic.getEconomy();
 
-					// change block
-					startBlock.setType(b);
-					if (toData != 0)
-						startBlock.setData(toData);
-
-					// deposit or withdraw to players Vault account
-					if (pay > 0) {
-						econ.depositPlayer(player.getName(), pay);
-					} else if (pay < 0) {
-						econ.withdrawPlayer(player.getName(), pay * -1);
+							
+							// Deposit or withdraw to players Vault account
+							if (pay > 0) {
+								econ.depositPlayer(player.getName(), pay);
+							} else if (pay < 0) {
+								econ.withdrawPlayer(player.getName(), pay * -1);
+							}
+						}
+						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+						}
 					}
-
-					// block place event
-					BlockPlaceEvent place_event = new BlockPlaceEvent(
-							startBlock, startBlockState, startBlock,
-							new ItemStack(b.getId()), player, true);
-					Bukkit.getServer().getPluginManager()
-							.callEvent(place_event);
 				}
 
 				// output to console
@@ -1662,264 +1755,8 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static int calculatePay(Material a, Material b) {
-		int[] valueArray = new int[2266];
-		// array index is block id, value in array is xp
-		Arrays.fill(valueArray, 0);
-		valueArray[0] = 0;
-		valueArray[1] = 6;
-		valueArray[2] = 1;
-		valueArray[3] = 1;
-		valueArray[4] = 4;
-		valueArray[5] = 4;
-		valueArray[6] = 8;
-		valueArray[7] = 0;
-		valueArray[8] = 0;
-		valueArray[9] = 1;
-		valueArray[10] = 0;
-		valueArray[11] = 200;
-		valueArray[12] = 1;
-		valueArray[13] = 2;
-		valueArray[14] = 384;
-		valueArray[15] = 96;
-		valueArray[16] = 16;
-		valueArray[17] = 16;
-		valueArray[18] = 1;
-		valueArray[19] = 0;
-		valueArray[20] = 3;
-		valueArray[21] = 144;
-		valueArray[22] = 216;
-		valueArray[23] = 51;
-		valueArray[24] = 4;
-		valueArray[25] = 40;
-		valueArray[26] = 48;
-		valueArray[27] = 384;
-		valueArray[28] = 96;
-		valueArray[29] = 153;
-		valueArray[30] = 24;
-		valueArray[31] = 1;
-		valueArray[32] = 1;
-		valueArray[33] = 132;
-		valueArray[34] = 0;
-		valueArray[35] = 12;
-		valueArray[36] = 0;
-		valueArray[37] = 48;
-		valueArray[38] = 48;
-		valueArray[39] = 32;
-		valueArray[40] = 32;
-		valueArray[41] = 3456;
-		valueArray[42] = 864;
-		valueArray[43] = 8;
-		valueArray[44] = 4;
-		valueArray[45] = 24;
-		valueArray[46] = 484;
-		valueArray[47] = 96;
-		valueArray[48] = 4;
-		valueArray[49] = 192;
-		valueArray[50] = 4;
-		valueArray[51] = 1;
-		valueArray[52] = 0;
-		valueArray[53] = 6;
-		valueArray[54] = 32;
-		valueArray[55] = 8;
-		valueArray[56] = 1536;
-		valueArray[57] = 13824;
-		valueArray[58] = 16;
-		valueArray[59] = 4;
-		valueArray[60] = 1;
-		valueArray[61] = 32;
-		valueArray[62] = 32;
-		valueArray[63] = 0;
-		valueArray[64] = 24;
-		valueArray[65] = 7;
-		valueArray[66] = 36;
-		valueArray[67] = 6;
-		valueArray[68] = 0;
-		valueArray[69] = 6;
-		valueArray[70] = 12;
-		valueArray[71] = 576;
-		valueArray[72] = 8;
-		valueArray[73] = 32;
-		valueArray[74] = 32;
-		valueArray[75] = 10;
-		valueArray[76] = 10;
-		valueArray[77] = 12;
-		valueArray[78] = 1;
-		valueArray[79] = 4;
-		valueArray[80] = 4;
-		valueArray[81] = 8;
-		valueArray[82] = 16;
-		valueArray[83] = 8;
-		valueArray[84] = 1568;
-		valueArray[85] = 6;
-		valueArray[86] = 64;
-		valueArray[87] = 1;
-		valueArray[88] = 2;
-		valueArray[89] = 128;
-		valueArray[90] = 0;
-		valueArray[91] = 68;
-		valueArray[92] = 163;
-		valueArray[93] = 46;
-		valueArray[94] = 46;
-		valueArray[95] = 0;
-		valueArray[96] = 12;
-		valueArray[97] = 0;
-		valueArray[98] = 6;
-		valueArray[99] = 32;
-		valueArray[100] = 32;
-		valueArray[101] = 36;
-		valueArray[102] = 1;
-		valueArray[103] = 64;
-		valueArray[104] = 16;
-		valueArray[105] = 7;
-		valueArray[106] = 1;
-		valueArray[107] = 16;
-		valueArray[108] = 36;
-		valueArray[109] = 9;
-		valueArray[110] = 1;
-		valueArray[111] = 0;
-		valueArray[112] = 0;
-		valueArray[113] = 0;
-		valueArray[114] = 0;
-		valueArray[115] = 8;
-		valueArray[116] = 0;
-		valueArray[117] = 0;
-		valueArray[118] = 0;
-		valueArray[119] = 0;
-		valueArray[120] = 0;
-		valueArray[121] = 1;
-		valueArray[122] = 0;
-		int valueDifference = valueArray[a.getId()] - valueArray[b.getId()];
+		int valueDifference = getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId());
 		return valueDifference;
-	}
-
-	public static int[] getValueArray(int[] valueArray) {
-		// int[] valueArray = new int[2266];
-		// array index is block id, value in array is xp
-		Arrays.fill(valueArray, 0);
-		valueArray[0] = 0;
-		valueArray[1] = 6;
-		valueArray[2] = 1;
-		valueArray[3] = 1;
-		valueArray[4] = 4;
-		valueArray[5] = 4;
-		valueArray[6] = 8;
-		valueArray[7] = 0;
-		valueArray[8] = 0;
-		valueArray[9] = 1;
-		valueArray[10] = 0;
-		valueArray[11] = 200;
-		valueArray[12] = 1;
-		valueArray[13] = 2;
-		valueArray[14] = 384;
-		valueArray[15] = 96;
-		valueArray[16] = 16;
-		valueArray[17] = 16;
-		valueArray[18] = 1;
-		valueArray[19] = 0;
-		valueArray[20] = 3;
-		valueArray[21] = 144;
-		valueArray[22] = 216;
-		valueArray[23] = 51;
-		valueArray[24] = 4;
-		valueArray[25] = 40;
-		valueArray[26] = 48;
-		valueArray[27] = 384;
-		valueArray[28] = 96;
-		valueArray[29] = 153;
-		valueArray[30] = 24;
-		valueArray[31] = 1;
-		valueArray[32] = 1;
-		valueArray[33] = 132;
-		valueArray[34] = 0;
-		valueArray[35] = 12;
-		valueArray[36] = 0;
-		valueArray[37] = 48;
-		valueArray[38] = 48;
-		valueArray[39] = 32;
-		valueArray[40] = 32;
-		valueArray[41] = 3456;
-		valueArray[42] = 864;
-		valueArray[43] = 8;
-		valueArray[44] = 4;
-		valueArray[45] = 24;
-		valueArray[46] = 484;
-		valueArray[47] = 96;
-		valueArray[48] = 4;
-		valueArray[49] = 192;
-		valueArray[50] = 4;
-		valueArray[51] = 1;
-		valueArray[52] = 0;
-		valueArray[53] = 6;
-		valueArray[54] = 32;
-		valueArray[55] = 8;
-		valueArray[56] = 1536;
-		valueArray[57] = 13824;
-		valueArray[58] = 16;
-		valueArray[59] = 4;
-		valueArray[60] = 1;
-		valueArray[61] = 32;
-		valueArray[62] = 32;
-		valueArray[63] = 0;
-		valueArray[64] = 24;
-		valueArray[65] = 7;
-		valueArray[66] = 36;
-		valueArray[67] = 6;
-		valueArray[68] = 0;
-		valueArray[69] = 6;
-		valueArray[70] = 12;
-		valueArray[71] = 576;
-		valueArray[72] = 8;
-		valueArray[73] = 32;
-		valueArray[74] = 32;
-		valueArray[75] = 10;
-		valueArray[76] = 10;
-		valueArray[77] = 12;
-		valueArray[78] = 1;
-		valueArray[79] = 4;
-		valueArray[80] = 4;
-		valueArray[81] = 8;
-		valueArray[82] = 16;
-		valueArray[83] = 8;
-		valueArray[84] = 1568;
-		valueArray[85] = 6;
-		valueArray[86] = 64;
-		valueArray[87] = 1;
-		valueArray[88] = 2;
-		valueArray[89] = 128;
-		valueArray[90] = 0;
-		valueArray[91] = 68;
-		valueArray[92] = 163;
-		valueArray[93] = 46;
-		valueArray[94] = 46;
-		valueArray[95] = 0;
-		valueArray[96] = 12;
-		valueArray[97] = 0;
-		valueArray[98] = 6;
-		valueArray[99] = 32;
-		valueArray[100] = 32;
-		valueArray[101] = 36;
-		valueArray[102] = 1;
-		valueArray[103] = 64;
-		valueArray[104] = 16;
-		valueArray[105] = 7;
-		valueArray[106] = 1;
-		valueArray[107] = 16;
-		valueArray[108] = 36;
-		valueArray[109] = 9;
-		valueArray[110] = 1;
-		valueArray[111] = 0;
-		valueArray[112] = 0;
-		valueArray[113] = 0;
-		valueArray[114] = 0;
-		valueArray[115] = 8;
-		valueArray[116] = 0;
-		valueArray[117] = 0;
-		valueArray[118] = 0;
-		valueArray[119] = 0;
-		valueArray[120] = 0;
-		valueArray[121] = 1;
-		valueArray[122] = 0;
-		return valueArray;
 	}
 
 	public static double philosopherStoneModifier(Player player) {
@@ -2061,5 +1898,48 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		redStack.remove();
 		return status;
+	}
+	
+	public static String getTransmutationCostSystem(GeometricMagic plugin) {
+		return plugin.getConfig().getString("transmutation.cost").toString();
+	}
+	
+	public static Integer getBlockValue(GeometricMagic plugin, int i) {
+		return plugin.getConfig().getInt("values." + i);
+	}
+	
+	// Lyneira's Code Start
+	public static boolean checkBlockPlaceSimulation(Location target, int typeId, byte data,
+			Location placedAgainst, Player player) {
+		Block placedBlock = target.getBlock();
+		BlockState replacedBlockState = placedBlock.getState();
+        int oldType = replacedBlockState.getTypeId();
+		byte oldData = replacedBlockState.getRawData();
+		
+		// Set the new state without physics.
+		placedBlock.setTypeIdAndData(typeId, data, false);
+		BlockPlaceEvent placeEvent = new BlockPlaceEvent(placedBlock, replacedBlockState,
+				placedAgainst.getBlock(), null, player, true);
+		((PluginManager) getPluginManager(plugin)).callEvent(placeEvent);
+		
+		// Revert to the old state without physics.
+		placedBlock.setTypeIdAndData(oldType, oldData, false);
+		if (placeEvent.isCancelled())
+			return false;
+		return true;
+	}
+	
+	public static boolean checkBlockBreakSimulation(Location target, Player player) {
+		Block block = target.getBlock();
+		BlockBreakEvent breakEvent = new BlockBreakEvent(block, player);
+		((PluginManager) getPluginManager(plugin)).callEvent(breakEvent);
+		if (breakEvent.isCancelled())
+			return false;
+		return true;
+	}
+	// Lyneira's Code End
+	
+	public static Object getPluginManager(GeometricMagic plugin) {
+		return plugin.getServer().getPluginManager();
 	}
 }

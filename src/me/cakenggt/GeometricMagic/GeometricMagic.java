@@ -1,7 +1,28 @@
+/**
+ * GeometricMagic allows players to draw redstone circles on the ground to do things such as teleport and transmute blocks.
+ * Copyright (C) 2012  Alec Cox (cakenggt), Andrew Stevanus (Hoot215) <hoot893@gmail.com>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.cakenggt.GeometricMagic;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -17,57 +38,63 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GeometricMagic extends JavaPlugin {
-	public static GeometricMagic plugin;
 	private Listener playerListener;
 	private Listener entityListener;
 	private static Economy economy;
+	File configFile;
 
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
 
 		// If the player typed /setcircle then do the following...
 		if (cmd.getName().equalsIgnoreCase("setcircle")) {
-			// [1, 1, 3, 3]
 			Player player = null;
+			
 			if (sender instanceof Player) {
 				player = (Player) sender;
+				
+				if (args.length == 0) {
+					ItemStack oneFlint = new ItemStack(318, 1);
+					player.getWorld().dropItem(player.getLocation(), oneFlint);
+					return true;
+				}
+				
+				if (args.length != 1) {
+					sender.sendMessage(cmd.getUsage());
+					return false;
+				}
+				
+				if (args[0].length() != 4 && args[0].length() != 1) {
+					sender.sendMessage(cmd.getUsage());
+					return false;
+				}
+				
+				if (args[0].length() == 1 && args[0].equalsIgnoreCase("0")) {
+					sender.sendMessage("Casting circles on right click now disabled, set right click to a viable circle to enable");
+					String inputString = args[0];
+					try {
+						sacrificeCircle(sender, inputString);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return true;
+					
+				} else {
+					String inputString = "[" + args[0].charAt(0) + ", "
+							+ args[0].charAt(1) + ", " + args[0].charAt(2) + ", "
+							+ args[0].charAt(3) + "]";
+					try {
+						sacrificeCircle(sender, inputString);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return true;
+				}
 			}
+			
 			if (player == null) {
 				sender.sendMessage("This command can only be run by a player");
 				return false;
-			}
-			if (args.length == 0) {
-				ItemStack oneFlint = new ItemStack(318, 1);
-				player.getWorld().dropItem(player.getLocation(), oneFlint);
-				return true;
-			}
-			if (args.length != 1) {
-				sender.sendMessage(cmd.getUsage());
-				return false;
-			}
-			if (args[0].length() != 4 && args[0].length() != 1) {
-				sender.sendMessage(cmd.getUsage());
-				return false;
-			}
-			if (args[0].length() == 1 && args[0].equalsIgnoreCase("0")) {
-				sender.sendMessage("Casting circles on right click now disabled, set right click to a viable circle to enable");
-				String inputString = args[0];
-				try {
-					sacrificeCircle(sender, inputString);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return true;
-			} else {
-				String inputString = "[" + args[0].charAt(0) + ", "
-						+ args[0].charAt(1) + ", " + args[0].charAt(2) + ", "
-						+ args[0].charAt(3) + "]";
-				try {
-					sacrificeCircle(sender, inputString);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return true;
 			}
 		}
 		// If this has happened the function will break and return true. if this
@@ -122,26 +149,72 @@ public class GeometricMagic extends JavaPlugin {
 		}
 	}
 
+	@Override
 	public void onDisable() {
 		System.out.println(this + " is now disabled!");
 	}
 
+	@Override
 	public void onEnable() {
-
-		// Vault Support
-		if (!setupEconomy()) {
-			System.out
-					.println("Economy system not found! GeometricMagic uses Vault to plug into economy systems.");
+		
+		configFile = new File(getDataFolder(), "config.yml");
+		
+		// Copy default config file if it doesn't exist
+		if (!configFile.exists()) {
+			configFile.getParentFile().mkdirs();
+			copy(this.getResource("config.yml"), configFile);
 		}
-
-		playerListener = new GeometricMagicPlayerListener();
-		entityListener = new GeometricMagicDamageListener();
-		getServer().getPluginManager().registerEvents(playerListener, this);
-		getServer().getPluginManager().registerEvents(entityListener, this);
-		ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
-				Material.FIRE, 64)).addIngredient(Material.PORTAL);
-		getServer().addRecipe(portalRecipe);
-		System.out.println(this + " is now enabled!");
+		
+		// Copy config defaults
+		getConfig().options().copyDefaults(true);
+		
+		// Transmutation mode: Vault
+		if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("vault")) {
+			// Vault Support
+			if (!setupEconomy()) {
+				System.out
+						.println("[" + this + "] ERROR: You have your transmutation system set to Vault, and yet you don't have Vault. Disabling plugin!");
+				getServer().getPluginManager().disablePlugin(this);
+			}
+			else {
+				System.out
+						.println("[" + this + "] Transmutation cost system set to Vault");
+				
+				// Register events
+				playerListener = new GeometricMagicPlayerListener(this);
+				entityListener = new GeometricMagicDamageListener();
+				getServer().getPluginManager().registerEvents(playerListener, this);
+				getServer().getPluginManager().registerEvents(entityListener, this);
+				ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
+						Material.FIRE, 64)).addIngredient(Material.PORTAL);
+				getServer().addRecipe(portalRecipe);
+				System.out.println(this + " is now enabled!");
+			}
+		}
+		// Transmutation mode: XP
+		else if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("xp")) {
+			System.out
+					.println("[" + this + "] Transmutation cost system set to XP");
+			
+			// Register events
+			playerListener = new GeometricMagicPlayerListener(this);
+			entityListener = new GeometricMagicDamageListener();
+			getServer().getPluginManager().registerEvents(playerListener, this);
+			getServer().getPluginManager().registerEvents(entityListener, this);
+			ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
+					Material.FIRE, 64)).addIngredient(Material.PORTAL);
+			getServer().addRecipe(portalRecipe);
+			System.out.println(this + " is now enabled!");
+		}
+		// Transmutation mode: Unknown
+		else {
+			System.out
+					.println("[" + this + "] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
+			getServer().getPluginManager().disablePlugin(this);
+		}
+		
+		// Plugin metrics
+		startPluginMetrics();
 	}
 
 	// Vault Support
@@ -160,5 +233,29 @@ public class GeometricMagic extends JavaPlugin {
 	public static Economy getEconomy() {
 		return economy;
 	}
-
+	
+	// Copy method
+	private void copy(InputStream in, File file) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while((len=in.read(buf))>0){
+                out.write(buf,0,len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
+	private void startPluginMetrics() {
+		try {
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
+		}
+	}
 }
