@@ -1075,7 +1075,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				alchemyFiller(Material.AIR, Material.FIRE, (byte) 0,
 						effectBlock.getRelative(-10, 0, -10).getLocation(),
 						effectBlock.getRelative(10, 20, 10).getLocation(),
-						player);
+						player, false);
 
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1361,7 +1361,7 @@ public class GeometricMagicPlayerListener implements Listener {
 														yIteration * width
 																+ width - 1,
 														(zIteration * width + (width - 1)))
-												.getLocation(), player);
+												.getLocation(), player, true);
 							}
 							zIteration++;
 							startBlock = startBlock.getRelative(0, 0, 1);
@@ -1400,7 +1400,7 @@ public class GeometricMagicPlayerListener implements Listener {
 														yIteration * width
 																+ width - 1,
 														(zIteration * width - (width - 1)))
-												.getLocation(), player);
+												.getLocation(), player, true);
 							}
 							xIteration++;
 							// System.out.println("xloop " + xIteration);
@@ -1444,7 +1444,7 @@ public class GeometricMagicPlayerListener implements Listener {
 														yIteration * width
 																+ width - 1,
 														(zIteration * width - (width - 1)))
-												.getLocation(), player);
+												.getLocation(), player, true);
 							}
 							zIteration--;
 							startBlock = startBlock.getRelative(0, 0, -1);
@@ -1483,7 +1483,7 @@ public class GeometricMagicPlayerListener implements Listener {
 														yIteration * width
 																+ width - 1,
 														(zIteration * width + (width - 1)))
-												.getLocation(), player);
+												.getLocation(), player, true);
 							}
 							xIteration--;
 							// System.out.println("xloop");
@@ -1507,7 +1507,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void alchemyFiller(Material a, Material b, byte toData,
-			Location start, Location end, Player player) {
+			Location start, Location end, Player player, boolean charge) {
 		// System.out.println("alchemyFiller");
 		Block startBlock = start.getBlock();
 		int xIteration = 0;
@@ -1527,7 +1527,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getX() <= end.getX()) {
 						while (startBlock.getZ() <= end.getZ()) {
-							transmuteBlock(a, b, toData, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(0, 0, 1);
 						}
 						xIteration++;
@@ -1544,7 +1544,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getZ() >= end.getZ()) {
 						while (startBlock.getX() <= end.getX()) {
-							transmuteBlock(a, b, toData, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(1, 0, 0);
 						}
 						zIteration--;
@@ -1563,7 +1563,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getX() >= end.getX()) {
 						while (startBlock.getZ() >= end.getZ()) {
-							transmuteBlock(a, b, toData, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(0, 0, -1);
 						}
 						xIteration--;
@@ -1580,7 +1580,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getZ() <= end.getZ()) {
 						while (startBlock.getX() >= end.getX()) {
-							transmuteBlock(a, b, toData, startBlock, player);
+							transmuteBlock(a, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(-1, 0, 0);
 							// System.out.println("xloopfiller");
 						}
@@ -1624,14 +1624,14 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void transmuteBlock(Material a, Material b, byte toData,
-			Block startBlock, Player player) {
+			Block startBlock, Player player, boolean charge) {
 		
 		int pay = calculatePay(a, b);
 		pay = (int) (pay * philosopherStoneModifier(player));
 
 		if (startBlock.getType() == a) {
 
-			if (-1 * getBalance(player) < pay) {
+			if (-1 * getBalance(player) < pay || !charge) {
 
 				// Block break
 				if (a != Material.AIR && b == Material.AIR
@@ -1651,20 +1651,21 @@ public class GeometricMagicPlayerListener implements Listener {
 						if (toData != 0)
 							startBlock.setData(toData);
 
-						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-							
-							Economy econ = GeometricMagic.getEconomy();
-
-
-							// Deposit or withdraw to players Vault account
-							if (pay > 0) {
-								econ.depositPlayer(player.getName(), pay);
-							} else if (pay < 0) {
-								econ.withdrawPlayer(player.getName(), pay * -1);
+						if (charge) {
+							if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+								
+								Economy econ = GeometricMagic.getEconomy();
+	
+								// Deposit or withdraw to players Vault account
+								if (pay > 0) {
+									econ.depositPlayer(player.getName(), pay);
+								} else if (pay < 0) {
+									econ.withdrawPlayer(player.getName(), pay * -1);
+								}
 							}
-						}
-						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+							else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+								player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+							}
 						}
 					}
 				}
@@ -1683,20 +1684,21 @@ public class GeometricMagicPlayerListener implements Listener {
 						if (toData != 0)
 							startBlock.setData(toData);
 
-						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-							
-							Economy econ = GeometricMagic.getEconomy();
-
-							
-							// Deposit or withdraw to players Vault account
-							if (pay > 0) {
-								econ.depositPlayer(player.getName(), pay);
-							} else if (pay < 0) {
-								econ.withdrawPlayer(player.getName(), pay * -1);
+						if (charge) {
+							if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+								
+								Economy econ = GeometricMagic.getEconomy();
+								
+								// Deposit or withdraw to players Vault account
+								if (pay > 0) {
+									econ.depositPlayer(player.getName(), pay);
+								} else if (pay < 0) {
+									econ.withdrawPlayer(player.getName(), pay * -1);
+								}
 							}
-						}
-						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+							else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+								player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+							}
 						}
 					}
 				}
@@ -1722,20 +1724,21 @@ public class GeometricMagicPlayerListener implements Listener {
 						if (toData != 0)
 							startBlock.setData(toData);
 
-						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-							
-							Economy econ = GeometricMagic.getEconomy();
-
-							
-							// Deposit or withdraw to players Vault account
-							if (pay > 0) {
-								econ.depositPlayer(player.getName(), pay);
-							} else if (pay < 0) {
-								econ.withdrawPlayer(player.getName(), pay * -1);
+						if (charge) {
+							if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+								
+								Economy econ = GeometricMagic.getEconomy();
+								
+								// Deposit or withdraw to players Vault account
+								if (pay > 0) {
+									econ.depositPlayer(player.getName(), pay);
+								} else if (pay < 0) {
+									econ.withdrawPlayer(player.getName(), pay * -1);
+								}
 							}
-						}
-						else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-							player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+							else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+								player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+							}
 						}
 					}
 				}
