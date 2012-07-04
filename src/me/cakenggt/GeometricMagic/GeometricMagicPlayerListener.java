@@ -1110,8 +1110,22 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+				
+				// exempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				}
+				
 				effectBlock.getWorld().createExplosion(
 						effectBlock.getLocation(), 8 + size, true);
+
+				// unexempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				}
+				
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
