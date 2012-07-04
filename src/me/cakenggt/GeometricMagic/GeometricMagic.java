@@ -182,7 +182,7 @@ public class GeometricMagic extends JavaPlugin {
 				
 				// Register events
 				playerListener = new GeometricMagicPlayerListener(this);
-				entityListener = new GeometricMagicDamageListener();
+				entityListener = new GeometricMagicDamageListener(this);
 				getServer().getPluginManager().registerEvents(playerListener, this);
 				getServer().getPluginManager().registerEvents(entityListener, this);
 				ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
@@ -198,7 +198,7 @@ public class GeometricMagic extends JavaPlugin {
 			
 			// Register events
 			playerListener = new GeometricMagicPlayerListener(this);
-			entityListener = new GeometricMagicDamageListener();
+			entityListener = new GeometricMagicDamageListener(this);
 			getServer().getPluginManager().registerEvents(playerListener, this);
 			getServer().getPluginManager().registerEvents(entityListener, this);
 			ShapelessRecipe portalRecipe = new ShapelessRecipe(new ItemStack(
