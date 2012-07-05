@@ -169,6 +169,9 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& southBlock.getType() != Material.REDSTONE_WIRE
 						&& eastBlock.getType() == Material.REDSTONE_WIRE && westBlock
 						.getType() == Material.REDSTONE_WIRE)) {
+			
+			//TODO: cooldown
+			
 
 			// transmutation circle size permissions
 			// - allows use of all circles smaller than then the max
@@ -1676,7 +1679,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								}
 							}
 							else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-								player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+								player.setLevel((int) (player.getLevel() + pay));
 							}
 						}
 					}
@@ -1709,7 +1712,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								}
 							}
 							else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-								player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+								player.setLevel((int) (player.getLevel() + pay));
 							}
 						}
 					}
@@ -1749,7 +1752,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								}
 							}
 							else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-								player.setLevel((int) (player.getLevel() + (pay * philosopherStoneModifier(player))));
+								player.setLevel((int) (player.getLevel() + pay));
 							}
 						}
 					}
@@ -1785,7 +1788,17 @@ public class GeometricMagicPlayerListener implements Listener {
 					&& inventory.getItem(i).getType() == Material.PORTAL)
 				stackCount += inventory.getItem(i).getAmount();
 		}
-		modifier = 1 / (Math.pow(2, stackCount));
+		String multiplier = plugin.getConfig().getString("philosopherstone.modifier").toString();
+		float multiplierModifier = Float.parseFloat(multiplier);
+		
+		//System.out.println("multiplierModifier" + multiplierModifier);
+
+		modifier = multiplierModifier * stackCount;
+
+		//System.out.println("stackCount" + stackCount);
+
+		//System.out.println("modifier" + modifier);
+
 		return modifier;
 	}
 

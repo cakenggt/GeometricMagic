@@ -30,7 +30,7 @@ permissions:
             geometricmagic.transmutation.*: true
     geometricmagic.standard:
         description: Gives access to standard circles and /setcircle
-        default: true
+        default: false
         children:
             geometricmagic.teleportation: true
             geometricmagic.micro: true

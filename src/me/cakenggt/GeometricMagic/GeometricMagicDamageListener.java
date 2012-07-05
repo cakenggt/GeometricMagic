@@ -25,6 +25,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.PlayerInventory;
 
 public class GeometricMagicDamageListener implements Listener {
 	private GeometricMagic plugin;
@@ -48,19 +49,21 @@ public class GeometricMagicDamageListener implements Listener {
 			Player player = (Player) entity;
 			int health = player.getHealth();
 
-			while (player.getInventory().contains(Material.FIRE)) {
+			PlayerInventory playerInventory = player.getInventory();
+			
+			while (playerInventory.contains(Material.FIRE)) {
 
 				// System.out.println("contains fire");
 				if (health - damage <= 0) {
 					boolean removedFire = false;
 
-					for (int i = 0; i < player.getInventory().getSize() && !removedFire; i++) {
-						if (player.getInventory().getItem(i).getType() == Material.FIRE) {
+					for (int i = 0; i < playerInventory.getSize() && !removedFire; i++) {
+						if (playerInventory.getItem(i).getType() == Material.FIRE) {
 							// System.out.println("removed a fire");
-							int amount = player.getInventory().getItem(i).getAmount();
-							player.getInventory().getItem(i).setAmount(amount - 1);
+							int amount = playerInventory.getItem(i).getAmount();
+							playerInventory.getItem(i).setAmount(amount - 1);
 							if (amount - 1 <= 0) {
-								player.getInventory().clear(i);
+								playerInventory.clear(i);
 							}
 							damage = damage - health;
 							health = 20;

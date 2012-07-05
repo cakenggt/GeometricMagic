@@ -23,6 +23,13 @@ transmutation:
     # Possible values: xp, vault (requires Vault)
     cost: xp
 
+# PHILOSOPHER STONE SECTION
+philosopherstone:
+
+    # The multiplier modifier of the philosopher stone
+    # Possible values: any integer will be multiplied by number of portals in inv
+    modifier: 0.01 
+
 # VALUES SECTION (Values of blocks for transmutation)
 values:
     0: 0
