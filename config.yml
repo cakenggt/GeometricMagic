@@ -27,8 +27,9 @@ transmutation:
 philosopherstone:
 
     # The multiplier modifier of the philosopher stone
-    # Possible values: any integer will be multiplied by number of portals in inv
-    modifier: 0.01 
+    # Possible values: any integer
+    # Formula: 1 / (2 to the power of (number of portals philosopher stones in inventory) * modifier)
+    modifier: 1
 
 # VALUES SECTION (Values of blocks for transmutation)
 values:
