@@ -125,9 +125,30 @@ public class GeometricMagicPlayerListener implements Listener {
 					inputFile.nextLine();
 			}
 			inputFile.close();
-			// System.out.println("isCircle not clicked redstone");
-			setCircleEffects(player, player.getWorld(), player.getLocation()
-					.getBlock(), actBlock, circle);
+
+			try {
+				// exempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+				}
+				
+				setCircleEffects(player, player.getWorld(), player.getLocation()
+						.getBlock(), actBlock, circle);
+
+				// unexempt player from AntiCheat check
+				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
 		} else
 			return;
 	}
@@ -662,7 +683,23 @@ public class GeometricMagicPlayerListener implements Listener {
 		Arrays.sort(intArray);
 		String arrayString = Arrays.toString(intArray);
 		try {
+			// exempt player from AntiCheat check
+			if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+				AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+				AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+				AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+				AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+			}
+			
 			setCircleEffects(player, world, actBlock, effectBlock, arrayString);
+
+			// unexempt player from AntiCheat check
+			if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+				AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+				AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+				AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+				AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -803,6 +840,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Item) {
 						Item droppedItem = (Item) entityList.get(i);
+
+						// check if player has permission to break blocks here first
+						if(!checkBlockBreakSimulation(droppedItem.getLocation(), player)) {
+							player.sendMessage("You don't have permission to do that there.");
+							return;
+						}
+
 						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId());
 
 						int pay = (valueArray * droppedItem.getItemStack()
@@ -847,6 +891,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			for (int i = 0; i < entityList.size(); i++) {
 				if (entityList.get(i) instanceof Item) {
 					Item sacrifice = (Item) entityList.get(i);
+
+					// check if player has permission to break blocks here first
+					if(!checkBlockBreakSimulation(sacrifice.getLocation(), player)) {
+						player.sendMessage("You don't have permission to do that there.");
+						return;
+					}
+
 					if (sacrifice.getItemStack().getType() == Material.FIRE) {
 						fires += sacrifice.getItemStack().getAmount();
 						sacrifice.remove();
@@ -879,8 +930,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage(ChatColor.GREEN
 						+ "The four elements, like man alone, are weak. But together they form the strong fifth element: boron -Brother Silence");
 				ItemStack oneRedstone = new ItemStack(331, 10);
+				
 				effectBlock.getWorld().dropItem(effectBlock.getLocation(),
 						oneRedstone);
+
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
@@ -901,18 +954,17 @@ public class GeometricMagicPlayerListener implements Listener {
 				int size = setCircleSize(actBlock);
 				List<Entity> entityList = redStack.getNearbyEntities(size + 5,
 						128, size + 5);
-
-				// exempt player from AntiCheat check
-				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
-					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
-					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
-				}
 				
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Player) {
 						HumanEntity victim = (HumanEntity) entityList.get(i);
+
+						// check if player has permission to break blocks here first
+						if(!checkBlockBreakSimulation(victim.getLocation(), player)) {
+							player.sendMessage("You don't have permission to do that there.");
+							return;
+						}
+						
 						if (!victim.equals(player)) {
 							victim.getWorld().strikeLightningEffect(
 									victim.getLocation());
@@ -953,14 +1005,6 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 				redStack.remove();
-
-				// unexempt player from AntiCheat check
-				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
-					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
-					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
-				}
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
@@ -1068,6 +1112,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+
+				// check if player has permission to break blocks here first
+				if(!checkBlockBreakSimulation(effectBlock.getLocation(), player)) {
+					player.sendMessage("You don't have permission to do that there.");
+					return;
+				}
+				
 				effectBlock.getWorld().createExplosion(
 						effectBlock.getLocation(), (4 + size));
 			} else {
@@ -1110,25 +1161,15 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
-				
-				// exempt player from AntiCheat check
-				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
-					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
-					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+
+				// check if player has permission to break blocks here first
+				if(!checkBlockBreakSimulation(effectBlock.getLocation(), player)) {
+					player.sendMessage("You don't have permission to do that there.");
+					return;
 				}
 				
 				effectBlock.getWorld().createExplosion(
 						effectBlock.getLocation(), 8 + size, true);
-
-				// unexempt player from AntiCheat check
-				if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
-					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
-					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
-				}
 				
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1214,6 +1255,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				Location spawnLoc = effectBlock.getLocation();
+
+				// check if player has permission to break blocks here first
+				if(!checkBlockBreakSimulation(spawnLoc, player)) {
+					player.sendMessage("You don't have permission to do that there.");
+					return;
+				}
+				
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Pig.class);
 			} else {
@@ -1230,6 +1278,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				Location spawnLoc = effectBlock.getLocation();
+
+				// check if player has permission to break blocks here first
+				if(!checkBlockBreakSimulation(spawnLoc, player)) {
+					player.sendMessage("You don't have permission to do that there.");
+					return;
+				}
+				
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Sheep.class);
 			} else {
@@ -1246,6 +1301,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				Location spawnLoc = effectBlock.getLocation();
+
+				// check if player has permission to break blocks here first
+				if(!checkBlockBreakSimulation(spawnLoc, player)) {
+					player.sendMessage("You don't have permission to do that there.");
+					return;
+				}
+				
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Cow.class);
 			} else {
@@ -1262,6 +1324,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				Location spawnLoc = effectBlock.getLocation();
+
+				// check if player has permission to break blocks here first
+				if(!checkBlockBreakSimulation(spawnLoc, player)) {
+					player.sendMessage("You don't have permission to do that there.");
+					return;
+				}
+				
 				spawnLoc.add(0.5, 0, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Chicken.class);
 			} else {
@@ -1530,14 +1599,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		int yIteration = 0;
 		int zIteration = 0;
 
-		// exempt player from AntiCheat check
-		if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-			AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-			AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
-			AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
-			AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
-		}
-
 		if (start.getX() < end.getX()) {
 			if (start.getZ() < end.getZ()) {
 				// east
@@ -1613,14 +1674,6 @@ public class GeometricMagicPlayerListener implements Listener {
 					startBlock = start.getBlock().getRelative(0, yIteration, 0);
 				}
 			}
-		}
-
-		// unexempt player from AntiCheat check
-		if(Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-			AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
-			AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
-			AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
-			AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
 		}
 
 		return;
