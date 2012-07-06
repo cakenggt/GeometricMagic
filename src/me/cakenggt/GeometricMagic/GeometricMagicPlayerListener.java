@@ -57,12 +57,14 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
+
 		// System.out.println("is playerinteractevent");
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK
 				&& event.getAction() != Action.RIGHT_CLICK_AIR) {
 			// System.out.println("doesn't equal click block or click air");
 			return;
 		}
+
 		boolean sacrifices = false;
 		boolean sacrificed = false;
 		try {
@@ -71,23 +73,26 @@ public class GeometricMagicPlayerListener implements Listener {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
 		if (sacrificed) {
-			// System.out.println("is sacrificed");
 			return;
 		}
+
 		Block actBlock = event.getPlayer().getLocation().getBlock();
+
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			// System.out.println("right clicked block");
-			if (event.getClickedBlock().getType() == Material.WORKBENCH
-					&& sacrifices && (checkBlockBreakSimulation(event.getClickedBlock().getLocation(), event.getPlayer())))
-				event.getClickedBlock().setType(Material.AIR);
+
+			if (event.getClickedBlock().getType() == Material.WORKBENCH && sacrifices) {
+				// cancel event instead of turning block into air
+				event.setCancelled(true);
+			}
 			actBlock = event.getClickedBlock();
 		}
-		if (event.getAction() == Action.RIGHT_CLICK_AIR
-				&& event.getPlayer().getItemInHand().getType() == Material.FLINT) {
-			// System.out.println("is leftclickair");
+
+		if (event.getAction() == Action.RIGHT_CLICK_AIR && event.getPlayer().getItemInHand().getType() == Material.FLINT) {
 			actBlock = event.getPlayer().getTargetBlock(null, 120);
 		}
+
 		Player player = event.getPlayer();
 		World world = player.getWorld();
 		try {
@@ -1641,8 +1646,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static void transmuteBlock(Material a, Material b, byte toData,
 			Block startBlock, Player player, boolean charge) {
 		
-		int pay = calculatePay(a, b);
-		pay = (int) (pay * philosopherStoneModifier(player));
+		int pay = calculatePay(a, b, player);
 
 		if (startBlock.getType() == a) {
 
@@ -1774,9 +1778,9 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 	}
 
-	public static int calculatePay(Material a, Material b) {
-		int valueDifference = getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId());
-		return valueDifference;
+	public static int calculatePay(Material a, Material b, Player player) {
+		int pay = (int) (getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId()));
+		return pay;
 	}
 
 	public static double philosopherStoneModifier(Player player) {
@@ -1790,15 +1794,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		String multiplier = plugin.getConfig().getString("philosopherstone.modifier").toString();
 		float multiplierModifier = Float.parseFloat(multiplier);
-		
-		//System.out.println("multiplierModifier" + multiplierModifier);
 
-		modifier = multiplierModifier * stackCount;
-
-		//System.out.println("stackCount" + stackCount);
-
-		//System.out.println("modifier" + modifier);
-
+		modifier = 1 / (Math.pow(2, stackCount) * multiplierModifier);
 		return modifier;
 	}
 
