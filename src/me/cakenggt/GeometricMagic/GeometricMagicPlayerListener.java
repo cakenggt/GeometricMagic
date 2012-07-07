@@ -121,7 +121,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
 				if (diff < coolDown) {
 					// still cooling down
-					player.sendMessage("You have to wait before you can do that again.");
+					player.sendMessage(coolDown - diff + " seconds before you can do that again.");
 					return;
 				}
 			}
@@ -224,7 +224,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
 				if (diff < coolDown) {
 					// still cooling down
-					player.sendMessage("You have to wait before you can do that again.");
+					player.sendMessage(coolDown - diff + " seconds before you can do that again.");
 					return;
 				}
 			}
@@ -248,7 +248,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
 					if (diff < coolDown) {
 						// still cooling down
-						player.sendMessage("You have to wait before you can do that again.");
+						player.sendMessage(coolDown - diff + " seconds before you can do that again.");
 						return;
 					}
 				}
