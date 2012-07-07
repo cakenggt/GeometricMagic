@@ -159,6 +159,14 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
+
+				// unexempt player from AntiCheat check
+				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+				}
 			}
 
 		} else
@@ -231,7 +239,23 @@ public class GeometricMagicPlayerListener implements Listener {
 			mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
 
 			if (circleSize > 0) {
+				// exempt player from AntiCheat check
+				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+				}
+
 				transmutationCircle(player, world, actBlock, circleSize);
+
+				// unexempt player from AntiCheat check
+				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+				}
 			}
 
 			// set circle
@@ -254,7 +278,23 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 				mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
 
+				// exempt player from AntiCheat check
+				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+				}
+
 				setCircleRemote(player, world, actBlock);
+
+				// unexempt player from AntiCheat check
+				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+				}
 			} else
 				player.sendMessage("You do not have permission to use this circle");
 
@@ -470,6 +510,40 @@ public class GeometricMagicPlayerListener implements Listener {
 			player.sendMessage("Your experience level is " + player.getLevel());
 		}
 
+		// Tell player when they can use a set circle
+		String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
+		int coolDown = Integer.parseInt(coolDownConfig);
+		if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
+			long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
+			if (diff < coolDown) {
+				// still cooling down
+				player.sendMessage(coolDown - diff + " seconds before you can use a set circle.");
+			} else {
+				// off cooldown
+				player.sendMessage("Your set circle is ready to use.");
+			}
+		} else {
+			// off cooldown
+			player.sendMessage("Your set circle is ready to use.");
+		}
+
+		// Tell player when they can use a transmute circle
+		coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
+		coolDown = Integer.parseInt(coolDownConfig);
+		if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+			long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+			if (diff < coolDown) {
+				// still cooling down
+				player.sendMessage(coolDown - diff + " seconds before you can use a transmutation circle.");
+			} else {
+				// off cooldown
+				player.sendMessage("Your transmutation circle is ready to use.");
+			}
+		} else {
+			// off cooldown
+			player.sendMessage("Your transmutation circle is ready to use.");
+		}
+
 		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
 		for (int i = 0; i < entitiesList.size(); i++) {
 			if (entitiesList.get(i) instanceof Arrow) {
@@ -590,6 +664,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		}
+
 		if (remote) {
 			for (int i = 0; i < entitiesList.size(); i++) {
 				if (entitiesList.get(i) instanceof Arrow) {
@@ -651,23 +726,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		Arrays.sort(intArray);
 		String arrayString = Arrays.toString(intArray);
 		try {
-			// exempt player from AntiCheat check
-			if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-				AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-				AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
-				AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
-				AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
-			}
-
 			setCircleEffects(player, world, actBlock, effectBlock, arrayString);
-
-			// unexempt player from AntiCheat check
-			if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-				AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
-				AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
-				AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
-				AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
-			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -1590,7 +1649,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static void transmuteBlock(Material a, Material b, byte toData, Block startBlock, Player player, boolean charge) {
 
-		int pay = calculatePay(a, b, player);
+		double pay = calculatePay(a, b, player);
 
 		if (startBlock.getType() == a) {
 
@@ -1701,13 +1760,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 	}
 
-	public static int calculatePay(Material a, Material b, Player player) {
-		int pay = (int) (getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId()));
-		
+	public static double calculatePay(Material a, Material b, Player player) {
+		double pay = (getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId()));
+
 		// Apply Philosopher's Stone to transmutes config variable
 		String stoneConfig = plugin.getConfig().getString("transmutation.stone");
 		if (stoneConfig == "true") {
-			return pay * (int) philosopherStoneModifier(player);
+			return (double) (pay * philosopherStoneModifier(player));
 		} else {
 			return pay;
 		}
