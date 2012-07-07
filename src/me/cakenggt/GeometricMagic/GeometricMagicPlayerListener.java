@@ -20,6 +20,7 @@ package me.cakenggt.GeometricMagic;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -53,6 +54,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		plugin = instance;
 	}
 	public static Economy economy = null;
+	private static HashMap<String, Long> mapCoolDowns = new HashMap<String, Long>();
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -114,6 +116,20 @@ public class GeometricMagicPlayerListener implements Listener {
 		boolean sacrifices = GeometricMagic.checkSacrifices(player);
 		if (player.getItemInHand().getType() == Material.FLINT && sacrifices
 				&& !GeometricMagic.checkSacrificed(player)) {
+			
+			// set circle cool down
+			String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
+			int coolDown = Integer.parseInt(coolDownConfig);
+			if(mapCoolDowns.containsKey(player.getName() + " set circle")) {
+				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle"))/1000;
+				if(diff < coolDown) {
+					// still cooling down
+					player.sendMessage("You have to wait before you can do that again.");
+					return;
+				}
+			}
+			mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
+			
 			File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
 			Scanner inputFile = new Scanner(myFile);
 			String circle = "[0, 0, 0, 0]";
@@ -195,9 +211,6 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& southBlock.getType() != Material.REDSTONE_WIRE
 						&& eastBlock.getType() == Material.REDSTONE_WIRE && westBlock
 						.getType() == Material.REDSTONE_WIRE)) {
-			
-			//TODO: cooldown config option
-			// -store times in files
 
 			// transmutation circle size permissions
 			// - allows use of all circles smaller than then the max
@@ -221,6 +234,19 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			// System.out.println("circleSize:" + circleSize);
 
+			// transmute cool down
+			String coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
+			int coolDown = Integer.parseInt(coolDownConfig);
+			if(mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle"))/1000;
+				if(diff < coolDown) {
+					// still cooling down
+					player.sendMessage("You have to wait before you can do that again.");
+					return;
+				}
+			}
+			mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
+			
 			if (circleSize > 0) {
 				transmutationCircle(player, world, actBlock, circleSize);
 			}
@@ -234,7 +260,21 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(3, 0, 0).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
+
 			if (player.hasPermission("geometricmagic.set")) {
+				// set circle cool down
+				String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
+				int coolDown = Integer.parseInt(coolDownConfig);
+				if(mapCoolDowns.containsKey(player.getName() + " set circle")) {
+					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle"))/1000;
+					if(diff < coolDown) {
+						// still cooling down
+						player.sendMessage("You have to wait before you can do that again.");
+						return;
+					}
+				}
+				mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
+				
 				setCircleRemote(player, world, actBlock);
 			} else
 				player.sendMessage("You do not have permission to use this circle");
@@ -1042,7 +1082,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				Location spawnLoc = effectBlock.getLocation();
-				spawnLoc.add(0.5, 0, 0.5);
+				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Enderman.class);
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1331,7 +1371,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					return;
 				}
 				
-				spawnLoc.add(0.5, 0, 0.5);
+				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Pig.class);
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1360,7 +1400,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					return;
 				}
 				
-				spawnLoc.add(0.5, 0, 0.5);
+				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Sheep.class);
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1389,7 +1429,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					return;
 				}
 				
-				spawnLoc.add(0.5, 0, 0.5);
+				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Cow.class);
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1418,7 +1458,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					return;
 				}
 				
-				spawnLoc.add(0.5, 0, 0.5);
+				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Chicken.class);
 			} else {
 				player.sendMessage("You feel so hungry...");

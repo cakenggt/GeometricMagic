@@ -18,6 +18,8 @@
 
 # TRANSMUTATION SECTION
 transmutation:
+    # Cool down time between transmutations in seconds
+    cooldown: 10
 
     # What system to use for transmutation cost
     # Possible values: xp, vault (requires Vault)
@@ -25,8 +27,12 @@ transmutation:
 
 # SET CIRCLES SECTION
 setcircles:
+    # Cool down time between using set circles in seconds
+    cooldown: 10
+
     # Limit augmentation size for set circles
     limitsize: 5
+
     # Repair Circle
     1133: []
     # Conversion Circle
