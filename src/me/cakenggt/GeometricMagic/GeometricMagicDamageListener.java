@@ -28,8 +28,8 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class GeometricMagicDamageListener implements Listener {
 	private GeometricMagic plugin;
-	 
-	public GeometricMagicDamageListener (GeometricMagic plugin) {
+
+	public GeometricMagicDamageListener(GeometricMagic plugin) {
 		this.plugin = plugin;
 	}
 
@@ -49,7 +49,7 @@ public class GeometricMagicDamageListener implements Listener {
 			int health = player.getHealth();
 
 			PlayerInventory playerInventory = player.getInventory();
-			
+
 			while (playerInventory.contains(Material.FIRE)) {
 
 				// System.out.println("contains fire");
