@@ -28,6 +28,7 @@ import java.util.Scanner;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -52,6 +53,18 @@ public class GeometricMagic extends JavaPlugin {
 			
 			if (sender instanceof Player) {
 				player = (Player) sender;
+				
+				boolean sacrificed = false;
+				try {
+					sacrificed = checkSacrificed(player);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				if (sacrificed) {
+					player.sendMessage("You have sacrificed your alchemy abilities forever.");
+					return true;
+				}
 				
 				if (args.length == 0) {
 					ItemStack oneFlint = new ItemStack(318, 1);
@@ -91,11 +104,33 @@ public class GeometricMagic extends JavaPlugin {
 					return true;
 				}
 			}
-			
+
 			if (player == null) {
 				sender.sendMessage("This command can only be run by a player");
 				return false;
 			}
+		} else if (cmd.getName().equalsIgnoreCase("circles")) {
+			if(sender.hasPermission("geometricmagic.listcircles") || sender.isOp()) {
+				sender.sendMessage(ChatColor.GREEN + "1133" + ChatColor.RESET + " Repair Circle");
+				sender.sendMessage(ChatColor.GREEN + "1222" + ChatColor.RESET + " Conversion Circle");
+				sender.sendMessage(ChatColor.GREEN + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
+				sender.sendMessage(ChatColor.GREEN + "1234" + ChatColor.RESET + " Boron Circle");
+				sender.sendMessage(ChatColor.GREEN + "2223" + ChatColor.RESET + " Soul Circle");
+				sender.sendMessage(ChatColor.GREEN + "2224" + ChatColor.RESET + " Homunculus Circle");
+				sender.sendMessage(ChatColor.GREEN + "2244" + ChatColor.RESET + " Safe Teleportation Circle");
+				sender.sendMessage(ChatColor.GREEN + "2333" + ChatColor.RESET + " Explosion Circle");
+				sender.sendMessage(ChatColor.GREEN + "3334" + ChatColor.RESET + " Fire Circle");
+				sender.sendMessage(ChatColor.GREEN + "3344" + ChatColor.RESET + " Fire Explosion Circle");
+				sender.sendMessage(ChatColor.GREEN + "3444" + ChatColor.RESET + " Human Transmutation Circle");
+				sender.sendMessage(ChatColor.GREEN + "0111" + ChatColor.RESET + " Bed Circle");
+				sender.sendMessage(ChatColor.GREEN + "0044" + ChatColor.RESET + " Pig Circle");
+				sender.sendMessage(ChatColor.GREEN + "0144" + ChatColor.RESET + " Sheep Circle");
+				sender.sendMessage(ChatColor.GREEN + "0244" + ChatColor.RESET + " Cow Circle");
+				sender.sendMessage(ChatColor.GREEN + "0344" + ChatColor.RESET + " Chicken Circle");
+			} else {
+				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+			}
+			return true;
 		}
 		// If this has happened the function will break and return true. if this
 		// hasn't happened the a value of false will be returned.
@@ -147,6 +182,46 @@ public class GeometricMagic extends JavaPlugin {
 		} else {
 			return;
 		}
+	}
+
+	public static boolean checkSacrifices(Player player) throws IOException {
+		File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
+		if (!myFile.exists()) {
+			return false;
+		}
+		Scanner inputFile = new Scanner(myFile);
+		while (inputFile.hasNextLine()) {
+			String name = inputFile.nextLine();
+			if (name.equals(player.getName())) {
+				// close this before we return
+				inputFile.close();
+				return true;
+			}
+			inputFile.nextLine();
+		}
+		inputFile.close();
+		return false;
+		// playername
+		// [1, 1, 1, 2]
+	}
+
+	public static boolean checkSacrificed(Player player) throws IOException {
+		File myFile = new File("plugins/GeometricMagic/sacrificed.txt");
+		if (!myFile.exists()) {
+			return false;
+		}
+		Scanner inputFile = new Scanner(myFile);
+		while (inputFile.hasNextLine()) {
+			String name = inputFile.nextLine();
+			if (name.equals(player.getName())) {
+				// close this before we return
+				inputFile.close();
+				return true;
+			}
+		}
+		inputFile.close();
+		return false;
+		// playername
 	}
 
 	@Override

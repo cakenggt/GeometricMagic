@@ -36,7 +36,6 @@ import org.bukkit.World;
 import org.bukkit.block.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-//import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -68,13 +67,14 @@ public class GeometricMagicPlayerListener implements Listener {
 		boolean sacrifices = false;
 		boolean sacrificed = false;
 		try {
-			sacrifices = checkSacrifices(event.getPlayer());
-			sacrificed = checkSacrificed(event.getPlayer());
+			sacrifices = GeometricMagic.checkSacrifices(event.getPlayer());
+			sacrificed = GeometricMagic.checkSacrificed(event.getPlayer());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
 		if (sacrificed) {
+			event.getPlayer().sendMessage("You have sacrificed your alchemy abilities forever.");
 			return;
 		}
 
@@ -107,13 +107,13 @@ public class GeometricMagicPlayerListener implements Listener {
 		// System.out.println("isCircle?");
 		if (actBlock.getType() == Material.REDSTONE_WIRE
 				&& player.getItemInHand().getAmount() == 0
-				&& !checkSacrificed(player)) {
+				&& !GeometricMagic.checkSacrificed(player)) {
 			// System.out.println("isCircle");
 			circleChooser(player, world, actBlock);
 		}
-		boolean sacrifices = checkSacrifices(player);
+		boolean sacrifices = GeometricMagic.checkSacrifices(player);
 		if (player.getItemInHand().getType() == Material.FLINT && sacrifices
-				&& !checkSacrificed(player)) {
+				&& !GeometricMagic.checkSacrificed(player)) {
 			File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
 			Scanner inputFile = new Scanner(myFile);
 			String circle = "[0, 0, 0, 0]";
@@ -196,8 +196,8 @@ public class GeometricMagicPlayerListener implements Listener {
 						&& eastBlock.getType() == Material.REDSTONE_WIRE && westBlock
 						.getType() == Material.REDSTONE_WIRE)) {
 			
-			//TODO: cooldown
-			
+			//TODO: cooldown config option
+			// -store times in files
 
 			// transmutation circle size permissions
 			// - allows use of all circles smaller than then the max
@@ -825,7 +825,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[1, 2, 2, 2]")
 				&& player.hasPermission("geometricmagic.set.1222")) {
-			cost = 1;
+
+			String costConfig = plugin.getConfig().getString("setcircles.1222.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+			
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -843,7 +848,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 						// check if player has permission to break blocks here first
 						if(!checkBlockBreakSimulation(droppedItem.getLocation(), player)) {
-							player.sendMessage("You don't have permission to do that there.");
+							//player.sendMessage("You don't have permission to do that there.");
 							return;
 						}
 
@@ -879,7 +884,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[1, 2, 3, 3]")
 				&& player.hasPermission("geometricmagic.set.1233")) {
-			cost = 20;
+
+			String costConfig = plugin.getConfig().getString("setcircles.1233.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -894,7 +904,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 					// check if player has permission to break blocks here first
 					if(!checkBlockBreakSimulation(sacrifice.getLocation(), player)) {
-						player.sendMessage("You don't have permission to do that there.");
+						//player.sendMessage("You don't have permission to do that there.");
 						return;
 					}
 
@@ -919,7 +929,12 @@ public class GeometricMagicPlayerListener implements Listener {
 					diamondStack);
 		} else if (arrayString.equals("[1, 2, 3, 4]")
 				&& player.hasPermission("geometricmagic.set.1234")) {
-			cost = 1;
+
+			String costConfig = plugin.getConfig().getString("setcircles.1234.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -929,7 +944,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				player.sendMessage(ChatColor.GREEN
 						+ "The four elements, like man alone, are weak. But together they form the strong fifth element: boron -Brother Silence");
-				ItemStack oneRedstone = new ItemStack(331, 10);
+				String amountConfig = plugin.getConfig().getString("setcircles.1234.amount").toString();
+				int amount = Integer.parseInt(amountConfig);
+				ItemStack oneRedstone = new ItemStack(331, amount);
 				
 				effectBlock.getWorld().dropItem(effectBlock.getLocation(),
 						oneRedstone);
@@ -940,7 +957,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[2, 2, 2, 3]")
 				&& player.hasPermission("geometricmagic.set.2223")) {
-			cost = 10;
+
+			String costConfig = plugin.getConfig().getString("setcircles.2223.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -961,7 +983,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 						// check if player has permission to break blocks here first
 						if(!checkBlockBreakSimulation(victim.getLocation(), player)) {
-							player.sendMessage("You don't have permission to do that there.");
+							//player.sendMessage("You don't have permission to do that there.");
 							return;
 						}
 						
@@ -1011,7 +1033,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[2, 2, 2, 4]")
 				&& player.hasPermission("geometricmagic.set.2224")) {
-			cost = 10;
+
+			String costConfig = plugin.getConfig().getString("setcircles.2224.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				Location spawnLoc = effectBlock.getLocation();
@@ -1028,6 +1055,12 @@ public class GeometricMagicPlayerListener implements Listener {
 						+ arrayString + "!");
 				return;
 			}
+
+			String costConfig = plugin.getConfig().getString("setcircles.2244.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			Location actPoint = effectBlock.getLocation();
 			int na = 0, nb = 0, ea = 0, eb = 0, sa = 0, sb = 0, wa = 0, wb = 0;
 			Block curBlock = effectBlock.getRelative(0, 0, -1);
@@ -1097,9 +1130,14 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 		} else if (arrayString.equals("[2, 3, 3, 3]")
 				&& player.hasPermission("geometricmagic.set.2333")) {
-			cost = 2;
+
+			String costConfig = plugin.getConfig().getString("setcircles.2333.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			int size = setCircleSize(actBlock);
-			cost = 2 + size / 2;
+			cost = cost + size / 2;
 			
 			// Make sure cost is not more than 20
 			if (cost > 20)
@@ -1115,7 +1153,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// check if player has permission to break blocks here first
 				if(!checkBlockBreakSimulation(effectBlock.getLocation(), player)) {
-					player.sendMessage("You don't have permission to do that there.");
+					//player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 				
@@ -1127,17 +1165,26 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[3, 3, 3, 4]")
 				&& player.hasPermission("geometricmagic.set.3334")) {
-			cost = 2;
+
+			String costConfig = plugin.getConfig().getString("setcircles.3334.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 
+				String configSize = plugin.getConfig().getString("setcircles.3334.size").toString();
+				Integer circleSize = Integer.parseInt(configSize);
+				
 				alchemyFiller(Material.AIR, Material.FIRE, (byte) 0,
-						effectBlock.getRelative(-10, 0, -10).getLocation(),
-						effectBlock.getRelative(10, 20, 10).getLocation(),
+						effectBlock.getRelative((circleSize/2)*-1, 0, (circleSize/2)*-1).getLocation(),
+						effectBlock.getRelative(circleSize/2, circleSize, circleSize/2).getLocation(),
 						player, false);
 
 			} else {
@@ -1146,9 +1193,14 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[3, 3, 4, 4]")
 				&& player.hasPermission("geometricmagic.set.3344")) {
-			cost = 4;
+
+			String costConfig = plugin.getConfig().getString("setcircles.3344.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			int size = setCircleSize(actBlock);
-			cost = 4 + size / 2;
+			cost = cost + size / 2;
 			
 			// Make sure cost is not more than 20
 			if (cost > 20)
@@ -1164,12 +1216,12 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// check if player has permission to break blocks here first
 				if(!checkBlockBreakSimulation(effectBlock.getLocation(), player)) {
-					player.sendMessage("You don't have permission to do that there.");
+					//player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 				
 				effectBlock.getWorld().createExplosion(
-						effectBlock.getLocation(), 8 + size, true);
+						effectBlock.getLocation(), size, true);
 				
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1177,7 +1229,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[3, 4, 4, 4]")
 				&& player.hasPermission("geometricmagic.set.3444")) {
-			cost = 20;
+
+			String costConfig = plugin.getConfig().getString("setcircles.3444.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1196,7 +1253,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[0, 1, 1, 1]")
 				&& player.hasPermission("geometricmagic.set.0111")) {
-			cost = 16;
+
+			// using x111 because yml doesn't like 0 as first character
+			String costConfig = plugin.getConfig().getString("setcircles.x111.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1247,7 +1310,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[0, 0, 4, 4]")
 				&& player.hasPermission("geometricmagic.set.0044")) {
-			cost = 10;
+
+			// using x044 because yml doesn't like 0 as first character
+			String costConfig = plugin.getConfig().getString("setcircles.x044.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1258,7 +1327,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// check if player has permission to break blocks here first
 				if(!checkBlockBreakSimulation(spawnLoc, player)) {
-					player.sendMessage("You don't have permission to do that there.");
+					//player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 				
@@ -1270,7 +1339,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[0, 1, 4, 4]")
 				&& player.hasPermission("geometricmagic.set.0144")) {
-			cost = 10;
+
+			// using x144 because yml doesn't like 0 as first character
+			String costConfig = plugin.getConfig().getString("setcircles.x144.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1281,7 +1356,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// check if player has permission to break blocks here first
 				if(!checkBlockBreakSimulation(spawnLoc, player)) {
-					player.sendMessage("You don't have permission to do that there.");
+					//player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 				
@@ -1293,7 +1368,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[0, 2, 4, 4]")
 				&& player.hasPermission("geometricmagic.set.0244")) {
-			cost = 10;
+
+			// using x244 because yml doesn't like 0 as first character
+			String costConfig = plugin.getConfig().getString("setcircles.x244.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1304,7 +1385,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// check if player has permission to break blocks here first
 				if(!checkBlockBreakSimulation(spawnLoc, player)) {
-					player.sendMessage("You don't have permission to do that there.");
+					//player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 				
@@ -1316,7 +1397,13 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[0, 3, 4, 4]")
 				&& player.hasPermission("geometricmagic.set.0344")) {
-			cost = 10;
+
+			// using x344 because yml doesn't like 0 as first character
+			String costConfig = plugin.getConfig().getString("setcircles.x344.cost").toString();
+			cost = Integer.parseInt(costConfig);
+			if(cost > 20)
+				cost = 20;
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle "
 						+ arrayString + "!");
@@ -1327,7 +1414,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				// check if player has permission to break blocks here first
 				if(!checkBlockBreakSimulation(spawnLoc, player)) {
-					player.sendMessage("You don't have permission to do that there.");
+					//player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 				
@@ -1345,64 +1432,68 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static int setCircleSize(Block actBlock) {
+		// limit sizes
+		String limitSizeConfig = plugin.getConfig().getString("setcircles.limitsize").toString();
+		int limitsize = Integer.parseInt(limitSizeConfig);
+		
 		int na = 0, nb = 0, ea = 0, eb = 0, sa = 0, sb = 0, wa = 0, wb = 0, nc = 0, ec = 0, sc = 0, wc = 0;
 		Block curBlock = actBlock.getRelative(0, 0, -5);
-		while (curBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
+		while (curBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE || na == limitsize) {
 			na++;
 			curBlock = curBlock.getRelative(0, 0, -1);
 		}
 		Block fineBlock = curBlock;
-		while (fineBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE || nb == limitsize) {
 			nb++;
 			fineBlock = fineBlock.getRelative(-1, 0, 0);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE || nc == limitsize) {
 			nc++;
 			fineBlock = fineBlock.getRelative(1, 0, 0);
 		}
 		curBlock = actBlock.getRelative(5, 0, 0);
-		while (curBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE) {
+		while (curBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE || ea == limitsize) {
 			ea++;
 			curBlock = curBlock.getRelative(1, 0, 0);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE || eb == limitsize) {
 			eb++;
 			fineBlock = fineBlock.getRelative(0, 0, -1);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE || ec == limitsize) {
 			ec++;
 			fineBlock = fineBlock.getRelative(0, 0, 1);
 		}
 		curBlock = actBlock.getRelative(0, 0, 5);
-		while (curBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
+		while (curBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE || sa == limitsize) {
 			sa++;
 			curBlock = curBlock.getRelative(0, 0, 1);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE || sb == limitsize) {
 			sb++;
 			fineBlock = fineBlock.getRelative(1, 0, 0);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE || sc == limitsize) {
 			sc++;
 			fineBlock = fineBlock.getRelative(-1, 0, 0);
 		}
 		curBlock = actBlock.getRelative(-5, 0, 0);
-		while (curBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
+		while (curBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE || wa == limitsize) {
 			wa++;
 			curBlock = curBlock.getRelative(-1, 0, 0);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE || wb == limitsize) {
 			wb++;
 			fineBlock = fineBlock.getRelative(0, 0, 1);
 		}
 		fineBlock = curBlock;
-		while (fineBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
+		while (fineBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE || wc == limitsize) {
 			wc++;
 			fineBlock = fineBlock.getRelative(0, 0, -1);
 		}
@@ -1852,27 +1943,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		return modifier;
 	}
 
-	public static boolean checkSacrifices(Player player) throws IOException {
-		File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
-		if (!myFile.exists()) {
-			return false;
-		}
-		Scanner inputFile = new Scanner(myFile);
-		while (inputFile.hasNextLine()) {
-			String name = inputFile.nextLine();
-			if (name.equals(player.getName())) {
-				// close this before we return
-				inputFile.close();
-				return true;
-			}
-			inputFile.nextLine();
-		}
-		inputFile.close();
-		return false;
-		// playername
-		// [1, 1, 1, 2]
-	}
-
 	public static void humanTransmutation(Player player) throws IOException {
 		if (new File("plugins/GeometricMagic/").mkdirs())
 			System.out.println("[GeometricMagic] Sacrifices file created.");
@@ -1904,25 +1974,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		outputFile.println(0);
 		player.sendMessage("You have committed the taboo! Crafting is your sacrifice, knowledge your reward.");
 		outputFile.close();
-	}
-
-	public static boolean checkSacrificed(Player player) throws IOException {
-		File myFile = new File("plugins/GeometricMagic/sacrificed.txt");
-		if (!myFile.exists()) {
-			return false;
-		}
-		Scanner inputFile = new Scanner(myFile);
-		while (inputFile.hasNextLine()) {
-			String name = inputFile.nextLine();
-			if (name.equals(player.getName())) {
-				// close this before we return
-				inputFile.close();
-				return true;
-			}
-		}
-		inputFile.close();
-		return false;
-		// playername
 	}
 
 	public static boolean hasLearnedCircle(Player player, String circle)
