@@ -50,7 +50,7 @@ setcircles:
     1234:
         # The cost of this circle in hunger
         cost: 1
-        # The of redstone to drop
+        # The number of redstone to drop
         amount: 1
     # Soul Circle
     2223:
