@@ -25,6 +25,9 @@ transmutation:
     # Possible values: xp, vault (requires Vault)
     cost: xp
 
+    # Apply Philosopher's Stone to transmutes (true or false)
+    stone: true
+
 # SET CIRCLES SECTION
 setcircles:
     # Cool down time between using set circles in seconds

@@ -1703,7 +1703,14 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static int calculatePay(Material a, Material b, Player player) {
 		int pay = (int) (getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId()));
-		return pay;
+		
+		// Apply Philosopher's Stone to transmutes config variable
+		String stoneConfig = plugin.getConfig().getString("transmutation.stone");
+		if (stoneConfig == "true") {
+			return pay * (int) philosopherStoneModifier(player);
+		} else {
+			return pay;
+		}
 	}
 
 	public static double philosopherStoneModifier(Player player) {
