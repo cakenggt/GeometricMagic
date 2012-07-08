@@ -119,6 +119,8 @@ permissions:
         description: Allows you to use set circle 0244
     geometricmagic.set.0344:
         description: Allows you to use set circle 0344
+    geometricmagic.bypasscooldown:
+        description: Allows you to bypass transmutation and set circle cooldowns
 commands:
   setcircle:
     description: This command sets a sacrifice's right-click circle.
@@ -128,4 +130,3 @@ commands:
     description: This command displays a list of set circles.
     permission: geometricmagic.listcircles
     usage: /circles
-    

@@ -115,17 +115,19 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (player.getItemInHand().getType() == Material.FLINT && sacrifices && !GeometricMagic.checkSacrificed(player)) {
 
 			// set circle cool down
-			String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
-			int coolDown = Integer.parseInt(coolDownConfig);
-			if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
-				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
-				if (diff < coolDown) {
-					// still cooling down
-					player.sendMessage(coolDown - diff + " seconds before you can do that again.");
-					return;
+			if (!player.hasPermission("geometricmagic.bypasscooldown")) {
+				String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
+				int coolDown = Integer.parseInt(coolDownConfig);
+				if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
+					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
+					if (diff < coolDown) {
+						// still cooling down
+						player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+						return;
+					}
 				}
+				mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
 			}
-			mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
 
 			File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
 			Scanner inputFile = new Scanner(myFile);
@@ -226,17 +228,19 @@ public class GeometricMagicPlayerListener implements Listener {
 			// System.out.println("circleSize:" + circleSize);
 
 			// transmute cool down
-			String coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
-			int coolDown = Integer.parseInt(coolDownConfig);
-			if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
-				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
-				if (diff < coolDown) {
-					// still cooling down
-					player.sendMessage(coolDown - diff + " seconds before you can do that again.");
-					return;
+			if (!player.hasPermission("geometricmagic.bypasscooldown")) {
+				String coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
+				int coolDown = Integer.parseInt(coolDownConfig);
+				if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+					if (diff < coolDown) {
+						// still cooling down
+						player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+						return;
+					}
 				}
+				mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
 			}
-			mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
 
 			if (circleSize > 0) {
 				// exempt player from AntiCheat check
@@ -266,17 +270,19 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			if (player.hasPermission("geometricmagic.set")) {
 				// set circle cool down
-				String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
-				int coolDown = Integer.parseInt(coolDownConfig);
-				if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
-					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
-					if (diff < coolDown) {
-						// still cooling down
-						player.sendMessage(coolDown - diff + " seconds before you can do that again.");
-						return;
+				if (!player.hasPermission("geometricmagic.bypasscooldown")) {
+					String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
+					int coolDown = Integer.parseInt(coolDownConfig);
+					if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
+						long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
+						if (diff < coolDown) {
+							// still cooling down
+							player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+							return;
+						}
 					}
+					mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
 				}
-				mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
 
 				// exempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
