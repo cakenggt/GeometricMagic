@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class GeometricMagicDamageListener implements Listener {
@@ -57,17 +58,20 @@ public class GeometricMagicDamageListener implements Listener {
 					boolean removedFire = false;
 
 					for (int i = 0; i < playerInventory.getSize() && !removedFire; i++) {
-						if (playerInventory.getItem(i).getType() == Material.FIRE) {
-							// System.out.println("removed a fire");
-							int amount = playerInventory.getItem(i).getAmount();
-							playerInventory.getItem(i).setAmount(amount - 1);
-							if (amount - 1 <= 0) {
-								playerInventory.clear(i);
+						ItemStack inventoryItem = playerInventory.getItem(i);
+						if (inventoryItem != null) {
+							if (inventoryItem.getType() == Material.FIRE) {
+								// System.out.println("removed a fire");
+								int amount = inventoryItem.getAmount();
+								inventoryItem.setAmount(amount - 1);
+								if (amount - 1 <= 0) {
+									playerInventory.clear(i);
+								}
+								damage = damage - health;
+								health = 20;
+								player.setHealth(20);
+								removedFire = true;
 							}
-							damage = damage - health;
-							health = 20;
-							player.setHealth(20);
-							removedFire = true;
 						}
 					}
 
