@@ -121,6 +121,8 @@ permissions:
         description: Allows you to use set circle 0344
     geometricmagic.bypasscooldown:
         description: Allows you to bypass transmutation and set circle cooldowns
+    geometricmagic.bypasshunger:
+        description: Allows you to bypass hunger being taken away
 commands:
   setcircle:
     description: This command sets a sacrifice's right-click circle.
