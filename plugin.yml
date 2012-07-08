@@ -45,7 +45,7 @@ permissions:
         children:
             geometricmagic.transmutation.1: true
             geometricmagic.transmutation.3: true
-            geometricmagic.transmutation.4: true
+            geometricmagic.transmutation.5: true
             geometricmagic.transmutation.7: true
             geometricmagic.transmutation.9: true
     geometricmagic.transmutation.1:
