@@ -980,7 +980,9 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			ItemStack oneRedstone = new ItemStack(331, 1);
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+				}
 				Item redStack = effectBlock.getWorld().dropItem(effectBlock.getLocation(), oneRedstone);
 				int size = setCircleSize(actBlock);
 				List<Entity> entityList = redStack.getNearbyEntities(size + 5, 128, size + 5);
