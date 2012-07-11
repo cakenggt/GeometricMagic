@@ -67,38 +67,48 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 		}
 
-		boolean sacrifices = false;
+		Player player = event.getPlayer();
+
 		boolean sacrificed = false;
+
+		if (!player.hasPermission("geometricmagic.bypass.sacrifice")) {
+			try {
+				sacrificed = GeometricMagic.checkSacrificed(player);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		boolean sacrifices = false;
 		try {
-			sacrifices = GeometricMagic.checkSacrifices(event.getPlayer());
-			sacrificed = GeometricMagic.checkSacrificed(event.getPlayer());
+			sacrifices = GeometricMagic.checkSacrifices(player);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
-		Material inHand = event.getPlayer().getItemInHand().getType();
 
-		if (sacrificed && inHand == Material.FLINT) {
-			event.getPlayer().sendMessage("You have sacrificed your alchemy abilities forever.");
-			return;
-		}
-
-		Block actBlock = event.getPlayer().getLocation().getBlock();
+		Block actBlock = player.getLocation().getBlock();
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-			if (event.getClickedBlock().getType() == Material.WORKBENCH && sacrifices) {
+			if (event.getClickedBlock().getType() == Material.WORKBENCH && (sacrifices && !sacrificed) && !player.hasPermission("geometricmagic.bypass.crafting")) {
 				// cancel event instead of turning block into air
+				player.sendMessage("You have already sacrificed your crafting abilities. You must sacrifice your alchemy forever to get them back by performing another human transmutation.");
 				event.setCancelled(true);
 			}
 			actBlock = event.getClickedBlock();
 		}
 
-		if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand == Material.FLINT) {
-			actBlock = event.getPlayer().getTargetBlock(null, 120);
+		ItemStack inHand = event.getPlayer().getItemInHand();
+		Material inHandType = inHand.getType();
+
+		if ((sacrificed && (inHandType == Material.FLINT || (actBlock.getType() == Material.REDSTONE_WIRE && inHand.getAmount() == 0))) && !player.hasPermission("geometricmagic.bypass.sacrifice")) {
+			player.sendMessage("You have sacrificed your alchemy abilities forever.");
+			return;
 		}
 
-		Player player = event.getPlayer();
+		if (event.getAction() == Action.RIGHT_CLICK_AIR && inHandType == Material.FLINT) {
+			actBlock = player.getTargetBlock(null, 120);
+		}
+
 		World world = player.getWorld();
 		try {
 			isCircle(player, world, actBlock);
@@ -109,18 +119,14 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static void isCircle(Player player, World world, Block actBlock) throws IOException {
 		// System.out.println("isCircle?");
-		if (actBlock.getType() == Material.REDSTONE_WIRE && player.getItemInHand().getAmount() == 0 && !GeometricMagic.checkSacrificed(player)) {
+		if (actBlock.getType() == Material.REDSTONE_WIRE && player.getItemInHand().getAmount() == 0) {
 			// System.out.println("isCircle");
 			circleChooser(player, world, actBlock);
-		} else if (actBlock.getType() == Material.REDSTONE_WIRE && player.getItemInHand().getAmount() == 0 && GeometricMagic.checkSacrificed(player)) {
-			player.sendMessage("You have sacrificed your alchemy abilities forever.");
-			return;
 		}
-		boolean sacrifices = GeometricMagic.checkSacrifices(player);
-		if (player.getItemInHand().getType() == Material.FLINT && sacrifices && !GeometricMagic.checkSacrificed(player)) {
+		if (player.getItemInHand().getType() == Material.FLINT) {
 
 			// set circle cool down
-			if (!player.hasPermission("geometricmagic.bypasscooldown")) {
+			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
 				String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
 				int coolDown = Integer.parseInt(coolDownConfig);
 				if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
@@ -135,16 +141,20 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 
 			File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
-			Scanner inputFile = new Scanner(myFile);
 			String circle = "[0, 0, 0, 0]";
-			while (inputFile.hasNextLine()) {
-				String name = inputFile.nextLine();
-				if (name.equals(player.getName())) {
-					circle = inputFile.nextLine();
-				} else
-					inputFile.nextLine();
+			if (myFile.exists()) {
+				Scanner inputFile = new Scanner(myFile);
+				while (inputFile.hasNextLine()) {
+					String name = inputFile.nextLine();
+					if (name.equals(player.getName())) {
+						circle = inputFile.nextLine();
+					} else
+						inputFile.nextLine();
+				}
+				inputFile.close();
+			} else {
+				return;
 			}
-			inputFile.close();
 
 			try {
 				// exempt player from AntiCheat check
@@ -233,7 +243,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			// System.out.println("circleSize:" + circleSize);
 
 			// transmute cool down
-			if (!player.hasPermission("geometricmagic.bypasscooldown")) {
+			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
 				String coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
 				int coolDown = Integer.parseInt(coolDownConfig);
 				if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
@@ -275,7 +285,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			if (player.hasPermission("geometricmagic.set")) {
 				// set circle cool down
-				if (!player.hasPermission("geometricmagic.bypasscooldown")) {
+				if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
 					String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
 					int coolDown = Integer.parseInt(coolDownConfig);
 					if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
@@ -830,7 +840,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							cost = 20;
 
 						if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-							if (!player.hasPermission("geometricmagic.bypasshunger")) {
+							if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 								player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 							}
 							ItemStack newItem = new ItemStack(itemCode, 1);
@@ -859,7 +869,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				ItemStack oneRedstone = new ItemStack(331, 1);
@@ -936,7 +946,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (fires >= 64) {
 					fires -= 64;
-					if (!player.hasPermission("geometricmagic.bypasshunger")) {
+					if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 						player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					}
 					effectBlock.getWorld().dropItem(effectBlock.getLocation(), onePortal);
@@ -958,7 +968,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				player.sendMessage(ChatColor.GREEN + "The four elements, like man alone, are weak. But together they form the strong fifth element: boron -Brother Silence");
@@ -985,7 +995,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			ItemStack oneRedstone = new ItemStack(331, 1);
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Item redStack = effectBlock.getWorld().dropItem(effectBlock.getLocation(), oneRedstone);
@@ -1047,7 +1057,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				cost = 20;
 
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Location spawnLoc = effectBlock.getLocation();
@@ -1150,7 +1160,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 
@@ -1177,7 +1187,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 
@@ -1210,7 +1220,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 
@@ -1239,7 +1249,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				try {
-					if (!player.hasPermission("geometricmagic.bypasshunger")) {
+					if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 						player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					}
 					humanTransmutation(player);
@@ -1262,7 +1272,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Location playerSpawn = player.getBedSpawnLocation();
@@ -1280,14 +1290,14 @@ public class GeometricMagicPlayerListener implements Listener {
 							player.teleport(new Location(player.getWorld(), playerSpawn.getX(), playerSpawn.getY(), playerSpawn.getZ() - 1));
 						} else {
 							player.sendMessage("Your bed is not safe to teleport to!");
-							if (!player.hasPermission("geometricmagic.bypasshunger")) {
+							if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 								player.setFoodLevel((int) (player.getFoodLevel() + (cost * philosopherStoneModifier(player))));
 							}
 						}
 					}
 				} else {
 					player.sendMessage("You do not have a spawn set!");
-					if (!player.hasPermission("geometricmagic.bypasshunger")) {
+					if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 						player.setFoodLevel((int) (player.getFoodLevel() + (cost * philosopherStoneModifier(player))));
 					}
 				}
@@ -1307,7 +1317,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Location spawnLoc = effectBlock.getLocation();
@@ -1336,7 +1346,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Location spawnLoc = effectBlock.getLocation();
@@ -1365,7 +1375,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Location spawnLoc = effectBlock.getLocation();
@@ -1394,7 +1404,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
-				if (!player.hasPermission("geometricmagic.bypasshunger")) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				Location spawnLoc = effectBlock.getLocation();

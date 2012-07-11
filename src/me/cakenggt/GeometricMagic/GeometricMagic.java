@@ -59,10 +59,13 @@ public class GeometricMagic extends JavaPlugin {
 				}
 				
 				boolean sacrificed = false;
-				try {
-					sacrificed = checkSacrificed(player);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+
+				if (!player.hasPermission("geometricmagic.bypass.sacrifice")) {
+					try {
+						sacrificed = checkSacrificed(player);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				}
 
 				if (sacrificed) {
@@ -70,15 +73,25 @@ public class GeometricMagic extends JavaPlugin {
 					return true;
 				}
 
+				boolean sacrifices = false;
+				try {
+					sacrifices = checkSacrifices(player);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
 				// check if player has flint and is using the proper arguments
 				boolean hasFlint = player.getInventory().contains(Material.FLINT);
-				if ((args.length != 1 || (args[0].length() != 4 && args[0].length() != 1)) && hasFlint) {
+				if ((args.length != 1 || (args[0].length() != 4 && args[0].length() != 1)) && hasFlint && sacrifices) {
 					sender.sendMessage(ChatColor.RED + cmd.getUsage());
 					return true;
-				} else if (args.length == 0 && !hasFlint) {
+				} else if (args.length == 0 && !hasFlint && sacrifices) {
 					// they don't have flint so give them one 
 					ItemStack oneFlint = new ItemStack(318, 1);
 					player.getWorld().dropItem(player.getLocation(), oneFlint);
+					return true;
+				} else if (!sacrifices) {
+					player.sendMessage(ChatColor.RED + "You must perform a human sacrifice if you wish to use this command.");
 					return true;
 				}
 

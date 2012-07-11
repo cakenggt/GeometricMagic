@@ -119,10 +119,26 @@ permissions:
         description: Allows you to use set circle 0244
     geometricmagic.set.0344:
         description: Allows you to use set circle 0344
-    geometricmagic.bypasscooldown:
+    geometricmagic.bypass.*:
+        description: Grants all bypass permissions
+        default: false
+        children:
+            geometricmagic.bypass.cooldown: true
+            geometricmagic.bypass.crafting: true
+            geometricmagic.bypass.hunger: true
+            geometricmagic.bypass.sacrifice: true
+    geometricmagic.bypass.cooldown:
         description: Allows you to bypass transmutation and set circle cooldowns
-    geometricmagic.bypasshunger:
+        default: false
+    geometricmagic.bypass.crafting:
+        description: Allows you to bypass crafting being taken away by human transmutation
+        default: false
+    geometricmagic.bypass.hunger:
         description: Allows you to bypass hunger being taken away
+        default: false
+    geometricmagic.bypass.sacrifice:
+        description: Allows you to bypass human transmutation sacrificing your alchemy abilities forever
+        default: false
 commands:
   setcircle:
     description: This command sets a sacrifice's right-click circle.
