@@ -53,6 +53,11 @@ public class GeometricMagic extends JavaPlugin {
 			if (sender instanceof Player) {
 				player = (Player) sender;
 
+				if (!player.hasPermission("geometricmagic.setcircle")) {
+					player.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+					return true;
+				}
+				
 				boolean sacrificed = false;
 				try {
 					sacrificed = checkSacrificed(player);
@@ -65,20 +70,16 @@ public class GeometricMagic extends JavaPlugin {
 					return true;
 				}
 
-				if (args.length == 0) {
+				// check if player has flint and is using the proper arguments
+				boolean hasFlint = player.getInventory().contains(Material.FLINT);
+				if ((args.length != 1 || (args[0].length() != 4 && args[0].length() != 1)) && hasFlint) {
+					sender.sendMessage(ChatColor.RED + cmd.getUsage());
+					return true;
+				} else if (args.length == 0 && !hasFlint) {
+					// they don't have flint so give them one 
 					ItemStack oneFlint = new ItemStack(318, 1);
 					player.getWorld().dropItem(player.getLocation(), oneFlint);
 					return true;
-				}
-
-				if (args.length != 1) {
-					sender.sendMessage(cmd.getUsage());
-					return false;
-				}
-
-				if (args[0].length() != 4 && args[0].length() != 1) {
-					sender.sendMessage(cmd.getUsage());
-					return false;
 				}
 
 				if (args[0].length() == 1 && args[0].equalsIgnoreCase("0")) {

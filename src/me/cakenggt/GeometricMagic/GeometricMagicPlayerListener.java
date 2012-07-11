@@ -75,8 +75,10 @@ public class GeometricMagicPlayerListener implements Listener {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
+		Material inHand = event.getPlayer().getItemInHand().getType();
 
-		if (sacrificed) {
+		if (sacrificed && inHand == Material.FLINT) {
 			event.getPlayer().sendMessage("You have sacrificed your alchemy abilities forever.");
 			return;
 		}
@@ -92,7 +94,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			actBlock = event.getClickedBlock();
 		}
 
-		if (event.getAction() == Action.RIGHT_CLICK_AIR && event.getPlayer().getItemInHand().getType() == Material.FLINT) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand == Material.FLINT) {
 			actBlock = event.getPlayer().getTargetBlock(null, 120);
 		}
 
@@ -110,6 +112,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (actBlock.getType() == Material.REDSTONE_WIRE && player.getItemInHand().getAmount() == 0 && !GeometricMagic.checkSacrificed(player)) {
 			// System.out.println("isCircle");
 			circleChooser(player, world, actBlock);
+		} else if (actBlock.getType() == Material.REDSTONE_WIRE && player.getItemInHand().getAmount() == 0 && GeometricMagic.checkSacrificed(player)) {
+			player.sendMessage("You have sacrificed your alchemy abilities forever.");
+			return;
 		}
 		boolean sacrifices = GeometricMagic.checkSacrifices(player);
 		if (player.getItemInHand().getType() == Material.FLINT && sacrifices && !GeometricMagic.checkSacrificed(player)) {
