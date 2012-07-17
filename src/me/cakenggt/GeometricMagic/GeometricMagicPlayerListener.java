@@ -566,7 +566,11 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
-		for (int i = 0; i < entitiesList.size(); i++) {
+		String limitArrowsConfig = plugin.getConfig().getString("setcircles.limitarrows").toString();
+		int limitArrows = Integer.parseInt(limitArrowsConfig);
+		int limit = (entitiesList.size() > limitArrows) ? limitArrows : entitiesList.size();
+		
+		for (int i = 0; i < limit; i++) {
 			if (entitiesList.get(i) instanceof Arrow) {
 				Arrow shotArrow = (Arrow) entitiesList.get(i);
 				if (shotArrow.getLocation().getBlock().getType() == Material.REDSTONE_WIRE) {
@@ -675,8 +679,13 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static void setCircleRemote(Player player, World world, Block actBlock) {
 		Boolean remote = false;
 		Block effectBlock = actBlock;
+
 		List<Entity> entitiesList = player.getNearbyEntities(242, 20, 242);
-		for (int i = 0; i < entitiesList.size(); i++) {
+		String limitArrowsConfig = plugin.getConfig().getString("setcircles.limitarrows").toString();
+		int limitArrows = Integer.parseInt(limitArrowsConfig);
+		int limit = (entitiesList.size() > limitArrows) ? limitArrows : entitiesList.size();
+
+		for (int i = 0; i < limit; i++) {
 			if (entitiesList.get(i) instanceof Arrow) {
 				Arrow shotArrow = (Arrow) entitiesList.get(i);
 				if (shotArrow.getLocation().getBlock().getX() == actBlock.getLocation().getBlock().getX() && shotArrow.getLocation().getBlock().getZ() == actBlock.getLocation().getBlock().getZ()) {
@@ -687,7 +696,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		if (remote) {
-			for (int i = 0; i < entitiesList.size(); i++) {
+			for (int i = 0; i < limit; i++) {
 				if (entitiesList.get(i) instanceof Arrow) {
 					Arrow shotArrow = (Arrow) entitiesList.get(i);
 					effectBlock = shotArrow.getLocation().getBlock();

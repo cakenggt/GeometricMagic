@@ -36,6 +36,9 @@ setcircles:
     # Limit augmentation size for set circles
     limitsize: 5
 
+    # Limit number of nearby arrows to check
+    limitarrows: 3
+
     # Repair Circle
     1133: []
     # Conversion Circle
