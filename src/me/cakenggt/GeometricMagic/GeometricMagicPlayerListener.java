@@ -847,6 +847,8 @@ public class GeometricMagicPlayerListener implements Listener {
 						// Make sure cost is not more than 20
 						if (cost > 20)
 							cost = 20;
+						
+						int count = 0;
 
 						if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 							if (!player.hasPermission("geometricmagic.bypass.hunger")) {
@@ -859,8 +861,11 @@ public class GeometricMagicPlayerListener implements Listener {
 
 							droppedItem.remove();
 							effectBlock.getWorld().dropItem(effectBlock.getLocation(), newItem);
+							count++;
 						} else {
 							player.sendMessage("You feel so hungry...");
+							if (count > 0)
+								effectBlock.getWorld().strikeLightningEffect(effectBlock.getLocation());
 							return;
 						}
 					}
