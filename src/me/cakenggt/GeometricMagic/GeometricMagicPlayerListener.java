@@ -779,6 +779,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 
+			int count = 0;
 			List<Entity> repairEntities = player.getNearbyEntities(9, 10, 9);
 			for (int i = 0; i < repairEntities.size(); i++) {
 				if (repairEntities.get(i) instanceof Item) {
@@ -848,8 +849,6 @@ public class GeometricMagicPlayerListener implements Listener {
 						// Make sure cost is not more than 20
 						if (cost > 20)
 							cost = 20;
-						
-						int count = 0;
 
 						if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 							if (!player.hasPermission("geometricmagic.bypass.hunger")) {
