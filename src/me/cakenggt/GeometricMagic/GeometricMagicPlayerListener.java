@@ -1019,16 +1019,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Player) {
 						HumanEntity victim = (HumanEntity) entityList.get(i);
-
-						// check if player has permission to break blocks here
-						// first
-						if (!checkBlockBreakSimulation(victim.getLocation(), player)) {
-							// player.sendMessage("You don't have permission to do that there.");
-							return;
-						}
+						Location victimLocation = victim.getLocation();
 
 						if (!victim.equals(player)) {
-							victim.getWorld().strikeLightningEffect(victim.getLocation());
+							victim.getWorld().strikeLightningEffect(victimLocation);
 							if (victim.getInventory().contains(Material.FIRE)) {
 								for (int k = 0; k < player.getInventory().getSize(); k++) {
 									if (player.getInventory().getItem(i).getType() == Material.FIRE) {
