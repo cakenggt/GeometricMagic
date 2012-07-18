@@ -763,6 +763,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void setCircleEffects(Player player, World world, Block actBlock, Block effectBlock, String arrayString) throws IOException {
+		Location effectBlockLocation = effectBlock.getLocation();
 		int cost = 0;
 		if (!hasLearnedCircle(player, arrayString)) {
 			if (learnCircle(player, arrayString, actBlock)) {
@@ -860,12 +861,12 @@ public class GeometricMagicPlayerListener implements Listener {
 							newItem.addEnchantments(effects);
 
 							droppedItem.remove();
-							effectBlock.getWorld().dropItem(effectBlock.getLocation(), newItem);
+							effectBlock.getWorld().dropItem(effectBlockLocation, newItem);
 							count++;
 						} else {
 							player.sendMessage("You feel so hungry...");
 							if (count > 0)
-								effectBlock.getWorld().strikeLightningEffect(effectBlock.getLocation());
+								effectBlock.getWorld().strikeLightningEffect(effectBlockLocation);
 							return;
 						}
 					}
@@ -887,7 +888,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				ItemStack oneRedstone = new ItemStack(331, 1);
-				Item redStack = effectBlock.getWorld().dropItem(effectBlock.getLocation(), oneRedstone);
+				Item redStack = effectBlock.getWorld().dropItem(effectBlockLocation, oneRedstone);
 				List<Entity> entityList = redStack.getNearbyEntities(5, 10, 5);
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Item) {
@@ -963,13 +964,13 @@ public class GeometricMagicPlayerListener implements Listener {
 					if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 						player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					}
-					effectBlock.getWorld().dropItem(effectBlock.getLocation(), onePortal);
+					effectBlock.getWorld().dropItem(effectBlockLocation, onePortal);
 				}
 			} else {
 				player.sendMessage("You feel so hungry...");
 			}
 			ItemStack diamondStack = new ItemStack(264, fires);
-			effectBlock.getWorld().dropItem(effectBlock.getLocation(), diamondStack);
+			effectBlock.getWorld().dropItem(effectBlockLocation, diamondStack);
 		} else if (arrayString.equals("[1, 2, 3, 4]") && player.hasPermission("geometricmagic.set.1234")) {
 
 			String costConfig = plugin.getConfig().getString("setcircles.1234.cost").toString();
@@ -990,7 +991,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				int amount = Integer.parseInt(amountConfig);
 				ItemStack oneRedstone = new ItemStack(331, amount);
 
-				effectBlock.getWorld().dropItem(effectBlock.getLocation(), oneRedstone);
+				effectBlock.getWorld().dropItem(effectBlockLocation, oneRedstone);
 
 			} else {
 				player.sendMessage("You feel so hungry...");
@@ -1012,7 +1013,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				Item redStack = effectBlock.getWorld().dropItem(effectBlock.getLocation(), oneRedstone);
+				Item redStack = effectBlock.getWorld().dropItem(effectBlockLocation, oneRedstone);
 				int size = setCircleSize(actBlock);
 				List<Entity> entityList = redStack.getNearbyEntities(size + 5, 128, size + 5);
 
@@ -1074,7 +1075,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				Location spawnLoc = effectBlock.getLocation();
+				Location spawnLoc = effectBlockLocation;
 				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Enderman.class);
 			} else {
@@ -1092,7 +1093,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (cost > 20)
 				cost = 20;
 
-			Location actPoint = effectBlock.getLocation();
+			Location actPoint = effectBlockLocation;
 			int na = 0, nb = 0, ea = 0, eb = 0, sa = 0, sb = 0, wa = 0, wb = 0;
 			Block curBlock = effectBlock.getRelative(0, 0, -1);
 			while (curBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE) {
@@ -1179,12 +1180,14 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 
 				// check if player has permission to break blocks here first
-				if (!checkBlockBreakSimulation(effectBlock.getLocation(), player)) {
+				if (!checkBlockBreakSimulation(effectBlockLocation, player)) {
 					// player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 
-				effectBlock.getWorld().createExplosion(effectBlock.getLocation(), (4 + size));
+				Fireball fireball = effectBlockLocation.getWorld().spawn(effectBlockLocation, Fireball.class);
+				fireball.setIsIncendiary(false);
+				fireball.setYield(4 + size);
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
@@ -1239,13 +1242,14 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 
 				// check if player has permission to break blocks here first
-				if (!checkBlockBreakSimulation(effectBlock.getLocation(), player)) {
+				if (!checkBlockBreakSimulation(effectBlockLocation, player)) {
 					// player.sendMessage("You don't have permission to do that there.");
 					return;
 				}
 
-				effectBlock.getWorld().createExplosion(effectBlock.getLocation(), size, true);
-
+				Fireball fireball = effectBlockLocation.getWorld().spawn(effectBlockLocation, Fireball.class);
+				fireball.setIsIncendiary(true);
+				fireball.setYield(4 + size);
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
@@ -1334,7 +1338,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				Location spawnLoc = effectBlock.getLocation();
+				Location spawnLoc = effectBlockLocation;
 
 				// check if player has permission to break blocks here first
 				if (!checkBlockBreakSimulation(spawnLoc, player)) {
@@ -1363,7 +1367,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				Location spawnLoc = effectBlock.getLocation();
+				Location spawnLoc = effectBlockLocation;
 
 				// check if player has permission to break blocks here first
 				if (!checkBlockBreakSimulation(spawnLoc, player)) {
@@ -1392,7 +1396,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				Location spawnLoc = effectBlock.getLocation();
+				Location spawnLoc = effectBlockLocation;
 
 				// check if player has permission to break blocks here first
 				if (!checkBlockBreakSimulation(spawnLoc, player)) {
@@ -1421,7 +1425,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				Location spawnLoc = effectBlock.getLocation();
+				Location spawnLoc = effectBlockLocation;
 
 				// check if player has permission to break blocks here first
 				if (!checkBlockBreakSimulation(spawnLoc, player)) {
@@ -1438,7 +1442,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else {
 			player.sendMessage("You do not have permission to use " + arrayString + " or set circle does not exist");
 		}
-		effectBlock.getWorld().strikeLightningEffect(effectBlock.getLocation());
+		effectBlock.getWorld().strikeLightningEffect(effectBlockLocation);
 	}
 
 	public static int setCircleSize(Block actBlock) {
