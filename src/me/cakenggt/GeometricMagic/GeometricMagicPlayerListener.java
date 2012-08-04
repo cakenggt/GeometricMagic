@@ -1739,7 +1739,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 		double pay = calculatePay(a, fromData, b, toData, player);
 
-		if (startBlock.getType() == a && startBlock.getData() == toData) {
+		if (startBlock.getType() == a && startBlock.getData() == fromData) {
 
 			if (-1 * getBalance(player) < pay || !charge) {
 
@@ -1845,6 +1845,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else
 				return;
 		} else
+			// System.out.println("[GeometricMagic] DEBUG - Block Data: " + (int) startBlock.getData() + ", A Data: " + (int) fromData + ", B Data: " + (int) toData);
 			return;
 	}
 
