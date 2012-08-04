@@ -20,17 +20,18 @@ name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
 version: 2.6.1
 author: cakenggt, Hoot215
-softdepend: [Vault]
+softdepend: [Vault,AntiCheat]
 permissions:
     geometricmagic.*:
-        description: Gives access to all circles and /setcircle
+        description: Gives access to all circles /setcircle and /circles
         default: op
         children:
             geometricmagic.standard: true
             geometricmagic.transmutation.*: true
+            geometricmagic.bypass.*: true
     geometricmagic.standard:
-        description: Gives access to standard circles and /setcircle
-        default: true
+        description: Gives access to standard circles /setcircle and /circles
+        default: false
         children:
             geometricmagic.teleportation: true
             geometricmagic.micro: true
@@ -45,7 +46,7 @@ permissions:
         children:
             geometricmagic.transmutation.1: true
             geometricmagic.transmutation.3: true
-            geometricmagic.transmutation.4: true
+            geometricmagic.transmutation.5: true
             geometricmagic.transmutation.7: true
             geometricmagic.transmutation.9: true
     geometricmagic.transmutation.1:
@@ -59,12 +60,15 @@ permissions:
     geometricmagic.transmutation.9:
         description: Allows you to use transmutation circles of size 9
     geometricmagic.set:
-        description: Allows you to use all set circles and /setcircle
+        description: Allows you to use all set circles and set circle commands
         children:
             geometricmagic.set.*: true
             geometricmagic.setcircle: true
+            geometricmagic.listcircles: true
     geometricmagic.setcircle:
         description: Allows you to use /setcircle
+    geometricmagic.listcircles:
+        description: Allows you to use /circles
     geometricmagic.set.*:
         description: Allows you to use all set circles
         children:
@@ -116,8 +120,27 @@ permissions:
         description: Allows you to use set circle 0244
     geometricmagic.set.0344:
         description: Allows you to use set circle 0344
+    geometricmagic.bypass.*:
+        description: Grants all bypass permissions
+        children:
+            geometricmagic.bypass.cooldown: true
+            geometricmagic.bypass.crafting: true
+            geometricmagic.bypass.hunger: true
+            geometricmagic.bypass.sacrifice: true
+    geometricmagic.bypass.cooldown:
+        description: Allows you to bypass transmutation and set circle cooldowns
+    geometricmagic.bypass.crafting:
+        description: Allows you to bypass crafting being taken away by human transmutation
+    geometricmagic.bypass.hunger:
+        description: Allows you to bypass hunger being taken away
+    geometricmagic.bypass.sacrifice:
+        description: Allows you to bypass human transmutation sacrificing your alchemy abilities forever
 commands:
   setcircle:
     description: This command sets a sacrifice's right-click circle.
     permission: geometricmagic.setcircle
-    usage: /setcircle <####>
+    usage: Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####
+  circles:
+    description: This command displays a list of set circles.
+    permission: geometricmagic.listcircles
+    usage: /circles
