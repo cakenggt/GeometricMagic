@@ -595,6 +595,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		Location circleEnd = actBlock.getLocation();
 		Material fromType = actBlock.getType();
 		Material toType = actBlock.getType();
+		byte fromData = actBlock.getData();
 		boolean lightning = false;
 		if (actBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
@@ -620,7 +621,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				// System.out.println(circleStart);
 				circleEnd = actBlock.getLocation().add(fullWidth - 2, fullWidth - 3, halfWidth - 2);
 				// System.out.println(circleEnd);
-				alchemyCheck(fromType, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 				lightning = true;
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// west
@@ -633,7 +634,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				endLoc = actBlock.getLocation().add(-1 * (fullWidth + dimensionOfEffect) + 1, dimensionOfEffect - 1, -1 * dimensionOfEffect / 2 + 1);
 				circleStart = actBlock.getLocation().add(-1, 0, (halfWidth - 2));
 				circleEnd = actBlock.getLocation().add(-1 * (fullWidth - 2), fullWidth - 3, -1 * (halfWidth - 2));
-				alchemyCheck(fromType, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 				lightning = true;
 			}
 		} else if (actBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
@@ -659,7 +660,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				endLoc = actBlock.getLocation().add(dimensionOfEffect / 2 - 1, dimensionOfEffect - 1, -1 * (dimensionOfEffect + fullWidth) + 1);
 				circleStart = actBlock.getLocation().add(-1 * (halfWidth - 2), 0, -1);
 				circleEnd = actBlock.getLocation().add((halfWidth - 2), fullWidth - 3, -1 * (fullWidth - 2));
-				alchemyCheck(fromType, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 				lightning = true;
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
@@ -672,7 +673,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				endLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2 + 1, dimensionOfEffect - 1, fullWidth + dimensionOfEffect - 1);
 				circleStart = actBlock.getLocation().add(halfWidth - 2, 0, 1);
 				circleEnd = actBlock.getLocation().add(-1 * (halfWidth - 2), fullWidth - 3, (fullWidth - 2));
-				alchemyCheck(fromType, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 				lightning = true;
 			}
 		}
@@ -909,7 +910,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							return;
 						}
 
-						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId());
+						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId(), droppedItem.getItemStack().getData().getData());
 
 						int pay = (valueArray * droppedItem.getItemStack().getAmount());
 
@@ -1218,7 +1219,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				String configSize = plugin.getConfig().getString("setcircles.3334.size").toString();
 				Integer circleSize = Integer.parseInt(configSize);
 
-				alchemyFiller(Material.AIR, Material.FIRE, (byte) 0, effectBlock.getRelative((circleSize / 2) * -1, 0, (circleSize / 2) * -1).getLocation(),
+				alchemyFiller(Material.AIR, (byte) 0, Material.FIRE, (byte) 0, effectBlock.getRelative((circleSize / 2) * -1, 0, (circleSize / 2) * -1).getLocation(),
 						effectBlock.getRelative(circleSize / 2, circleSize, circleSize / 2).getLocation(), player, false);
 
 			} else {
@@ -1525,7 +1526,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		return size;
 	}
 
-	public static void alchemyCheck(Material a, Material b, byte toData, Location circleStart, Location circleEnd, Location start, Location end, Player player, int width) {
+	public static void alchemyCheck(Material a, byte fromData, Material b, byte toData, Location circleStart, Location circleEnd, Location start, Location end, Player player, int width) {
 		Block startBlock = circleStart.getBlock();
 		int xIteration = 0;
 		int yIteration = 0;
@@ -1538,7 +1539,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getX() <= circleEnd.getX()) {
 						while (startBlock.getZ() <= circleEnd.getZ()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
 										start.getBlock().getRelative(xIteration * width + width - 1, yIteration * width + width - 1, (zIteration * width + (width - 1))).getLocation(), player, true);
 							}
 							zIteration++;
@@ -1559,7 +1560,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getZ() >= circleEnd.getZ()) {
 						while (startBlock.getX() <= circleEnd.getX()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
 										start.getBlock().getRelative(xIteration * width + width - 1, yIteration * width + width - 1, (zIteration * width - (width - 1))).getLocation(), player, true);
 							}
 							xIteration++;
@@ -1585,7 +1586,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getX() >= circleEnd.getX()) {
 						while (startBlock.getZ() >= circleEnd.getZ()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
 										start.getBlock().getRelative(xIteration * width - (width - 1), yIteration * width + width - 1, (zIteration * width - (width - 1))).getLocation(), player, true);
 							}
 							zIteration--;
@@ -1606,7 +1607,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getZ() <= circleEnd.getZ()) {
 						while (startBlock.getX() >= circleEnd.getX()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
 										start.getBlock().getRelative(xIteration * width - (width - 1), yIteration * width + width - 1, (zIteration * width + (width - 1))).getLocation(), player, true);
 							}
 							xIteration--;
@@ -1628,7 +1629,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		return;
 	}
 
-	public static void alchemyFiller(Material a, Material b, byte toData, Location start, Location end, Player player, boolean charge) {
+	public static void alchemyFiller(Material a, byte fromData, Material b, byte toData, Location start, Location end, Player player, boolean charge) {
 		// System.out.println("alchemyFiller");
 		Block startBlock = start.getBlock();
 		int xIteration = 0;
@@ -1642,7 +1643,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getX() <= end.getX()) {
 						while (startBlock.getZ() <= end.getZ()) {
-							transmuteBlock(a, b, toData, startBlock, player, charge);
+							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(0, 0, 1);
 						}
 						xIteration++;
@@ -1658,7 +1659,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getZ() >= end.getZ()) {
 						while (startBlock.getX() <= end.getX()) {
-							transmuteBlock(a, b, toData, startBlock, player, charge);
+							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(1, 0, 0);
 						}
 						zIteration--;
@@ -1676,7 +1677,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getX() >= end.getX()) {
 						while (startBlock.getZ() >= end.getZ()) {
-							transmuteBlock(a, b, toData, startBlock, player, charge);
+							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(0, 0, -1);
 						}
 						xIteration--;
@@ -1692,7 +1693,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				while (startBlock.getY() <= end.getY()) {
 					while (startBlock.getZ() <= end.getZ()) {
 						while (startBlock.getX() >= end.getX()) {
-							transmuteBlock(a, b, toData, startBlock, player, charge);
+							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
 							startBlock = startBlock.getRelative(-1, 0, 0);
 							// System.out.println("xloopfiller");
 						}
@@ -1727,11 +1728,11 @@ public class GeometricMagicPlayerListener implements Listener {
 		return 0;
 	}
 
-	public static void transmuteBlock(Material a, Material b, byte toData, Block startBlock, Player player, boolean charge) {
+	public static void transmuteBlock(Material a, byte fromData, Material b, byte toData, Block startBlock, Player player, boolean charge) {
 
-		double pay = calculatePay(a, b, player);
+		double pay = calculatePay(a, fromData, b, toData, player);
 
-		if (startBlock.getType() == a) {
+		if (startBlock.getType() == a && startBlock.getData() == toData) {
 
 			if (-1 * getBalance(player) < pay || !charge) {
 
@@ -1770,7 +1771,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 					Location blockLocation = startBlock.getLocation();
 					int blockID = b.getId();
-					byte blockData = 0;
+					byte blockData = toData;
 
 					if (checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
 						// Change block
@@ -1802,7 +1803,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 					Location blockLocation = startBlock.getLocation();
 					int blockID = b.getId();
-					byte blockData = 0;
+					byte blockData = toData;
 
 					if (checkBlockBreakSimulation(blockLocation, player) && checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
 						// Change block
@@ -1840,8 +1841,8 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 	}
 
-	public static double calculatePay(Material a, Material b, Player player) {
-		double pay = (getBlockValue(plugin, a.getId()) - getBlockValue(plugin, b.getId()));
+	public static double calculatePay(Material a, byte fromData , Material b, byte toData , Player player) {
+		double pay = (getBlockValue(plugin, a.getId(), (int) fromData) - getBlockValue(plugin, b.getId(), (int) toData));
 
 		// Apply Philosopher's Stone to transmutes config variable
 		String stoneConfig = plugin.getConfig().getString("transmutation.stone");
@@ -1946,8 +1947,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		return plugin.getConfig().getString("transmutation.cost").toString();
 	}
 
-	public static Integer getBlockValue(GeometricMagic plugin, int i) {
-		return plugin.getConfig().getInt("values." + i);
+	public static Integer getBlockValue(GeometricMagic plugin, int ID, int Data) {
+		return plugin.getConfig().getInt("values." + ID + "." + Data);
 	}
 
 	// Lyneira's Code Start
