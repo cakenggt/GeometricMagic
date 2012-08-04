@@ -595,7 +595,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		Location circleEnd = actBlock.getLocation();
 		Material fromType = actBlock.getType();
 		Material toType = actBlock.getType();
-		byte fromData = actBlock.getData();
 		boolean lightning = false;
 		if (actBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
@@ -609,9 +608,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			int dimensionOfEffect = (fullWidth - 2) * (fullWidth - 2);
 			if (actBlock.getRelative((fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// east
-				fromType = actBlock.getLocation().add(halfWidth - 1, 0, -1 * (halfWidth + 1)).getBlock().getType();
+				Block fromBlock = actBlock.getLocation().add(halfWidth - 1, 0, -1 * (halfWidth + 1)).getBlock();
 				Block toBlock = actBlock.getLocation().add(halfWidth - 1, 0, halfWidth + 1).getBlock();
+				fromType = fromBlock.getType();
 				toType = toBlock.getType();
+				byte fromData = fromBlock.getData();
 				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(fullWidth, 0, -1 * dimensionOfEffect / 2);
 				// System.out.println(startLoc);
@@ -626,9 +627,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// west
 				// System.out.println("transmutationCircle west");
-				fromType = actBlock.getLocation().add(-1 * (halfWidth - 1), 0, halfWidth + 1).getBlock().getType();
+				Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth - 1), 0, halfWidth + 1).getBlock();
 				Block toBlock = actBlock.getLocation().add((-1) * (halfWidth - 1), 0, (-1) * (halfWidth + 1)).getBlock();
+				fromType = fromBlock.getType();
 				toType = toBlock.getType();
+				byte fromData = fromBlock.getData();
 				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(-1 * fullWidth, 0, dimensionOfEffect / 2);
 				endLoc = actBlock.getLocation().add(-1 * (fullWidth + dimensionOfEffect) + 1, dimensionOfEffect - 1, -1 * dimensionOfEffect / 2 + 1);
@@ -652,9 +655,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (actBlock.getRelative(0, 0, -1 * (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// north
 				// System.out.println("transmutationCircle north");
-				fromType = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, -1 * (halfWidth - 1)).getBlock().getType();
+				Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, -1 * (halfWidth - 1)).getBlock();
 				Block toBlock = actBlock.getLocation().add(halfWidth + 1, 0, -1 * (halfWidth - 1)).getBlock();
+				fromType = fromBlock.getType();
 				toType = toBlock.getType();
+				byte fromData = fromBlock.getData();
 				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2, 0, -1 * fullWidth);
 				endLoc = actBlock.getLocation().add(dimensionOfEffect / 2 - 1, dimensionOfEffect - 1, -1 * (dimensionOfEffect + fullWidth) + 1);
@@ -665,9 +670,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
 				// System.out.println("transmutationCircle south");
-				fromType = actBlock.getLocation().add(halfWidth + 1, 0, halfWidth - 1).getBlock().getType();
+				Block fromBlock = actBlock.getLocation().add(halfWidth + 1, 0, halfWidth - 1).getBlock();
 				Block toBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, halfWidth - 1).getBlock();
+				fromType = fromBlock.getType();
 				toType = toBlock.getType();
+				byte fromData = fromBlock.getData();
 				byte toData = toBlock.getData();
 				startLoc = actBlock.getLocation().add(dimensionOfEffect / 2, 0, fullWidth);
 				endLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2 + 1, dimensionOfEffect - 1, fullWidth + dimensionOfEffect - 1);
