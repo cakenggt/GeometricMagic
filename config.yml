@@ -118,6 +118,9 @@ philosopherstone:
     # Formula: 1 / (2 to the power of (number of philosopher's stones in inventory) * modifier)
     modifier: 1
 
+# BLACKLIST SECTION
+
+
 # VALUES SECTION (Values of blocks for transmutation)
 values:
     # AIR

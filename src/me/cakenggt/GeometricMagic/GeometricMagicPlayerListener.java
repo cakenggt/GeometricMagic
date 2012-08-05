@@ -1744,96 +1744,120 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (-1 * getBalance(player) < pay || !charge) {
 
 				// Block break
-				if (a != Material.AIR && b == Material.AIR && a != Material.CHEST && a != Material.WALL_SIGN && a != Material.SIGN_POST && a != Material.FURNACE && a != Material.BURNING_FURNACE
-						&& a != Material.BREWING_STAND && a != Material.WOODEN_DOOR && a != Material.IRON_DOOR_BLOCK && a != Material.MOB_SPAWNER && a != Material.SPONGE && a != Material.WATER && a != Material.LAVA && a != Material.BEDROCK && a != Material.PISTON_EXTENSION && a != Material.PISTON_MOVING_PIECE && a != Material.PORTAL && a != Material.LOCKED_CHEST && a != Material.MONSTER_EGG) {
+				if (a != Material.AIR && b == Material.AIR) {
+					
+					if (!checkBreakBlacklist(a.getId())) {
+						
+						Location blockLocation = startBlock.getLocation();
 
-					Location blockLocation = startBlock.getLocation();
+						if (checkBlockBreakSimulation(blockLocation, player)) {
+							// Change block
+							startBlock.setType(b);
+							if (toData != 0)
+								startBlock.setData(toData);
 
-					if (checkBlockBreakSimulation(blockLocation, player)) {
-						// Change block
-						startBlock.setType(b);
-						if (toData != 0)
-							startBlock.setData(toData);
+							if (charge) {
+								if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
 
-						if (charge) {
-							if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+									Economy econ = GeometricMagic.getEconomy();
 
-								Economy econ = GeometricMagic.getEconomy();
-
-								// Deposit or withdraw to players Vault account
-								if (pay > 0) {
-									econ.depositPlayer(player.getName(), pay);
-								} else if (pay < 0) {
-									econ.withdrawPlayer(player.getName(), pay * -1);
+									// Deposit or withdraw to players Vault account
+									if (pay > 0) {
+										econ.depositPlayer(player.getName(), pay);
+									} else if (pay < 0) {
+										econ.withdrawPlayer(player.getName(), pay * -1);
+									}
+								} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+									player.setLevel((int) (player.getLevel() + pay));
 								}
-							} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-								player.setLevel((int) (player.getLevel() + pay));
 							}
 						}
 					}
+					
+					else {
+						player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+						return;
+					}
+
 				}
 
 				// Block place
-				else if (a == Material.AIR && b != Material.AIR && b != Material.MOB_SPAWNER && b != Material.SPONGE && b != Material.WATER && b != Material.LAVA && b != Material.BEDROCK && b != Material.PISTON_EXTENSION && b != Material.PISTON_MOVING_PIECE && b != Material.PORTAL && b != Material.LOCKED_CHEST && b != Material.MONSTER_EGG) {
+				else if (a == Material.AIR && b != Material.AIR) {
+					
+					if (!checkPlaceBlacklist(b.getId())) {
+						
+						Location blockLocation = startBlock.getLocation();
+						int blockID = b.getId();
+						byte blockData = toData;
 
-					Location blockLocation = startBlock.getLocation();
-					int blockID = b.getId();
-					byte blockData = toData;
+						if (checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
+							// Change block
+							startBlock.setType(b);
+							if (toData != 0)
+								startBlock.setData(toData);
 
-					if (checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
-						// Change block
-						startBlock.setType(b);
-						if (toData != 0)
-							startBlock.setData(toData);
+							if (charge) {
+								if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
 
-						if (charge) {
-							if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+									Economy econ = GeometricMagic.getEconomy();
 
-								Economy econ = GeometricMagic.getEconomy();
-
-								// Deposit or withdraw to players Vault account
-								if (pay > 0) {
-									econ.depositPlayer(player.getName(), pay);
-								} else if (pay < 0) {
-									econ.withdrawPlayer(player.getName(), pay * -1);
+									// Deposit or withdraw to players Vault account
+									if (pay > 0) {
+										econ.depositPlayer(player.getName(), pay);
+									} else if (pay < 0) {
+										econ.withdrawPlayer(player.getName(), pay * -1);
+									}
+								} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+									player.setLevel((int) (player.getLevel() + pay));
 								}
-							} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-								player.setLevel((int) (player.getLevel() + pay));
 							}
 						}
+					}
+					
+					else {
+						player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+						return;
 					}
 				}
 
 				// Block break and place
-				else if (a != Material.AIR && b != Material.AIR && a != Material.CHEST && a != Material.WALL_SIGN && a != Material.SIGN_POST && a != Material.FURNACE && a != Material.BURNING_FURNACE
-						&& a != Material.BREWING_STAND && a != Material.WOODEN_DOOR && a != Material.MOB_SPAWNER && b != Material.MOB_SPAWNER && a != Material.IRON_DOOR_BLOCK && a != Material.SPONGE && b != Material.SPONGE && a != Material.WATER && b != Material.LAVA && a != Material.BEDROCK && b != Material.BEDROCK && a != Material.PISTON_EXTENSION && b != Material.PISTON_EXTENSION && a != Material.PISTON_MOVING_PIECE && b != Material.PISTON_MOVING_PIECE && a != Material.PORTAL && b != Material.PORTAL && a != Material.LOCKED_CHEST && b != Material.LOCKED_CHEST && a != Material.MONSTER_EGG && b != Material.MONSTER_EGG) {
+				else if (a != Material.AIR && b != Material.AIR) {
 
-					Location blockLocation = startBlock.getLocation();
-					int blockID = b.getId();
-					byte blockData = toData;
+					if (!checkBreakBlacklist(a.getId()) && !checkPlaceBlacklist(b.getId())) {
+						
+						Location blockLocation = startBlock.getLocation();
+						int blockID = b.getId();
+						byte blockData = toData;
 
-					if (checkBlockBreakSimulation(blockLocation, player) && checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
-						// Change block
-						startBlock.setType(b);
-						if (toData != 0)
-							startBlock.setData(toData);
+						if (checkBlockBreakSimulation(blockLocation, player) && checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
+							// Change block
+							startBlock.setType(b);
+							if (toData != 0)
+								startBlock.setData(toData);
 
-						if (charge) {
-							if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
+							if (charge) {
+								if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
 
-								Economy econ = GeometricMagic.getEconomy();
+									Economy econ = GeometricMagic.getEconomy();
 
-								// Deposit or withdraw to players Vault account
-								if (pay > 0) {
-									econ.depositPlayer(player.getName(), pay);
-								} else if (pay < 0) {
-									econ.withdrawPlayer(player.getName(), pay * -1);
+									// Deposit or withdraw to players Vault account
+									if (pay > 0) {
+										econ.depositPlayer(player.getName(), pay);
+									} else if (pay < 0) {
+										econ.withdrawPlayer(player.getName(), pay * -1);
+									}
+								} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
+									player.setLevel((int) (player.getLevel() + pay));
 								}
-							} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-								player.setLevel((int) (player.getLevel() + pay));
 							}
 						}
 					}
+					
+					else {
+						player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+						return;
+					}
+					
 				}
 
 				// output to console
@@ -1989,6 +2013,26 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	// Lyneira's Code End
 
+	public static boolean checkBreakBlacklist(int m) {
+		@SuppressWarnings("unchecked")
+		List<Integer> blacklist = (List<Integer>) plugin.getConfig().getList("blacklist.break." + m);
+		for (int n : blacklist) {
+			if (n == m)
+				return true;
+		}
+		return false;
+	}
+	
+	public static boolean checkPlaceBlacklist(int m) {
+		@SuppressWarnings("unchecked")
+		List<Integer> blacklist = (List<Integer>) plugin.getConfig().getList("blacklist.place." + m);
+		for (int n : blacklist) {
+			if (n == m)
+				return true;
+		}
+		return false;
+	}
+	
 	public static Object getPluginManager(GeometricMagic plugin) {
 		return plugin.getServer().getPluginManager();
 	}
