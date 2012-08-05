@@ -2015,9 +2015,9 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static boolean checkBreakBlacklist(int m) {
 		boolean ret = false;
-		List<String> blacklist = plugin.getConfig().getStringList("blacklist.break." + m);
+		List<String> blacklist = plugin.getConfig().getStringList("blacklist.break");
 		for (String s : blacklist) {
-			if (s.equals(m))
+			if (s.equals(String.valueOf(m)))
 				ret = true;
 		}
 		return ret;
@@ -2025,9 +2025,9 @@ public class GeometricMagicPlayerListener implements Listener {
 	
 	public static boolean checkPlaceBlacklist(int m) {
 		boolean ret = false;
-		List<String> blacklist = plugin.getConfig().getStringList("blacklist.place." + m);
+		List<String> blacklist = plugin.getConfig().getStringList("blacklist.place");
 		for (String s : blacklist) {
-			if (s.equals(m))
+			if (s.equals(String.valueOf(m)))
 				ret = true;
 		}
 		return ret;
