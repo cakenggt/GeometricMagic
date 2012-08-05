@@ -31,7 +31,7 @@ permissions:
             geometricmagic.bypass.*: true
     geometricmagic.standard:
         description: Gives access to standard circles /setcircle and /circles
-        default: false
+        default: true
         children:
             geometricmagic.teleportation: true
             geometricmagic.micro: true
