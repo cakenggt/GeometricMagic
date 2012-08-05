@@ -18,6 +18,7 @@
 
 # TRANSMUTATION SECTION
 transmutation:
+
     # Cool down time between transmutations in seconds
     cooldown: 10
 
@@ -30,6 +31,7 @@ transmutation:
 
 # SET CIRCLES SECTION
 setcircles:
+
     # Cool down time between using set circles in seconds
     cooldown: 10
 
@@ -41,43 +43,52 @@ setcircles:
 
     # Repair Circle
     1133: []
+    
     # Conversion Circle
     1222:
         # The cost of this circle in hunger
         cost: 1
+    
     # Philosopher's Stone Circle
     1233:
         # The cost of this circle in hunger
         cost: 20
+    
     # Boron Circle
     1234:
         # The cost of this circle in hunger
         cost: 1
         # The number of redstone to drop
         amount: 1
+    
     # Soul Circle
     2223:
         # The cost of this circle in hunger
         cost: 10
+    
     # Homunculus Circle
     2224:
         # The cost of this circle in hunger
         cost: 10
+    
     # Safe Teleportation Circle
     2244:
         # The cost of this circle in hunger
         cost: 1
+    
     # Explosion Circle
     2333:
         # The cost of this circle in hunger
         # Formula: cost + circle size (can be augmented) / 2
         cost: 2
+    
     # Fire Circle
     3334:
         # The cost of this circle in hunger
         cost: 5
         # The size of this circle in blocks cubed
         size: 3
+    
     # Fire Explosion Circle
     3344:
         # The cost of this circle in hunger
@@ -85,26 +96,32 @@ setcircles:
         cost: 10
         # The size of this circle in blocks cubed
         size: 3
+    
     # Human Transmutation Circle
     3444:
         # The cost of this circle in hunger
         cost: 20
+    
     # Bed Circle (0111)
     x111:
         # The cost of this circle in hunger
         cost: 16
+    
     # Pig Circle (0044)
     x044:
         # The cost of this circle in hunger
         cost: 10
+    
     # Sheep Circle (0144)
     x144:
         # The cost of this circle in hunger
         cost: 10
+    
     # Cow Circle (0244)
     x244:
         # The cost of this circle in hunger
         cost: 10
+    
     # Chicken Circle (0344)
     x344:
         # The cost of this circle in hunger
@@ -119,10 +136,43 @@ philosopherstone:
     modifier: 1
 
 # BLACKLIST SECTION
+blacklist:
 
+    # The blacklist used for breaking blocks with transmutation
+    break:
+    - 7
+    - 19
+    - 52
+    - 54
+    - 61
+    - 62
+    - 63
+    - 64
+    - 68
+    - 71
+    - 90
+    - 95
+    - 97
+    - 117
+    
+    # The blacklist used for placing blocks with transmutation
+    place:
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 19
+    - 34
+    - 36
+    - 52
+    - 90
+    - 95
+    - 97
 
 # VALUES SECTION (Values of blocks for transmutation)
 values:
+
     # AIR
     0:
         0: 0
