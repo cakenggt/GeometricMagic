@@ -2003,36 +2003,34 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static boolean checkBlockBreakSimulation(Location target, Player player) {
-		boolean ret = false;
 		Block block = target.getBlock();
 		BlockBreakEvent breakEvent = new BlockBreakEvent(block, player);
 		((PluginManager) getPluginManager(plugin)).callEvent(breakEvent);
 		if (breakEvent.isCancelled())
-			ret = true;
-		return ret;
+			return false;
+		return true;
 	}
 
 	// Lyneira's Code End
 
 	public static boolean checkBreakBlacklist(int m) {
 		boolean ret = false;
-		@SuppressWarnings("unchecked")
-		List<Integer> blacklist = (List<Integer>) plugin.getConfig().getList("blacklist.break." + m);
-		for (Integer n : blacklist) {
-			if (n == m)
+		List<String> blacklist = plugin.getConfig().getStringList("blacklist.break." + m);
+		for (String s : blacklist) {
+			if (s.equals(m))
 				ret = true;
 		}
 		return ret;
 	}
 	
 	public static boolean checkPlaceBlacklist(int m) {
-		@SuppressWarnings("unchecked")
-		List<Integer> blacklist = (List<Integer>) plugin.getConfig().getList("blacklist.place." + m);
-		for (Integer n : blacklist) {
-			if (n == m)
-				return true;
+		boolean ret = false;
+		List<String> blacklist = plugin.getConfig().getStringList("blacklist.place." + m);
+		for (String s : blacklist) {
+			if (s.equals(m))
+				ret = true;
 		}
-		return false;
+		return ret;
 	}
 	
 	public static Object getPluginManager(GeometricMagic plugin) {
