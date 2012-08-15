@@ -19,7 +19,7 @@
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
 version: 2.7.1
-author: cakenggt, Hoot215
+authors: [cakenggt, Hoot215]
 softdepend: [Vault,AntiCheat]
 permissions:
     geometricmagic.*:
