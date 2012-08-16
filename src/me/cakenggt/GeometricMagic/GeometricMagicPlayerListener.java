@@ -570,8 +570,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
-		String limitArrowsConfig = plugin.getConfig().getString("setcircles.limitarrows").toString();
-		int limitArrows = Integer.parseInt(limitArrowsConfig);
+		int limitArrows = plugin.getConfig().getInt("setcircles.limitarrows");
 		int limit = (entitiesList.size() > limitArrows) ? limitArrows : entitiesList.size();
 		
 		for (int i = 0; i < limit; i++) {
