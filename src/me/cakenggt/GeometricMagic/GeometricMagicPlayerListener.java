@@ -125,6 +125,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			circleChooser(player, world, actBlock);
 		}
 		if (player.getItemInHand().getType() == Material.FLINT) {
+			System.out.println("[DEBUG] isCircle with flint");
 
 			// set circle cool down
 			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
@@ -156,7 +157,8 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else {
 				return;
 			}
-
+			
+			System.out.println("[DEBUG] Trying set circle loop");
 			try {
 				// exempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
@@ -166,7 +168,11 @@ public class GeometricMagicPlayerListener implements Listener {
 					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 				}
 
-				setCircleEffects(player, player.getWorld(), player.getLocation().getBlock(), actBlock, circle);
+				if (circle.equals("0")) {
+					circleChooser(player, world, actBlock);
+				}
+				else
+					setCircleEffects(player, player.getWorld(), player.getLocation().getBlock(), actBlock, circle);
 
 				// unexempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
@@ -192,7 +198,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void circleChooser(Player player, World world, Block actBlock) {
-		// System.out.println("circleChooser");
+		System.out.println("[DEBUG] circleChooser");
 		Block northBlock = actBlock.getRelative(0, 0, -1);
 		Block southBlock = actBlock.getRelative(0, 0, 1);
 		Block eastBlock = actBlock.getRelative(1, 0, 0);
@@ -283,6 +289,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& westBlock.getType() != Material.REDSTONE_WIRE && actBlock.getRelative(-3, 0, 0).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(3, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE
 				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
+			System.out.println("[DEBUG] Set circle");
 
 			if (player.hasPermission("geometricmagic.set")) {
 				// set circle cool down
@@ -309,6 +316,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 
 				setCircleRemote(player, world, actBlock);
+				System.out.println("[DEBUG] Set circle remote void");
 
 				// unexempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
@@ -322,6 +330,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			// no circle
 		} else {
+			System.out.println("[DEBUG] No circle");
 			return;
 		}
 	}
@@ -569,17 +578,21 @@ public class GeometricMagicPlayerListener implements Listener {
 			player.sendMessage("Your transmutation circle is ready to use.");
 		}
 
-		List<Entity> entitiesList = player.getNearbyEntities(100, 10, 100);
-		int limitArrows = plugin.getConfig().getInt("setcircles.limitarrows");
-		int limit = (entitiesList.size() > limitArrows) ? limitArrows : entitiesList.size();
+		List<Entity> entitiesList = player.getNearbyEntities(100, 32, 100);
+		int limitCount = plugin.getConfig().getInt("setcircles.limitarrows");
+		System.out.println("[DEBUG] limitCount=" + String.valueOf(limitCount));
 		
-		for (int i = 0; i < limit; i++) {
+		for (int i = 0; i < entitiesList.size() && limitCount != 0; i++) {
+			System.out.println("[DEBUG] i=" + String.valueOf(i) + ", limitCount=" + String.valueOf(limitCount) + ", entityListSize=" + String.valueOf(entitiesList.size()));
 			if (entitiesList.get(i) instanceof Arrow) {
+				System.out.println("[DEBUG] Entity " + String.valueOf(i) + " is instanceof Arrow");
 				Arrow shotArrow = (Arrow) entitiesList.get(i);
 				if (shotArrow.getLocation().getBlock().getType() == Material.REDSTONE_WIRE) {
+					limitCount--;
 					Block newActPoint = shotArrow.getLocation().getBlock();
 					Player newPlayer = (Player) shotArrow.getShooter();
 					circleChooser(newPlayer, world, newActPoint);
+					System.out.println("[DEBUG] Arrow is on redstone, limitCount=" + String.valueOf(limitCount) + ", Shooter: " + newPlayer.getName() + ", blockID=" + newActPoint.getType().getId() + ", blockLoc: '" + newActPoint.getLocation().toString() + "'");
 				}
 			}
 		}
@@ -691,23 +704,31 @@ public class GeometricMagicPlayerListener implements Listener {
 		Boolean remote = false;
 		Block effectBlock = actBlock;
 
-		List<Entity> entitiesList = player.getNearbyEntities(242, 20, 242);
-		int limitArrows = plugin.getConfig().getInt("setcircles.limitarrows");
-		int limit = (entitiesList.size() > limitArrows) ? limitArrows : entitiesList.size();
+		List<Entity> entitiesList = player.getNearbyEntities(100, 32, 100);
+		int limit = plugin.getConfig().getInt("setcircles.limitarrows");
+		int limitCount = limit;
 
-		for (int i = 0; i < limit; i++) {
+		for (int i = 0; i < entitiesList.size() && limitCount != 0; i++) {
+			System.out.println("[DEBUG] i=" + String.valueOf(i) + ", limitCount=" + String.valueOf(limitCount) + ", entityListSize=" + String.valueOf(entitiesList.size()));
 			if (entitiesList.get(i) instanceof Arrow) {
+				System.out.println("[DEBUG] Entity " + String.valueOf(i) + " is instanceof Arrow");
 				Arrow shotArrow = (Arrow) entitiesList.get(i);
 				if (shotArrow.getLocation().getBlock().getX() == actBlock.getLocation().getBlock().getX() && shotArrow.getLocation().getBlock().getZ() == actBlock.getLocation().getBlock().getZ()) {
+					System.out.println("[DEBUG] Arrow is on redstone, remote=true");
+					limitCount--;
 					remote = true;
 					entitiesList.remove(i);
 				}
 			}
 		}
 
+		limitCount = limit;
+		
 		if (remote) {
-			for (int i = 0; i < limit; i++) {
+			System.out.println("[DEBUG] Remote");
+			for (int i = 0; i < entitiesList.size() && limitCount != 0; i++) {
 				if (entitiesList.get(i) instanceof Arrow) {
+					limitCount--;
 					Arrow shotArrow = (Arrow) entitiesList.get(i);
 					effectBlock = shotArrow.getLocation().getBlock();
 					setCircle(player, world, actBlock, effectBlock);
@@ -718,6 +739,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static void setCircle(Player player, World world, Block actBlock, Block effectBlock) {
+		System.out.println("[DEBUG] Set circle void");
 		Block northSin = actBlock.getRelative(0, 0, -3);
 		Block southSin = actBlock.getRelative(0, 0, 3);
 		Block eastSin = actBlock.getRelative(3, 0, 0);
