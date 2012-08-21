@@ -121,7 +121,7 @@ public class GeometricMagic extends JavaPlugin {
 				return false;
 			}
 		} else if (cmd.getName().equalsIgnoreCase("circles")) {
-			if (sender.hasPermission("geometricmagic.listcircles") || sender.isOp()) {
+			if (sender.hasPermission("geometricmagic.listcircles")) {
 				sender.sendMessage(ChatColor.GREEN + "1133" + ChatColor.RESET + " Repair Circle");
 				sender.sendMessage(ChatColor.GREEN + "1222" + ChatColor.RESET + " Conversion Circle");
 				sender.sendMessage(ChatColor.GREEN + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
