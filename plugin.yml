@@ -29,6 +29,7 @@ permissions:
             geometricmagic.standard: true
             geometricmagic.transmutation.*: true
             geometricmagic.bypass.*: true
+            geometricmagic.command.geometricmagic.reload: true
     geometricmagic.standard:
         description: Gives access to standard circles /setcircle and /circles
         default: true
@@ -37,6 +38,7 @@ permissions:
             geometricmagic.micro: true
             geometricmagic.transmutation.1: true
             geometricmagic.set: true
+            geometricmagic.command.geometricmagic: true
     geometricmagic.teleportation:
         description: Allows you to use teleportation circles
     geometricmagic.micro:
@@ -63,12 +65,16 @@ permissions:
         description: Allows you to use all set circles and set circle commands
         children:
             geometricmagic.set.*: true
-            geometricmagic.setcircle: true
-            geometricmagic.listcircles: true
-    geometricmagic.setcircle:
+            geometricmagic.command.setcircle: true
+            geometricmagic.command.circles: true
+    geometricmagic.command.setcircle:
         description: Allows you to use /setcircle
-    geometricmagic.listcircles:
+    geometricmagic.command.listcircles:
         description: Allows you to use /circles
+    geometricmagic.command.geometricmagic:
+        description: Allows you to use /geometricmagic
+    geometricmagic.command.geometricmagic.reload:
+        description: 'Allows you to use "/geometricmagic reload"'
     geometricmagic.set.*:
         description: Allows you to use all set circles
         children:
@@ -136,11 +142,15 @@ permissions:
     geometricmagic.bypass.sacrifice:
         description: Allows you to bypass human transmutation sacrificing your alchemy abilities forever
 commands:
-  setcircle:
-    description: This command sets a sacrifice's right-click circle.
-    permission: geometricmagic.setcircle
-    usage: Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####
-  circles:
-    description: This command displays a list of set circles.
-    permission: geometricmagic.listcircles
-    usage: /circles
+    setcircle:
+        description: This command sets a sacrifice's right-click circle.
+        permission: geometricmagic.command.setcircle
+        usage: "Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####"
+    circles:
+        description: This command displays a list of set circles.
+        permission: geometricmagic.command.circles
+        usage: "/circles"
+    geometricmagic:
+        description: This command displays general plugin help or executes the given sub-command.
+        permission: geometricmagic.command.geometricmagic
+        usage: "/geometricmagic [Sub-Command]"

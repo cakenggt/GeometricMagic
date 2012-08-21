@@ -53,8 +53,8 @@ public class GeometricMagic extends JavaPlugin {
 			if (sender instanceof Player) {
 				player = (Player) sender;
 
-				if (!player.hasPermission("geometricmagic.setcircle")) {
-					player.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+				if (!player.hasPermission("geometricmagic.command.setcircle")) {
+					player.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
 					return true;
 				}
 				
@@ -121,7 +121,7 @@ public class GeometricMagic extends JavaPlugin {
 				return false;
 			}
 		} else if (cmd.getName().equalsIgnoreCase("circles")) {
-			if (sender.hasPermission("geometricmagic.listcircles")) {
+			if (sender.hasPermission("geometricmagic.command.circles")) {
 				sender.sendMessage(ChatColor.GREEN + "1133" + ChatColor.RESET + " Repair Circle");
 				sender.sendMessage(ChatColor.GREEN + "1222" + ChatColor.RESET + " Conversion Circle");
 				sender.sendMessage(ChatColor.GREEN + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
@@ -138,10 +138,48 @@ public class GeometricMagic extends JavaPlugin {
 				sender.sendMessage(ChatColor.GREEN + "0144" + ChatColor.RESET + " Sheep Circle");
 				sender.sendMessage(ChatColor.GREEN + "0244" + ChatColor.RESET + " Cow Circle");
 				sender.sendMessage(ChatColor.GREEN + "0344" + ChatColor.RESET + " Chicken Circle");
-			} else {
+			} else
 				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
-			}
 			return true;
+		} else if (cmd.getName().equalsIgnoreCase("geometricmagic")) {
+			if (sender.hasPermission("geometricmagic.command.geometricmagic")) {
+				if (args.length == 0) {
+					sender.sendMessage(ChatColor.GREEN + "*********** GeometricMagic Help ***********");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "************* User Commands *************");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*" + ChatColor.YELLOW + " /geometricmagic" + ChatColor.WHITE + " - Display this help dialogue");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*" + ChatColor.YELLOW + " /setcircle <####>" + ChatColor.WHITE + " - Bind set circle #### to flint. 0 resets");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*" + ChatColor.YELLOW + " /circles" + ChatColor.WHITE + " - List all set circles");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*****************************************");
+					if (sender.hasPermission("geometricmagic.command.geometricmagic.reload")) {
+						sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.RED + "************* Admin Commands ************");
+						sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.RED + "*" + ChatColor.YELLOW + " /geometricmagic reload" + ChatColor.WHITE + " - Reload config file");
+						sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.RED + "*****************************************");
+					}
+					sender.sendMessage(ChatColor.GREEN + "******************************************");
+					return true;
+				}
+				else if (args.length == 1) {
+					if (args[0].equalsIgnoreCase("reload")) {
+						if (sender.hasPermission("geometricmagic.command.geometricmagic.reload")) {
+							reloadConfig();
+							sender.sendMessage(ChatColor.GREEN + "Config reload successfully!");
+							return true;
+						}
+						else {
+							sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+							return true;
+						}
+					}
+					else
+						return false;
+				}
+				else if (args.length > 1)
+					return false;
+			}
+			else {
+				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+				return true;
+			}
 		}
 		// If this has happened the function will break and return true. if this
 		// hasn't happened the a value of false will be returned.
