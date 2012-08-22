@@ -72,7 +72,7 @@ permissions:
             geometricmagic.command.circles: true
     geometricmagic.command.setcircle:
         description: Allows you to use /setcircle
-    geometricmagic.command.listcircles:
+    geometricmagic.command.circles:
         description: Allows you to use /circles
     geometricmagic.command.geometricmagic:
         description: Allows you to use /geometricmagic
