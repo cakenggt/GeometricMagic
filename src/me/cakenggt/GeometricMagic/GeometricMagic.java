@@ -281,8 +281,10 @@ public class GeometricMagic extends JavaPlugin {
 		configFile = new File(getDataFolder(), "config.yml");
 
 		// Copy default config file if it doesn't exist
-		if (!configFile.exists())
+		if (!configFile.exists()) {
 			saveDefaultConfig();
+			System.out.println("[GeometricMagic] Config file generated!");
+		}
 		else {
 			try {
 				GeometricMagicConfigUpdater.updateConfig(this);
