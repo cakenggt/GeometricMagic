@@ -18,9 +18,9 @@
 
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.7.4
+version: 2.7.5
 authors: [cakenggt, Hoot215]
-softdepend: [Vault,AntiCheat]
+softdepend: [Vault, AntiCheat]
 permissions:
     geometricmagic.*:
         description: Gives access to all circles /setcircle and /circles

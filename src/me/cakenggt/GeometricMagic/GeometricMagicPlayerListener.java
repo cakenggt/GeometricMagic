@@ -65,7 +65,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		final String playerName = event.getPlayer().getName();
 		
 		if (event.getPlayer().hasPermission("geometricmagic.notify")) {
-			if (!plugin.upToDate) {
+			if (!plugin.upToDate && plugin.getConfig().getBoolean("general.auto-update-notify")) {
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					public void run() {
