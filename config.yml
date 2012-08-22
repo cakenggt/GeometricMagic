@@ -16,6 +16,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# DO NOT MODIFY THIS VALUE!
+version: 2.7.3
+
+# GENERAL SECTION
+general:
+
+    # Automatic notification of plugin updates
+    auto-update-notify: true
+
 # TRANSMUTATION SECTION
 transmutation:
 

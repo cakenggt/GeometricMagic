@@ -19,10 +19,7 @@
 package me.cakenggt.GeometricMagic;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -43,6 +40,9 @@ public class GeometricMagic extends JavaPlugin {
 	private Listener entityListener;
 	private static Economy economy;
 	File configFile;
+	public boolean autoUpdate;
+	public boolean autoUpdateNotify;
+	public boolean upToDate = true;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
@@ -281,13 +281,15 @@ public class GeometricMagic extends JavaPlugin {
 		configFile = new File(getDataFolder(), "config.yml");
 
 		// Copy default config file if it doesn't exist
-		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			copy(this.getResource("config.yml"), configFile);
+		if (!configFile.exists())
+			saveDefaultConfig();
+		else {
+			try {
+				GeometricMagicConfigUpdater.updateConfig(this);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-
-		// Copy config defaults
-		getConfig().options().copyDefaults(true);
 
 		// Transmutation mode: Vault
 		if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("vault")) {
@@ -326,9 +328,27 @@ public class GeometricMagic extends JavaPlugin {
 			System.out.println("[" + this + "] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
 			getServer().getPluginManager().disablePlugin(this);
 		}
-
+		
 		// Plugin metrics
 		startPluginMetrics();
+		
+		// Check auto-update-notify
+		if (getConfig().getBoolean("general.auto-update-notify")) {
+			if (getConfig().getBoolean("general.auto-update"))
+				autoUpdate = true;
+			else
+				autoUpdateNotify = true;
+		}
+		// Check auto-update
+		else if (getConfig().getBoolean("general.auto-update")) {
+			autoUpdate = true;
+		}
+		
+		// Get plugin version for auto-update
+		int pluginVersion = Integer.parseInt(this.getDescription().getVersion().replace(".", ""));
+		
+		// Start auto-update
+		new Thread((new GeometricMagicAutoUpdater(this, pluginVersion))).start();
 	}
 
 	// Vault Support
@@ -344,22 +364,6 @@ public class GeometricMagic extends JavaPlugin {
 	// Vault Support
 	public static Economy getEconomy() {
 		return economy;
-	}
-
-	// Copy method
-	private void copy(InputStream in, File file) {
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void startPluginMetrics() {

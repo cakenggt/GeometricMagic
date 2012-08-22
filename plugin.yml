@@ -18,7 +18,7 @@
 
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.7.2
+version: 2.7.3
 authors: [cakenggt, Hoot215]
 softdepend: [Vault,AntiCheat]
 permissions:
@@ -26,10 +26,13 @@ permissions:
         description: Gives access to all circles /setcircle and /circles
         default: op
         children:
+            geometricmagic.notify: true
             geometricmagic.standard: true
             geometricmagic.transmutation.*: true
             geometricmagic.bypass.*: true
             geometricmagic.command.geometricmagic.reload: true
+    geometricmagic.notify:
+        description: Notifies you if a newer version of GeometricMagic is available
     geometricmagic.standard:
         description: Gives access to standard circles /setcircle and /circles
         default: true

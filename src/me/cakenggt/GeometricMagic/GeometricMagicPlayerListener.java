@@ -45,6 +45,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
@@ -59,6 +60,26 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static Economy economy = null;
 	private static HashMap<String, Long> mapCoolDowns = new HashMap<String, Long>();
 
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayLogin(PlayerLoginEvent event) {
+		final String playerName = event.getPlayer().getName();
+		
+		if (event.getPlayer().hasPermission("geometricmagic.notify")) {
+			if (!plugin.upToDate) {
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					public void run() {
+						if (plugin.getServer().getPlayer(playerName) != null) {
+							plugin.getServer().getPlayer(playerName).sendMessage(
+									ChatColor.GREEN
+									+ "A newer version of GeometricMagic is available!");
+						}
+					}
+				}, 60L);
+			}
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 
