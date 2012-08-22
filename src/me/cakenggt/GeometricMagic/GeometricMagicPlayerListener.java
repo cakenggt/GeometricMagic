@@ -72,7 +72,13 @@ public class GeometricMagicPlayerListener implements Listener {
 						if (plugin.getServer().getPlayer(playerName) != null) {
 							plugin.getServer().getPlayer(playerName).sendMessage(
 									ChatColor.GREEN
-									+ "A newer version of GeometricMagic is available!");
+									+ "A newer version of"+ ChatColor.RED +
+									" GeometricMagic" + ChatColor.GREEN
+									+ " is available!");
+							plugin.getServer().getPlayer(playerName).sendMessage(
+									ChatColor.GREEN
+									+ "If you cannot find a newer version," +
+									" check in the comments for a Dropbox link");
 						}
 					}
 				}, 60L);
