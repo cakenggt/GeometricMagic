@@ -297,10 +297,10 @@ public class GeometricMagic extends JavaPlugin {
 		if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("vault")) {
 			// Vault Support
 			if (!setupEconomy()) {
-				System.out.println("[" + this + "] ERROR: You have your transmutation system set to Vault, and yet you don't have Vault. Disabling plugin!");
+				System.out.println("[GeometricMagic] ERROR: You have your transmutation system set to Vault, and yet you don't have Vault. Disabling plugin!");
 				getServer().getPluginManager().disablePlugin(this);
 			} else {
-				System.out.println("[" + this + "] Transmutation cost system set to Vault");
+				System.out.println("[GeometricMagic] Transmutation cost system set to Vault");
 
 				// Register events
 				playerListener = new GeometricMagicPlayerListener(this);
@@ -314,7 +314,7 @@ public class GeometricMagic extends JavaPlugin {
 		}
 		// Transmutation mode: XP
 		else if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("xp")) {
-			System.out.println("[" + this + "] Transmutation cost system set to XP");
+			System.out.println("[GeometricMagic] Transmutation cost system set to XP");
 
 			// Register events
 			playerListener = new GeometricMagicPlayerListener(this);
@@ -327,7 +327,7 @@ public class GeometricMagic extends JavaPlugin {
 		}
 		// Transmutation mode: Unknown
 		else {
-			System.out.println("[" + this + "] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
+			System.out.println("[GeometricMagic] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
 			getServer().getPluginManager().disablePlugin(this);
 		}
 		
