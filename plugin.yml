@@ -149,6 +149,7 @@ commands:
         description: This command sets a sacrifice's right-click circle.
         permission: geometricmagic.command.setcircle
         usage: "Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####"
+        aliases: sc
     circles:
         description: This command displays a list of set circles.
         permission: geometricmagic.command.circles
@@ -157,3 +158,4 @@ commands:
         description: This command displays general plugin help or executes the given sub-command.
         permission: geometricmagic.command.geometricmagic
         usage: "/geometricmagic [Sub-Command]"
+        aliases: [gem, geom, gmagic]
