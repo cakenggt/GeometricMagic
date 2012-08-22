@@ -35,25 +35,27 @@ public class GeometricMagicAutoUpdater implements Runnable {
 	}
 	
 	public void run() {
-		String rawVersion = null;
-		
-		try {
-			URL url = new URL("http://dl.dropbox.com/u/56151340/BukkitPlugins/GeometricMagic/latest.txt");
-			Scanner scanner = new Scanner(url.openStream());
-			rawVersion = scanner.next();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (plugin.getConfig().getBoolean("general.auto-update-notify")) {
+			String rawVersion = null;
+			
+			try {
+				URL url = new URL("http://dl.dropbox.com/u/56151340/BukkitPlugins/GeometricMagic/latest.txt");
+				Scanner scanner = new Scanner(url.openStream());
+				rawVersion = scanner.next();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			int latestVersion = Integer.parseInt(rawVersion.replace(".", ""));
+			
+			if (latestVersion > pluginVersion) {
+				plugin.upToDate = false;
+				System.out.println("[GeometricMagic] A newer version of GeometricMagic is available!");
+			}
+			else
+				System.out.println("[GeometricMagic] Plugin is up to date!");
 		}
-		
-		int latestVersion = Integer.parseInt(rawVersion.replace(".", ""));
-		
-		if (latestVersion > pluginVersion) {
-			plugin.upToDate = false;
-			System.out.println("[GeometricMagic] A newer version of GeometricMagic is available!");
-		}
-		else
-			System.out.println("[GeometricMagic] Plugin is up to date!");
 	}
 }
