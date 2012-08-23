@@ -939,8 +939,11 @@ public class GeometricMagicPlayerListener implements Listener {
 					if (entityList.get(i) instanceof Item) {
 						Item droppedItem = (Item) entityList.get(i);
 
-						// if its redstone just skip it
-						if(droppedItem.getItemStack().getTypeId() == 331) continue;
+						// Skip items because they don't have values
+						if(droppedItem.getItemStack().getTypeId() > 255) {
+							player.sendMessage("You can't use items, only blocks");
+							continue;
+						}
 
 						// check if player has permission to break blocks here first
 						if (!checkBlockBreakSimulation(droppedItem.getLocation(), player)) {
