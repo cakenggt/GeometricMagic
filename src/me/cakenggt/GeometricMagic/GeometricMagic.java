@@ -40,7 +40,6 @@ public class GeometricMagic extends JavaPlugin {
 	private Listener entityListener;
 	private static Economy economy;
 	File configFile;
-	public boolean autoUpdate;
 	public boolean autoUpdateNotify;
 	public boolean upToDate = true;
 
@@ -334,23 +333,13 @@ public class GeometricMagic extends JavaPlugin {
 		// Plugin metrics
 		startPluginMetrics();
 		
-		// Check auto-update-notify
-		if (getConfig().getBoolean("general.auto-update-notify")) {
-			if (getConfig().getBoolean("general.auto-update"))
-				autoUpdate = true;
-			else
-				autoUpdateNotify = true;
-		}
-		// Check auto-update
-		else if (getConfig().getBoolean("general.auto-update")) {
-			autoUpdate = true;
-		}
-		
 		// Get plugin version for auto-update
 		int pluginVersion = Integer.parseInt(this.getDescription().getVersion().replace(".", ""));
 		
-		// Start auto-update
-		new Thread((new GeometricMagicAutoUpdater(this, pluginVersion))).start();
+		// Start auto-update if applicable
+		if (getConfig().getBoolean("auto-update-notify")) {
+			new Thread((new GeometricMagicAutoUpdater(this, pluginVersion))).start();
+		}
 	}
 
 	// Vault Support

@@ -35,7 +35,7 @@ public class GeometricMagicAutoUpdater implements Runnable {
 	}
 	
 	public void run() {
-		while (plugin.getConfig().getBoolean("general.auto-update-notify")) {
+		while (true) {
 			String rawVersion = null;
 			
 			try {
