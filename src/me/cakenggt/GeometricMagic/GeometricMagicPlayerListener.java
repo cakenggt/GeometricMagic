@@ -155,8 +155,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			// set circle cool down
 			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
-				String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
-				int coolDown = Integer.parseInt(coolDownConfig);
+				int coolDown = plugin.getConfig().getInt("setcircles.cooldown");
 				if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
 					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
 					if (diff < coolDown) {
@@ -275,8 +274,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 			// transmute cool down
 			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
-				String coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
-				int coolDown = Integer.parseInt(coolDownConfig);
+				int coolDown = plugin.getConfig().getInt("transmutation.cooldown");
 				if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
 					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
 					if (diff < coolDown) {
@@ -317,8 +315,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (player.hasPermission("geometricmagic.set")) {
 				// set circle cool down
 				if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
-					String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
-					int coolDown = Integer.parseInt(coolDownConfig);
+					int coolDown = plugin.getConfig().getInt("setcircles.cooldown");
 					if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
 						long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
 						if (diff < coolDown) {
@@ -566,8 +563,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		// Tell player when they can use a set circle
-		String coolDownConfig = plugin.getConfig().getString("setcircles.cooldown").toString();
-		int coolDown = Integer.parseInt(coolDownConfig);
+		int coolDown = plugin.getConfig().getInt("setcircles.cooldown");
 		if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
 			long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
 			if (diff < coolDown) {
@@ -583,8 +579,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		// Tell player when they can use a transmute circle
-		coolDownConfig = plugin.getConfig().getString("transmutation.cooldown").toString();
-		coolDown = Integer.parseInt(coolDownConfig);
+		coolDown = plugin.getConfig().getInt("transmutation.cooldown");
 		if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
 			long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
 			if (diff < coolDown) {
@@ -917,8 +912,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[1, 2, 2, 2]") && player.hasPermission("geometricmagic.set.1222")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.1222.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.1222.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -986,8 +980,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[1, 2, 3, 3]") && player.hasPermission("geometricmagic.set.1233")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.1233.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.1233.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1029,8 +1022,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			effectBlock.getWorld().dropItem(effectBlockLocation, diamondStack);
 		} else if (arrayString.equals("[1, 2, 3, 4]") && player.hasPermission("geometricmagic.set.1234")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.1234.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.1234.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1043,8 +1035,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 				player.sendMessage(ChatColor.GREEN + "The four elements, like man alone, are weak. But together they form the strong fifth element: boron -Brother Silence");
-				String amountConfig = plugin.getConfig().getString("setcircles.1234.amount").toString();
-				int amount = Integer.parseInt(amountConfig);
+				int amount = plugin.getConfig().getInt("setcircles.1234.amount");
 				ItemStack oneRedstone = new ItemStack(331, amount);
 
 				effectBlock.getWorld().dropItem(effectBlockLocation, oneRedstone);
@@ -1055,8 +1046,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[2, 2, 2, 3]") && player.hasPermission("geometricmagic.set.2223")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.2223.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.2223.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1116,8 +1106,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[2, 2, 2, 4]") && player.hasPermission("geometricmagic.set.2224")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.2224.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.2224.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1138,8 +1127,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 
-			String costConfig = plugin.getConfig().getString("setcircles.2244.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.2244.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1208,8 +1196,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 		} else if (arrayString.equals("[2, 3, 3, 3]") && player.hasPermission("geometricmagic.set.2333")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.2333.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.2333.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1244,8 +1231,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[3, 3, 3, 4]") && player.hasPermission("geometricmagic.set.3334")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.3334.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.3334.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1258,8 +1244,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
 
-				String configSize = plugin.getConfig().getString("setcircles.3334.size").toString();
-				Integer circleSize = Integer.parseInt(configSize);
+				Integer circleSize = plugin.getConfig().getInt("setcircles.3334.size");
 
 				alchemyFiller(Material.AIR, (byte) 0, Material.FIRE, (byte) 0, effectBlock.getRelative((circleSize / 2) * -1, 0, (circleSize / 2) * -1).getLocation(),
 						effectBlock.getRelative(circleSize / 2, circleSize, circleSize / 2).getLocation(), player, false);
@@ -1270,8 +1255,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[3, 3, 4, 4]") && player.hasPermission("geometricmagic.set.3344")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.3344.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.3344.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1306,8 +1290,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 		} else if (arrayString.equals("[3, 4, 4, 4]") && player.hasPermission("geometricmagic.set.3444")) {
 
-			String costConfig = plugin.getConfig().getString("setcircles.3444.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.3444.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1331,8 +1314,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else if (arrayString.equals("[0, 1, 1, 1]") && player.hasPermission("geometricmagic.set.0111")) {
 
 			// using x111 because yml doesn't like 0 as first character
-			String costConfig = plugin.getConfig().getString("setcircles.x111.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.x111.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1376,8 +1358,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("geometricmagic.set.0044")) {
 
 			// using x044 because yml doesn't like 0 as first character
-			String costConfig = plugin.getConfig().getString("setcircles.x044.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.x044.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1405,8 +1386,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else if (arrayString.equals("[0, 1, 4, 4]") && player.hasPermission("geometricmagic.set.0144")) {
 
 			// using x144 because yml doesn't like 0 as first character
-			String costConfig = plugin.getConfig().getString("setcircles.x144.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.x144.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1434,8 +1414,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else if (arrayString.equals("[0, 2, 4, 4]") && player.hasPermission("geometricmagic.set.0244")) {
 
 			// using x244 because yml doesn't like 0 as first character
-			String costConfig = plugin.getConfig().getString("setcircles.x244.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.x244.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1463,8 +1442,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		} else if (arrayString.equals("[0, 3, 4, 4]") && player.hasPermission("geometricmagic.set.0344")) {
 
 			// using x344 because yml doesn't like 0 as first character
-			String costConfig = plugin.getConfig().getString("setcircles.x344.cost").toString();
-			cost = Integer.parseInt(costConfig);
+			cost = plugin.getConfig().getInt("setcircles.x344.cost");
 			if (cost > 20)
 				cost = 20;
 
@@ -1497,8 +1475,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static int setCircleSize(Block actBlock) {
 		// limit sizes
-		String limitSizeConfig = plugin.getConfig().getString("setcircles.limitsize").toString();
-		int limitsize = Integer.parseInt(limitSizeConfig);
+		int limitsize = plugin.getConfig().getInt("setcircles.limitsize");
 
 		int na = 0, nb = 0, ea = 0, eb = 0, sa = 0, sb = 0, wa = 0, wb = 0, nc = 0, ec = 0, sc = 0, wc = 0;
 		Block curBlock = actBlock.getRelative(0, 0, -5);
@@ -1928,8 +1905,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (inventory.getItem(i) != null && inventory.getItem(i).getType() == Material.PORTAL)
 				stackCount += inventory.getItem(i).getAmount();
 		}
-		String multiplier = plugin.getConfig().getString("philosopherstone.modifier").toString();
-		float multiplierModifier = Float.parseFloat(multiplier);
+		float multiplierModifier = (float) plugin.getConfig().getDouble("philosopherstone.modifier");
 
 		modifier = 1 / (Math.pow(2, stackCount) * multiplierModifier);
 		return modifier;
