@@ -2004,7 +2004,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		// Set the new state without physics.
 		placedBlock.setTypeIdAndData(typeId, data, false);
 		BlockPlaceEvent placeEvent = new BlockPlaceEvent(placedBlock, replacedBlockState, placedAgainst.getBlock(), null, player, true);
-		((PluginManager) getPluginManager(plugin)).callEvent(placeEvent);
+		getPluginManager().callEvent(placeEvent);
 
 		// Revert to the old state without physics.
 		placedBlock.setTypeIdAndData(oldType, oldData, false);
@@ -2016,7 +2016,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static boolean checkBlockBreakSimulation(Location target, Player player) {
 		Block block = target.getBlock();
 		BlockBreakEvent breakEvent = new BlockBreakEvent(block, player);
-		((PluginManager) getPluginManager(plugin)).callEvent(breakEvent);
+		getPluginManager().callEvent(breakEvent);
 		if (breakEvent.isCancelled())
 			return false;
 		return true;
@@ -2025,26 +2025,24 @@ public class GeometricMagicPlayerListener implements Listener {
 	// Lyneira's Code End
 
 	public static boolean checkBreakBlacklist(int m) {
-		boolean ret = false;
 		List<String> blacklist = plugin.getConfig().getStringList("blacklist.break");
 		for (String s : blacklist) {
 			if (s.equals(String.valueOf(m)))
-				ret = true;
+				return true;
 		}
-		return ret;
+		return false;
 	}
 	
 	public static boolean checkPlaceBlacklist(int m) {
-		boolean ret = false;
 		List<String> blacklist = plugin.getConfig().getStringList("blacklist.place");
 		for (String s : blacklist) {
 			if (s.equals(String.valueOf(m)))
-				ret = true;
+				return true;
 		}
-		return ret;
+		return false;
 	}
 	
-	public static Object getPluginManager(GeometricMagic plugin) {
+	public static PluginManager getPluginManager() {
 		return plugin.getServer().getPluginManager();
 	}
 }
