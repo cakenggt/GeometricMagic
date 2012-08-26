@@ -145,6 +145,70 @@ public class GeometricMagicConfigUpdater {
 					return;
 				}
 			}
+			else if (plugin.getConfig().getString("version").equals("2.7.5")) {
+				System.out.println("[GeometricMagic] Updating config to v2.7.6...");
+				List<String> strList = new ArrayList<String>();
+				
+				File myFile = new File("plugins/GeometricMagic/config.yml");
+				if (myFile.exists()) {
+					Scanner in = new Scanner(myFile);
+					while (in.hasNextLine()) {
+						String nextLine = in.nextLine();
+						if (!nextLine.contains("version:")
+								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!")
+								&& !nextLine.contains("# TRANSMUTATION SECTION")
+								&& !nextLine.contains("transmutation:")
+								&& !nextLine.contains("    # Cool down time between transmutations in seconds")
+								&& !nextLine.contains("    cooldown:")
+								&& !nextLine.contains("    # What system to use for transmutation cost")
+								&& !nextLine.contains("    # Possible values: xp, vault (requires Vault)")
+								&& !nextLine.contains("    cost: xp")
+								&& !nextLine.contains("    # Apply Philosopher's Stone to transmutes (true or false)")
+								&& !nextLine.contains("    stone: true"))
+							strList.add(nextLine);
+						else
+							in.nextLine();
+					}
+					in.close();
+					
+					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
+					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
+					for (String s : strList) {
+						out.println(s);
+					}
+					
+					out.println();
+					out.println("# DO NOT MODIFY THIS VALUE!");
+					out.println("version: 2.7.6");
+					out.println();
+					out.println("# TRANSMUTATION SECTION");
+					out.println("transmutation:");
+					out.println();
+					out.println("    # Rate (in milliseconds) at which blocks are updated");
+					out.println("    rate: 10");
+					out.println();
+					out.println("    # Cool down time between transmutations in seconds");
+					out.println("    cooldown: 10");
+					out.println();
+					out.println("    # What system to use for transmutation cost");
+					out.println("    # Possible values: xp, vault (requires Vault)");
+					out.println("    cost: xp");
+					out.println();
+					out.println("    # Apply Philosopher's Stone to transmutes (true or false)");
+					out.println("    stone: true");
+					out.println();
+					out.close();
+					
+					plugin.reloadConfig();
+				}
+				else
+					return;
+				
+				if (!isUpdated()) {
+					updateConfig(instance);
+					return;
+				}
+			}
 		}
 		// If the config is updated
 		else {
