@@ -28,6 +28,9 @@ general:
 # TRANSMUTATION SECTION
 transmutation:
 
+    # Rate (in milliseconds) at which blocks are updated
+    rate: 10
+
     # Cool down time between transmutations in seconds
     cooldown: 10
 

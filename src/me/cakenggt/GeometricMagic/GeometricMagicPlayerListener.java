@@ -1550,6 +1550,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		int xIteration = 0;
 		int yIteration = 0;
 		int zIteration = 0;
+		
 		if (circleStart.getX() < circleEnd.getX()) {
 			if (circleStart.getZ() < circleEnd.getZ()) {
 				// east
@@ -1650,85 +1651,10 @@ public class GeometricMagicPlayerListener implements Listener {
 
 	public static void alchemyFiller(Material a, byte fromData, Material b, byte toData, Location start, Location end, Player player, boolean charge) {
 		// System.out.println("alchemyFiller");
-		Block startBlock = start.getBlock();
-		int xIteration = 0;
-		int yIteration = 0;
-		int zIteration = 0;
-
-		if (start.getX() < end.getX()) {
-			if (start.getZ() < end.getZ()) {
-				// east
-				// System.out.println("alchemyFiller east");
-				while (startBlock.getY() <= end.getY()) {
-					while (startBlock.getX() <= end.getX()) {
-						while (startBlock.getZ() <= end.getZ()) {
-							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
-							startBlock = startBlock.getRelative(0, 0, 1);
-						}
-						xIteration++;
-						startBlock = start.getBlock().getRelative(xIteration, yIteration, 0);
-					}
-					yIteration++;
-					xIteration = 0;
-					startBlock = start.getBlock().getRelative(0, yIteration, 0);
-				}
-			} else {
-				// north
-				// System.out.println("alchemyFiller north");
-				while (startBlock.getY() <= end.getY()) {
-					while (startBlock.getZ() >= end.getZ()) {
-						while (startBlock.getX() <= end.getX()) {
-							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
-							startBlock = startBlock.getRelative(1, 0, 0);
-						}
-						zIteration--;
-						startBlock = start.getBlock().getRelative(0, yIteration, zIteration);
-					}
-					yIteration++;
-					zIteration = 0;
-					startBlock = start.getBlock().getRelative(0, yIteration, 0);
-				}
-			}
-		} else {
-			if (start.getZ() > end.getZ()) {
-				// west
-				// System.out.println("alchemyFiller west");
-				while (startBlock.getY() <= end.getY()) {
-					while (startBlock.getX() >= end.getX()) {
-						while (startBlock.getZ() >= end.getZ()) {
-							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
-							startBlock = startBlock.getRelative(0, 0, -1);
-						}
-						xIteration--;
-						startBlock = start.getBlock().getRelative(xIteration, yIteration, 0);
-					}
-					yIteration++;
-					xIteration = 0;
-					startBlock = start.getBlock().getRelative(0, yIteration, 0);
-				}
-			} else {
-				// south
-				// System.out.println("alchemyFiller south");
-				while (startBlock.getY() <= end.getY()) {
-					while (startBlock.getZ() <= end.getZ()) {
-						while (startBlock.getX() >= end.getX()) {
-							transmuteBlock(a, fromData, b, toData, startBlock, player, charge);
-							startBlock = startBlock.getRelative(-1, 0, 0);
-							// System.out.println("xloopfiller");
-						}
-						zIteration++;
-						// System.out.println("zloopfiller");
-						startBlock = start.getBlock().getRelative(0, yIteration, zIteration);
-					}
-					yIteration++;
-					// System.out.println("yloopfiller");
-					zIteration = 0;
-					startBlock = start.getBlock().getRelative(0, yIteration, 0);
-				}
-			}
-		}
-
-		return;
+		String playerName = player.getName();
+		long rate = plugin.getConfig().getLong("transmutation.rate");
+		
+		new Thread(new GeometricMagicTransmutationThread(plugin, rate, a, fromData, b, toData, start, end, playerName, charge)).start();
 	}
 
 	public static double getBalance(Player player) {
@@ -1745,144 +1671,6 @@ public class GeometricMagicPlayerListener implements Listener {
 			return balance;
 		}
 		return 0;
-	}
-
-	public static void transmuteBlock(Material a, byte fromData, Material b, byte toData, Block startBlock, Player player, boolean charge) {
-
-		double pay = calculatePay(a, fromData, b, toData, player);
-
-		if (startBlock.getType() == a && startBlock.getData() == fromData) {
-
-			if (-1 * getBalance(player) < pay || !charge) {
-
-				// Block break
-				if (a != Material.AIR && b == Material.AIR) {
-					
-					if (!checkBreakBlacklist(a.getId())) {
-						
-						Location blockLocation = startBlock.getLocation();
-
-						if (checkBlockBreakSimulation(blockLocation, player)) {
-							// Change block
-							startBlock.setType(b);
-							if (toData != 0)
-								startBlock.setData(toData);
-
-							if (charge) {
-								if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-
-									Economy econ = GeometricMagic.getEconomy();
-
-									// Deposit or withdraw to players Vault account
-									if (pay > 0) {
-										econ.depositPlayer(player.getName(), pay);
-									} else if (pay < 0) {
-										econ.withdrawPlayer(player.getName(), pay * -1);
-									}
-								} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-									player.setLevel((int) (player.getLevel() + pay));
-								}
-							}
-						}
-					}
-					
-					else {
-						player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-						return;
-					}
-
-				}
-
-				// Block place
-				else if (a == Material.AIR && b != Material.AIR) {
-					
-					if (!checkPlaceBlacklist(b.getId())) {
-						
-						Location blockLocation = startBlock.getLocation();
-						int blockID = b.getId();
-						byte blockData = toData;
-
-						if (checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
-							// Change block
-							startBlock.setType(b);
-							if (toData != 0)
-								startBlock.setData(toData);
-
-							if (charge) {
-								if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-
-									Economy econ = GeometricMagic.getEconomy();
-
-									// Deposit or withdraw to players Vault account
-									if (pay > 0) {
-										econ.depositPlayer(player.getName(), pay);
-									} else if (pay < 0) {
-										econ.withdrawPlayer(player.getName(), pay * -1);
-									}
-								} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-									player.setLevel((int) (player.getLevel() + pay));
-								}
-							}
-						}
-					}
-					
-					else {
-						player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-						return;
-					}
-				}
-
-				// Block break and place
-				else if (a != Material.AIR && b != Material.AIR) {
-
-					if (!checkBreakBlacklist(a.getId()) && !checkPlaceBlacklist(b.getId())) {
-						
-						Location blockLocation = startBlock.getLocation();
-						int blockID = b.getId();
-						byte blockData = toData;
-
-						if (checkBlockBreakSimulation(blockLocation, player) && checkBlockPlaceSimulation(blockLocation, blockID, blockData, blockLocation, player)) {
-							// Change block
-							startBlock.setType(b);
-							if (toData != 0)
-								startBlock.setData(toData);
-
-							if (charge) {
-								if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
-
-									Economy econ = GeometricMagic.getEconomy();
-
-									// Deposit or withdraw to players Vault account
-									if (pay > 0) {
-										econ.depositPlayer(player.getName(), pay);
-									} else if (pay < 0) {
-										econ.withdrawPlayer(player.getName(), pay * -1);
-									}
-								} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-									player.setLevel((int) (player.getLevel() + pay));
-								}
-							}
-						}
-					}
-					
-					else {
-						player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-						return;
-					}
-					
-				}
-
-				// output to console
-				else if ((a != Material.AIR && b != Material.AIR) || a == Material.MOB_SPAWNER || b == Material.MOB_SPAWNER) {
-					System.out.println("[GeometricMagic] " + player.getName() + " tried to transmute a blacklisted material:");
-					System.out.println("[GeometricMagic] " + a.name() + " into " + b.name());
-				}
-				return;
-			} else
-				return;
-		} else
-			// System.out.println("[GeometricMagic] DEBUG - Block Data: " + (int) startBlock.getData() + ", A Data: " + (int) fromData + ", B Data: " + (int) toData);
-			return;
 	}
 
 	public static double calculatePay(Material a, byte fromData , Material b, byte toData , Player player) {
