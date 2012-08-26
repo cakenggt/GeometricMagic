@@ -64,14 +64,11 @@ public class GeometricMagicTransmutationThread implements Runnable {
 	}
 	
 	public void run() {
-		System.out.println("[DEBUG] start: " + start.toString());
-		System.out.println("[DEBUG] end: " + end.toString());
-		
 		if (start.getX() < end.getX()) {
 			if (start.getZ() < end.getZ()) {
-				for (int x = (int) start.getX(); x < end.getX(); x++) {
-					for (int y = (int) start.getY(); y < end.getY(); y++) {
-						for (int z = (int) start.getZ(); z < end.getZ(); z++) {
+				for (int x = (int) start.getX(); x <= end.getX(); x++) {
+					for (int y = (int) start.getY(); y <= end.getY(); y++) {
+						for (int z = (int) start.getZ(); z <= end.getZ(); z++) {
 							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
 							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
 							try {
@@ -84,9 +81,9 @@ public class GeometricMagicTransmutationThread implements Runnable {
 				}
 			}
 			else {
-				for (int x = (int) start.getX(); x < end.getX(); x++) {
-					for (int y = (int) start.getY(); y < end.getY(); y++) {
-						for (int z = (int) start.getZ(); z > end.getZ(); z--) {
+				for (int x = (int) start.getX(); x <= end.getX(); x++) {
+					for (int y = (int) start.getY(); y <= end.getY(); y++) {
+						for (int z = (int) start.getZ(); z >= end.getZ(); z--) {
 							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
 							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
 							try {
@@ -101,9 +98,9 @@ public class GeometricMagicTransmutationThread implements Runnable {
 		}
 		else {
 			if (start.getZ() < end.getZ()) {
-				for (int x = (int) start.getX(); x > end.getX(); x--) {
-					for (int y = (int) start.getY(); y < end.getY(); y++) {
-						for (int z = (int) start.getZ(); z < end.getZ(); z++) {
+				for (int x = (int) start.getX(); x >= end.getX(); x--) {
+					for (int y = (int) start.getY(); y <= end.getY(); y++) {
+						for (int z = (int) start.getZ(); z <= end.getZ(); z++) {
 							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
 							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
 							try {
@@ -116,9 +113,9 @@ public class GeometricMagicTransmutationThread implements Runnable {
 				}
 			}
 			else {
-				for (int x = (int) start.getX(); x > end.getX(); x++) {
-					for (int y = (int) start.getY(); y < end.getY(); y++) {
-						for (int z = (int) start.getZ(); z > end.getZ(); z++) {
+				for (int x = (int) start.getX(); x >= end.getX(); x--) {
+					for (int y = (int) start.getY(); y <= end.getY(); y++) {
+						for (int z = (int) start.getZ(); z >= end.getZ(); z--) {
 							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
 							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
 							try {
@@ -135,11 +132,9 @@ public class GeometricMagicTransmutationThread implements Runnable {
 	
 	public void transmuteBlock(final Material a, final byte fromData, final Material b, final byte toData,
 										final Location startBlockLoc, final String playerName, final boolean charge) {
-		System.out.println("[DEBUG] transmuteBlock void");
 		
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
-				System.out.println("[DEBUG] Scheduled task");
 				Player player = plugin.getServer().getPlayer(playerName);
 				Block startBlock = startBlockLoc.getBlock();
 				double pay = GeometricMagicPlayerListener.calculatePay(a, fromData, b, toData, player);
@@ -153,17 +148,12 @@ public class GeometricMagicTransmutationThread implements Runnable {
 				}
 				
 				if (player != null) {
-					System.out.println("[DEBUG] Player != null");
-					System.out.println("[DEBUG] startBlockType=" + startBlock.getType().toString() + ", a=" + a.toString() + ", startBlockData=" + String.valueOf(startBlock.getData()) + ", fromData=" + String.valueOf(fromData));
 					if (startBlock.getType() == a && startBlock.getData() == fromData) {
-						System.out.println("[DEBUG] startBlock = A");
 
 						if (-1 * GeometricMagicPlayerListener.getBalance(player) < pay || !charge) {
-							System.out.println("[DEBUG] -1 * bal < pay || !charge");
 
 							// Block break
 							if (a != Material.AIR && b == Material.AIR) {
-								System.out.println("[DEBUG] Break");
 								
 								if (!GeometricMagicPlayerListener.checkBreakBlacklist(a.getId())) {
 									
@@ -201,7 +191,6 @@ public class GeometricMagicTransmutationThread implements Runnable {
 
 							// Block place
 							else if (a == Material.AIR && b != Material.AIR) {
-								System.out.println("[DEBUG] Place");
 								
 								if (!GeometricMagicPlayerListener.checkPlaceBlacklist(b.getId())) {
 									
@@ -241,7 +230,6 @@ public class GeometricMagicTransmutationThread implements Runnable {
 
 							// Block break and place
 							else if (a != Material.AIR && b != Material.AIR) {
-								System.out.println("[DEBUG] Break and place");
 
 								if (!GeometricMagicPlayerListener.checkBreakBlacklist(a.getId()) && !GeometricMagicPlayerListener.checkPlaceBlacklist(b.getId())) {
 									
@@ -280,15 +268,10 @@ public class GeometricMagicTransmutationThread implements Runnable {
 								}
 								
 							}
-
-							// output to console
-							else if ((a != Material.AIR && b != Material.AIR) || a == Material.MOB_SPAWNER || b == Material.MOB_SPAWNER) {
-								System.out.println("[GeometricMagic] " + player.getName() + " tried to transmute a blacklisted material:");
-								System.out.println("[GeometricMagic] " + a.name() + " into " + b.name());
-							}
+						} else {
+							player.sendMessage(ChatColor.RED + "You do not have enough power to create that block");
 							return;
-						} else
-							return;
+						}
 					} else
 						// System.out.println("[GeometricMagic] DEBUG - Block Data: " + (int) startBlock.getData() + ", A Data: " + (int) fromData + ", B Data: " + (int) toData);
 						return;
