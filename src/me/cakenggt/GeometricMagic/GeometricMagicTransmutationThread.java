@@ -64,105 +64,73 @@ public class GeometricMagicTransmutationThread implements Runnable {
 	}
 	
 	public void run() {
-		int xIteration = 0;
-		int yIteration = 0;
-		int zIteration = 0;
-		final Location startOriginal = start;
-
-		if (startOriginal.getX() < end.getX()) {
-			if (startOriginal.getZ() < end.getZ()) {
-				// east
-				// System.out.println("alchemyFiller east");
-				while (start.getY() <= end.getY()) {
-					while (start.getX() <= end.getX()) {
-						while (start.getZ() <= end.getZ()) {
-							transmuteBlock(a, fromData, b, toData, start, playerName, charge);
+		System.out.println("[DEBUG] start: " + start.toString());
+		System.out.println("[DEBUG] end: " + end.toString());
+		
+		if (start.getX() < end.getX()) {
+			if (start.getZ() < end.getZ()) {
+				for (int x = (int) start.getX(); x < end.getX(); x++) {
+					for (int y = (int) start.getY(); y < end.getY(); y++) {
+						for (int z = (int) start.getZ(); z < end.getZ(); z++) {
+							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
+							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
 							try {
 								Thread.sleep(rate);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							start = start.add(0, 0, 1);
 						}
-						xIteration++;
-						start = startOriginal.add(xIteration, yIteration, 0);
 					}
-					yIteration++;
-					xIteration = 0;
-					start = startOriginal.add(0, yIteration, 0);
-				}
-			} else {
-				// north
-				// System.out.println("alchemyFiller north");
-				while (start.getY() <= end.getY()) {
-					while (start.getZ() >= end.getZ()) {
-						while (start.getX() <= end.getX()) {
-							transmuteBlock(a, fromData, b, toData, start, playerName, charge);
-							try {
-								Thread.sleep(rate);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							start = start.add(1, 0, 0);
-						}
-						zIteration--;
-						start = startOriginal.add(0, yIteration, zIteration);
-					}
-					yIteration++;
-					zIteration = 0;
-					start = startOriginal.add(0, yIteration, 0);
 				}
 			}
-		} else {
-			if (startOriginal.getZ() > end.getZ()) {
-				// west
-				// System.out.println("alchemyFiller west");
-				while (start.getY() <= end.getY()) {
-					while (start.getX() >= end.getX()) {
-						while (start.getZ() >= end.getZ()) {
-							transmuteBlock(a, fromData, b, toData, start, playerName, charge);
+			else {
+				for (int x = (int) start.getX(); x < end.getX(); x++) {
+					for (int y = (int) start.getY(); y < end.getY(); y++) {
+						for (int z = (int) start.getZ(); z > end.getZ(); z--) {
+							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
+							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
 							try {
 								Thread.sleep(rate);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							start = start.add(0, 0, -1);
 						}
-						xIteration--;
-						start = startOriginal.add(xIteration, yIteration, 0);
 					}
-					yIteration++;
-					xIteration = 0;
-					start = startOriginal.add(0, yIteration, 0);
-				}
-			} else {
-				// south
-				// System.out.println("alchemyFiller south");
-				while (start.getY() <= end.getY()) {
-					while (start.getZ() <= end.getZ()) {
-						while (start.getX() >= end.getX()) {
-							transmuteBlock(a, fromData, b, toData, start, playerName, charge);
-							try {
-								Thread.sleep(rate);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							start = start.add(-1, 0, 0);
-							// System.out.println("xloopfiller");
-						}
-						zIteration++;
-						// System.out.println("zloopfiller");
-						start = startOriginal.add(0, yIteration, zIteration);
-					}
-					yIteration++;
-					// System.out.println("yloopfiller");
-					zIteration = 0;
-					start = startOriginal.add(0, yIteration, 0);
 				}
 			}
 		}
-		
-		return;
+		else {
+			if (start.getZ() < end.getZ()) {
+				for (int x = (int) start.getX(); x > end.getX(); x--) {
+					for (int y = (int) start.getY(); y < end.getY(); y++) {
+						for (int z = (int) start.getZ(); z < end.getZ(); z++) {
+							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
+							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
+							try {
+								Thread.sleep(rate);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int x = (int) start.getX(); x > end.getX(); x++) {
+					for (int y = (int) start.getY(); y < end.getY(); y++) {
+						for (int z = (int) start.getZ(); z > end.getZ(); z++) {
+							Location loc = new Location(start.getWorld(), (double) x, (double) y, (double) z);
+							transmuteBlock(a, fromData, b, toData, loc, playerName, charge);
+							try {
+								Thread.sleep(rate);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void transmuteBlock(final Material a, final byte fromData, final Material b, final byte toData,

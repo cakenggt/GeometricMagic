@@ -1550,7 +1550,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		int xIteration = 0;
 		int yIteration = 0;
 		int zIteration = 0;
-		
 		if (circleStart.getX() < circleEnd.getX()) {
 			if (circleStart.getZ() < circleEnd.getZ()) {
 				// east
