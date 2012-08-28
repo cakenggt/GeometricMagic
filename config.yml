@@ -53,6 +53,14 @@ setcircles:
     # Limit number of nearby arrows to check
     limitarrows: 3
 
+    # Spawn weapon circle
+    1111:
+        # The cost of this circle in hunger
+        cost: 5
+        # The item ID to be given to the player
+        # Default: Iron sword
+        item: 267
+    
     # Repair Circle
     1133: []
     

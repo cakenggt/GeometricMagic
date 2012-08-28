@@ -812,10 +812,40 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		if (arrayString.equals("0"))
 			return;
-		if (arrayString.equals("[1, 1, 3, 3]") && player.hasPermission("geometricmagic.set.1133")) {
+		if (arrayString.equals("[1, 1, 1, 1]") && player.hasPermission("geometricmagic.set.1111")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
+			}
+			
+			cost = plugin.getConfig().getInt("setcircles.1222.cost");
+			if (cost > 20)
+				cost = 20;
+			
+			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+				}
+				
+				int itemID = plugin.getConfig().getInt("setcircles.1111.item");
+				ItemStack item = new ItemStack(itemID);
+				effectBlock.getWorld().dropItem(effectBlockLocation, item);
+				
+			} else {
+				player.sendMessage("You feel so hungry...");
+				return;
+			}
+		}
+		else if (arrayString.equals("[1, 1, 3, 3]") && player.hasPermission("geometricmagic.set.1133")) {
+			if (!hasLearnedCircle(player, arrayString)) {
+				player.sendMessage("You have not yet learned circle " + arrayString + "!");
+				return;
+			}
+			
+			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
+					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
+				}
 			}
 
 			int count = 0;

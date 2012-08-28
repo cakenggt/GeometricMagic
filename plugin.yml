@@ -81,6 +81,7 @@ permissions:
     geometricmagic.set.*:
         description: Allows you to use all set circles
         children:
+            geometricmagic.set.1111: true
             geometricmagic.set.1133: true
             geometricmagic.set.1222: true
             geometricmagic.set.1233: true
@@ -97,6 +98,8 @@ permissions:
             geometricmagic.set.0144: true
             geometricmagic.set.0244: true
             geometricmagic.set.0344: true
+    geometricmagic.set.1111:
+        description: Allows you to use set circle 1111
     geometricmagic.set.1133:
         description: Allows you to use set circle 1133
     geometricmagic.set.1222:
