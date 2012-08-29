@@ -287,23 +287,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 
 			if (circleSize > 0) {
-				// exempt player from AntiCheat check
-				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
-					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
-					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
-				}
-
 				transmutationCircle(player, world, actBlock, circleSize);
-
-				// unexempt player from AntiCheat check
-				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
-					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
-					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
-					AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
-					AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
-				}
 			}
 
 			// set circle
