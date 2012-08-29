@@ -616,37 +616,43 @@ public class GeometricMagicPlayerListener implements Listener {
 			int dimensionOfEffect = (fullWidth - 2) * (fullWidth - 2);
 			if (actBlock.getRelative((fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// east
-				Block fromBlock = actBlock.getLocation().add(halfWidth - 1, 0, -1 * (halfWidth + 1)).getBlock();
-				Block toBlock = actBlock.getLocation().add(halfWidth - 1, 0, halfWidth + 1).getBlock();
-				fromType = fromBlock.getType();
-				toType = toBlock.getType();
-				byte fromData = fromBlock.getData();
-				byte toData = toBlock.getData();
-				startLoc = actBlock.getLocation().add(fullWidth, 0, -1 * dimensionOfEffect / 2);
-				// System.out.println(startLoc);
-				endLoc = actBlock.getLocation().add(fullWidth + dimensionOfEffect - 1, dimensionOfEffect - 1, dimensionOfEffect / 2 - 1);
-				// System.out.println(endLoc);
-				circleStart = actBlock.getLocation().add(1, 0, -1 * (halfWidth - 2));
-				// System.out.println(circleStart);
-				circleEnd = actBlock.getLocation().add(fullWidth - 2, fullWidth - 3, halfWidth - 2);
-				// System.out.println(circleEnd);
-				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
-				lightning = true;
+				if (actBlock.getRelative((halfWidth - 1), 0, halfWidth).getType() == Material.REDSTONE_WIRE
+						&& actBlock.getRelative((halfWidth - 1), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+					Block fromBlock = actBlock.getLocation().add(halfWidth - 1, 0, -1 * (halfWidth + 1)).getBlock();
+					Block toBlock = actBlock.getLocation().add(halfWidth - 1, 0, halfWidth + 1).getBlock();
+					fromType = fromBlock.getType();
+					toType = toBlock.getType();
+					byte fromData = fromBlock.getData();
+					byte toData = toBlock.getData();
+					startLoc = actBlock.getLocation().add(fullWidth, 0, -1 * dimensionOfEffect / 2);
+					// System.out.println(startLoc);
+					endLoc = actBlock.getLocation().add(fullWidth + dimensionOfEffect - 1, dimensionOfEffect - 1, dimensionOfEffect / 2 - 1);
+					// System.out.println(endLoc);
+					circleStart = actBlock.getLocation().add(1, 0, -1 * (halfWidth - 2));
+					// System.out.println(circleStart);
+					circleEnd = actBlock.getLocation().add(fullWidth - 2, fullWidth - 3, halfWidth - 2);
+					// System.out.println(circleEnd);
+					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+					lightning = true;
+				}
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// west
 				// System.out.println("transmutationCircle west");
-				Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth - 1), 0, halfWidth + 1).getBlock();
-				Block toBlock = actBlock.getLocation().add((-1) * (halfWidth - 1), 0, (-1) * (halfWidth + 1)).getBlock();
-				fromType = fromBlock.getType();
-				toType = toBlock.getType();
-				byte fromData = fromBlock.getData();
-				byte toData = toBlock.getData();
-				startLoc = actBlock.getLocation().add(-1 * fullWidth, 0, dimensionOfEffect / 2);
-				endLoc = actBlock.getLocation().add(-1 * (fullWidth + dimensionOfEffect) + 1, dimensionOfEffect - 1, -1 * dimensionOfEffect / 2 + 1);
-				circleStart = actBlock.getLocation().add(-1, 0, (halfWidth - 2));
-				circleEnd = actBlock.getLocation().add(-1 * (fullWidth - 2), fullWidth - 3, -1 * (halfWidth - 2));
-				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
-				lightning = true;
+				if (actBlock.getRelative((-1 * (halfWidth - 1)), 0, halfWidth).getType() == Material.REDSTONE_WIRE
+						&& actBlock.getRelative((-1 * (halfWidth - 1)), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+					Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth - 1), 0, halfWidth + 1).getBlock();
+					Block toBlock = actBlock.getLocation().add((-1) * (halfWidth - 1), 0, (-1) * (halfWidth + 1)).getBlock();
+					fromType = fromBlock.getType();
+					toType = toBlock.getType();
+					byte fromData = fromBlock.getData();
+					byte toData = toBlock.getData();
+					startLoc = actBlock.getLocation().add(-1 * fullWidth, 0, dimensionOfEffect / 2);
+					endLoc = actBlock.getLocation().add(-1 * (fullWidth + dimensionOfEffect) + 1, dimensionOfEffect - 1, -1 * dimensionOfEffect / 2 + 1);
+					circleStart = actBlock.getLocation().add(-1, 0, (halfWidth - 2));
+					circleEnd = actBlock.getLocation().add(-1 * (fullWidth - 2), fullWidth - 3, -1 * (halfWidth - 2));
+					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+					lightning = true;
+				}
 			}
 		} else if (actBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
@@ -663,33 +669,39 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (actBlock.getRelative(0, 0, -1 * (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// north
 				// System.out.println("transmutationCircle north");
-				Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, -1 * (halfWidth - 1)).getBlock();
-				Block toBlock = actBlock.getLocation().add(halfWidth + 1, 0, -1 * (halfWidth - 1)).getBlock();
-				fromType = fromBlock.getType();
-				toType = toBlock.getType();
-				byte fromData = fromBlock.getData();
-				byte toData = toBlock.getData();
-				startLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2, 0, -1 * fullWidth);
-				endLoc = actBlock.getLocation().add(dimensionOfEffect / 2 - 1, dimensionOfEffect - 1, -1 * (dimensionOfEffect + fullWidth) + 1);
-				circleStart = actBlock.getLocation().add(-1 * (halfWidth - 2), 0, -1);
-				circleEnd = actBlock.getLocation().add((halfWidth - 2), fullWidth - 3, -1 * (fullWidth - 2));
-				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
-				lightning = true;
+				if (actBlock.getRelative(halfWidth, 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE
+						&& actBlock.getRelative((-1 * halfWidth), 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE) {
+					Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, -1 * (halfWidth - 1)).getBlock();
+					Block toBlock = actBlock.getLocation().add(halfWidth + 1, 0, -1 * (halfWidth - 1)).getBlock();
+					fromType = fromBlock.getType();
+					toType = toBlock.getType();
+					byte fromData = fromBlock.getData();
+					byte toData = toBlock.getData();
+					startLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2, 0, -1 * fullWidth);
+					endLoc = actBlock.getLocation().add(dimensionOfEffect / 2 - 1, dimensionOfEffect - 1, -1 * (dimensionOfEffect + fullWidth) + 1);
+					circleStart = actBlock.getLocation().add(-1 * (halfWidth - 2), 0, -1);
+					circleEnd = actBlock.getLocation().add((halfWidth - 2), fullWidth - 3, -1 * (fullWidth - 2));
+					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+					lightning = true;
+				}
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
 				// System.out.println("transmutationCircle south");
-				Block fromBlock = actBlock.getLocation().add(halfWidth + 1, 0, halfWidth - 1).getBlock();
-				Block toBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, halfWidth - 1).getBlock();
-				fromType = fromBlock.getType();
-				toType = toBlock.getType();
-				byte fromData = fromBlock.getData();
-				byte toData = toBlock.getData();
-				startLoc = actBlock.getLocation().add(dimensionOfEffect / 2, 0, fullWidth);
-				endLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2 + 1, dimensionOfEffect - 1, fullWidth + dimensionOfEffect - 1);
-				circleStart = actBlock.getLocation().add(halfWidth - 2, 0, 1);
-				circleEnd = actBlock.getLocation().add(-1 * (halfWidth - 2), fullWidth - 3, (fullWidth - 2));
-				alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
-				lightning = true;
+				if (actBlock.getRelative(halfWidth, 0, (halfWidth -1)).getType() == Material.REDSTONE_WIRE
+						&& actBlock.getRelative((-1 * halfWidth), 0, (halfWidth -1)).getType() == Material.REDSTONE_WIRE) {
+					Block fromBlock = actBlock.getLocation().add(halfWidth + 1, 0, halfWidth - 1).getBlock();
+					Block toBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, halfWidth - 1).getBlock();
+					fromType = fromBlock.getType();
+					toType = toBlock.getType();
+					byte fromData = fromBlock.getData();
+					byte toData = toBlock.getData();
+					startLoc = actBlock.getLocation().add(dimensionOfEffect / 2, 0, fullWidth);
+					endLoc = actBlock.getLocation().add(-1 * dimensionOfEffect / 2 + 1, dimensionOfEffect - 1, fullWidth + dimensionOfEffect - 1);
+					circleStart = actBlock.getLocation().add(halfWidth - 2, 0, 1);
+					circleEnd = actBlock.getLocation().add(-1 * (halfWidth - 2), fullWidth - 3, (fullWidth - 2));
+					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+					lightning = true;
+				}
 			}
 		}
 		if (lightning)
