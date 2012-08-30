@@ -40,6 +40,7 @@ permissions:
             geometricmagic.teleportation: true
             geometricmagic.micro: true
             geometricmagic.transmutation.1: true
+            geometricmagic.storage.*: true
             geometricmagic.set: true
             geometricmagic.command.geometricmagic: true
     geometricmagic.teleportation:
@@ -64,6 +65,24 @@ permissions:
         description: Allows you to use transmutation circles of size 7
     geometricmagic.transmutation.9:
         description: Allows you to use transmutation circles of size 9
+    geometricmagic.storage.*:
+        description: Allows you to use all storage circles
+        children:
+            geometricmagic.storage.1: true
+            geometricmagic.storage.3: true
+            geometricmagic.storage.5: true
+            geometricmagic.storage.7: true
+            geometricmagic.storage.9: true
+    geometricmagic.storage.1:
+        description: Allows you to use storage circles of size 1
+    geometricmagic.storage.3:
+        description: Allows you to use storage circles of size 3
+    geometricmagic.storage.5:
+        description: Allows you to use storage circles of size 5
+    geometricmagic.storage.7:
+        description: Allows you to use storage circles of size 7
+    geometricmagic.storage.9:
+        description: Allows you to use storage circles of size 9
     geometricmagic.set:
         description: Allows you to use all set circles and set circle commands
         children:

@@ -254,21 +254,40 @@ public class GeometricMagicPlayerListener implements Listener {
 			// transmutation circle size permissions
 			// - allows use of all circles smaller than then the max
 			// size permission node they have
-			int circleSize = 1;
-			if (player.hasPermission("geometricmagic.transmutation.*") || player.hasPermission("geometricmagic.transmutation.9")) {
-				circleSize = 9;
+			int transmutationCircleSize = 1;
+			if (player.hasPermission("geometricmagic.transmutation.9")) {
+				transmutationCircleSize = 9;
 			} else if (player.hasPermission("geometricmagic.transmutation.7")) {
-				circleSize = 7;
+				transmutationCircleSize = 7;
 			} else if (player.hasPermission("geometricmagic.transmutation.5")) {
-				circleSize = 5;
+				transmutationCircleSize = 5;
 			} else if (player.hasPermission("geometricmagic.transmutation.3")) {
-				circleSize = 3;
+				transmutationCircleSize = 3;
 			} else if (player.hasPermission("geometricmagic.transmutation.1")) {
-				circleSize = 1;
+				transmutationCircleSize = 1;
 			} else {
-				circleSize = 0;
+				transmutationCircleSize = 0;
 				player.sendMessage("You do not have permission to use this circle");
 			}
+			
+			// Storage circle size permissions
+			int storageCircleSize = 1;
+			if (player.hasPermission("geometricmagic.storage.9")) {
+				storageCircleSize = 9;
+			} else if (player.hasPermission("geometricmagic.storage.7")) {
+				storageCircleSize = 7;
+			} else if (player.hasPermission("geometricmagic.storage.5")) {
+				storageCircleSize = 5;
+			} else if (player.hasPermission("geometricmagic.storage.3")) {
+				storageCircleSize = 3;
+			} else if (player.hasPermission("geometricmagic.storage.1")) {
+				storageCircleSize = 1;
+			} else {
+				storageCircleSize = 0;
+				player.sendMessage("You do not have permission to use this circle");
+			}
+			
+			int circleSize = (transmutationCircleSize > storageCircleSize) ? transmutationCircleSize : storageCircleSize;
 
 			// System.out.println("circleSize:" + circleSize);
 
@@ -287,7 +306,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 
 			if (circleSize > 0) {
-				transmutationCircle(player, world, actBlock, circleSize);
+				transmutationCircle(player, world, actBlock, transmutationCircleSize, storageCircleSize);
 			}
 
 			// set circle
@@ -594,7 +613,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 	}
 
-	public static void transmutationCircle(Player player, World world, Block actBlock, int circleSize) {
+	public static void transmutationCircle(Player player, World world, Block actBlock, int transmutationCircleSize, int storageCircleSize) {
 		int halfWidth = 0;
 		int fullWidth = 0;
 		Location startLoc = actBlock.getLocation();
@@ -607,9 +626,6 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (actBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
 			while (actBlock.getRelative(0, 0, -1 * halfWidth).getType() == Material.REDSTONE_WIRE) {
-				if (halfWidth > circleSize) {
-					break;
-				}
 				halfWidth++;
 			}
 			fullWidth = (halfWidth * 2) - 1;
@@ -618,6 +634,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				// east
 				if (actBlock.getRelative((halfWidth - 1), 0, halfWidth).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((halfWidth - 1), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+					if (fullWidth - 2 > transmutationCircleSize) {
+						return;
+					}
 					Block fromBlock = actBlock.getLocation().add(halfWidth - 1, 0, -1 * (halfWidth + 1)).getBlock();
 					Block toBlock = actBlock.getLocation().add(halfWidth - 1, 0, halfWidth + 1).getBlock();
 					fromType = fromBlock.getType();
@@ -635,11 +654,24 @@ public class GeometricMagicPlayerListener implements Listener {
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
 				}
+				// Storage circle
+				else {
+					if (fullWidth - 2 > storageCircleSize) {
+						return;
+					}
+					startLoc = actBlock.getLocation().add(1, 0, (-1 * (halfWidth - 2)));
+					endLoc = actBlock.getLocation().add((fullWidth - 2), (fullWidth - 3), (halfWidth - 2));
+					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
+					lightning = true;
+				}
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// west
 				// System.out.println("transmutationCircle west");
 				if (actBlock.getRelative((-1 * (halfWidth - 1)), 0, halfWidth).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((-1 * (halfWidth - 1)), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+					if (fullWidth - 2 > transmutationCircleSize) {
+						return;
+					}
 					Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth - 1), 0, halfWidth + 1).getBlock();
 					Block toBlock = actBlock.getLocation().add((-1) * (halfWidth - 1), 0, (-1) * (halfWidth + 1)).getBlock();
 					fromType = fromBlock.getType();
@@ -653,13 +685,20 @@ public class GeometricMagicPlayerListener implements Listener {
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
 				}
+				// Storage circle
+				else {
+					if (fullWidth - 2 > storageCircleSize) {
+						return;
+					}
+					startLoc = actBlock.getLocation().add(-1, 0, (halfWidth - 2));
+					endLoc = actBlock.getLocation().add((-1 * (fullWidth - 2)), (fullWidth - 3), (-1 * (halfWidth - 2)));
+					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
+					lightning = true;
+				}
 			}
 		} else if (actBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
 			while (actBlock.getRelative(halfWidth, 0, 0).getType() == Material.REDSTONE_WIRE) {
-				if (halfWidth > circleSize) {
-					break;
-				}
 				halfWidth++;
 			}
 			fullWidth = (halfWidth * 2) - 1;
@@ -671,6 +710,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				// System.out.println("transmutationCircle north");
 				if (actBlock.getRelative(halfWidth, 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((-1 * halfWidth), 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE) {
+					if (fullWidth - 2 > transmutationCircleSize) {
+						return;
+					}
 					Block fromBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, -1 * (halfWidth - 1)).getBlock();
 					Block toBlock = actBlock.getLocation().add(halfWidth + 1, 0, -1 * (halfWidth - 1)).getBlock();
 					fromType = fromBlock.getType();
@@ -684,11 +726,24 @@ public class GeometricMagicPlayerListener implements Listener {
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
 				}
+				// Storage circle
+				else {
+					if (fullWidth - 2 > storageCircleSize) {
+						return;
+					}
+					startLoc = actBlock.getLocation().add((halfWidth - 2), 0, -1);
+					endLoc = actBlock.getLocation().add((halfWidth - 2), (fullWidth - 3), (-1 * (fullWidth - 2)));
+					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
+					lightning = true;
+				}
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
 				// System.out.println("transmutationCircle south");
 				if (actBlock.getRelative(halfWidth, 0, (halfWidth -1)).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((-1 * halfWidth), 0, (halfWidth -1)).getType() == Material.REDSTONE_WIRE) {
+					if (fullWidth - 2 > transmutationCircleSize) {
+						return;
+					}
 					Block fromBlock = actBlock.getLocation().add(halfWidth + 1, 0, halfWidth - 1).getBlock();
 					Block toBlock = actBlock.getLocation().add(-1 * (halfWidth + 1), 0, halfWidth - 1).getBlock();
 					fromType = fromBlock.getType();
@@ -700,6 +755,16 @@ public class GeometricMagicPlayerListener implements Listener {
 					circleStart = actBlock.getLocation().add(halfWidth - 2, 0, 1);
 					circleEnd = actBlock.getLocation().add(-1 * (halfWidth - 2), fullWidth - 3, (fullWidth - 2));
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
+					lightning = true;
+				}
+				// Storage circle
+				else {
+					if (fullWidth - 2 > storageCircleSize) {
+						return;
+					}
+					startLoc = actBlock.getLocation().add((halfWidth - 2), 0, 1);
+					endLoc = actBlock.getLocation().add((-1 * (halfWidth - 2)), (fullWidth - 3), (fullWidth - 2));
+					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
 					lightning = true;
 				}
 			}
@@ -1798,7 +1863,422 @@ public class GeometricMagicPlayerListener implements Listener {
 		redStack.remove();
 		return status;
 	}
+	
+	public static void storageCircle(Location startLoc, Location endLoc, Player player, int size) {
+		File folder = new File("plugins/GeometricMagic/storage/");
+		File file = new File("plugins/GeometricMagic/storage/" + player.getName() + "." + String.valueOf(size));
+		if (folder.exists()) {
+			// Load blocks
+			if (file.exists()) {
+				try {
+					// exempt player from AntiCheat check
+					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+						AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+						AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+						AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+						AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+					}
+					
+					storageCircleLoad(startLoc, endLoc, player, size, file);
+					
+					// unexempt player from AntiCheat check
+					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+						AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+						AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			// Store blocks
+			else {
+				try {
+					// exempt player from AntiCheat check
+					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+						AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+						AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+						AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+						AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+					}
+					
+					storageCircleStore(startLoc, endLoc, player, size, file);
+					
+					// unexempt player from AntiCheat check
+					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+						AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+						AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		else {
+			// Store blocks
+			if(folder.mkdirs()) {
+				try {
+					// exempt player from AntiCheat check
+					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+						AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
+						AnticheatAPI.exemptPlayer(player, CheckType.FAST_BREAK);
+						AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
+						AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
+					}
+					
+					storageCircleStore(startLoc, endLoc, player, size, file);
+					
+					// unexempt player from AntiCheat check
+					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
+						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
+						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_BREAK);
+						AnticheatAPI.unexemptPlayer(player, CheckType.LONG_REACH);
+						AnticheatAPI.unexemptPlayer(player, CheckType.NO_SWING);
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+				System.out.println("[GeometricMagic] Error creating necessary folder(s)!" +
+						" Check your read/write permissions");
+		}
+	}
 
+	public static void storageCircleLoad(Location startLoc, Location endLoc, Player player, int size, File file) throws FileNotFoundException {
+		World world = player.getWorld();
+		Scanner in = new Scanner(file);
+		
+		if (startLoc.getBlockX() > endLoc.getBlockX()) {
+			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
+				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							String newBlockString = in.next();
+							String[] newBlockStringArray = newBlockString.split(",");
+							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
+							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
+							
+							// Block break
+							if (block.getTypeId() != 0 && newBlockID == 0) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block place
+							else if (block.getTypeId() == 0 && newBlockID != 0) {
+								if (!checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block break and place
+							else if (block.getTypeId() != 0 && newBlockID != 0) {
+								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							String newBlockString = in.next();
+							String[] newBlockStringArray = newBlockString.split(",");
+							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
+							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
+							
+							// Block break
+							if (block.getTypeId() != 0 && newBlockID == 0) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block place
+							else if (block.getTypeId() == 0 && newBlockID != 0) {
+								if (!checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block break and place
+							else if (block.getTypeId() != 0 && newBlockID != 0) {
+								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
+				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							String newBlockString = in.next();
+							String[] newBlockStringArray = newBlockString.split(",");
+							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
+							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
+							
+							// Block break
+							if (block.getTypeId() != 0 && newBlockID == 0) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block place
+							else if (block.getTypeId() == 0 && newBlockID != 0) {
+								if (!checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block break and place
+							else if (block.getTypeId() != 0 && newBlockID != 0) {
+								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							String newBlockString = in.next();
+							String[] newBlockStringArray = newBlockString.split(",");
+							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
+							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
+							
+							// Block break
+							if (block.getTypeId() != 0 && newBlockID == 0) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block place
+							else if (block.getTypeId() == 0 && newBlockID != 0) {
+								if (!checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+							// Block break and place
+							else if (block.getTypeId() != 0 && newBlockID != 0) {
+								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
+									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
+										block.setTypeId(newBlockID);
+										block.setData(newBlockData);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		in.close();
+		file.delete();
+	}
+	
+	public static void storageCircleStore(Location startLoc, Location endLoc, Player player, int size, File file) throws FileNotFoundException {
+		World world = player.getWorld();
+		PrintWriter out = new PrintWriter(file);
+		
+		if (startLoc.getBlockX() > endLoc.getBlockX()) {
+			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
+				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setType(Material.AIR);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setType(Material.AIR);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
+				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setType(Material.AIR);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setType(Material.AIR);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+		}
+		out.close();
+	}
+	
 	public static String getTransmutationCostSystem(GeometricMagic plugin) {
 		return plugin.getConfig().getString("transmutation.cost").toString();
 	}
