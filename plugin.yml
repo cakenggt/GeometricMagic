@@ -18,25 +18,31 @@
 
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.7
-author: cakenggt, Hoot215
-softdepend: [Vault,AntiCheat]
+version: 2.8.0
+authors: [cakenggt, Hoot215]
+softdepend: [Vault, AntiCheat]
 permissions:
     geometricmagic.*:
         description: Gives access to all circles /setcircle and /circles
         default: op
         children:
+            geometricmagic.notify: true
             geometricmagic.standard: true
             geometricmagic.transmutation.*: true
             geometricmagic.bypass.*: true
+            geometricmagic.command.geometricmagic.reload: true
+    geometricmagic.notify:
+        description: Notifies you if a newer version of GeometricMagic is available
     geometricmagic.standard:
         description: Gives access to standard circles /setcircle and /circles
-        default: false
+        default: true
         children:
             geometricmagic.teleportation: true
             geometricmagic.micro: true
             geometricmagic.transmutation.1: true
+            geometricmagic.storage.*: true
             geometricmagic.set: true
+            geometricmagic.command.geometricmagic: true
     geometricmagic.teleportation:
         description: Allows you to use teleportation circles
     geometricmagic.micro:
@@ -59,19 +65,42 @@ permissions:
         description: Allows you to use transmutation circles of size 7
     geometricmagic.transmutation.9:
         description: Allows you to use transmutation circles of size 9
+    geometricmagic.storage.*:
+        description: Allows you to use all storage circles
+        children:
+            geometricmagic.storage.1: true
+            geometricmagic.storage.3: true
+            geometricmagic.storage.5: true
+            geometricmagic.storage.7: true
+            geometricmagic.storage.9: true
+    geometricmagic.storage.1:
+        description: Allows you to use storage circles of size 1
+    geometricmagic.storage.3:
+        description: Allows you to use storage circles of size 3
+    geometricmagic.storage.5:
+        description: Allows you to use storage circles of size 5
+    geometricmagic.storage.7:
+        description: Allows you to use storage circles of size 7
+    geometricmagic.storage.9:
+        description: Allows you to use storage circles of size 9
     geometricmagic.set:
         description: Allows you to use all set circles and set circle commands
         children:
             geometricmagic.set.*: true
-            geometricmagic.setcircle: true
-            geometricmagic.listcircles: true
-    geometricmagic.setcircle:
+            geometricmagic.command.setcircle: true
+            geometricmagic.command.circles: true
+    geometricmagic.command.setcircle:
         description: Allows you to use /setcircle
-    geometricmagic.listcircles:
+    geometricmagic.command.circles:
         description: Allows you to use /circles
+    geometricmagic.command.geometricmagic:
+        description: Allows you to use /geometricmagic
+    geometricmagic.command.geometricmagic.reload:
+        description: 'Allows you to use "/geometricmagic reload"'
     geometricmagic.set.*:
         description: Allows you to use all set circles
         children:
+            geometricmagic.set.1111: true
             geometricmagic.set.1133: true
             geometricmagic.set.1222: true
             geometricmagic.set.1233: true
@@ -88,6 +117,8 @@ permissions:
             geometricmagic.set.0144: true
             geometricmagic.set.0244: true
             geometricmagic.set.0344: true
+    geometricmagic.set.1111:
+        description: Allows you to use set circle 1111
     geometricmagic.set.1133:
         description: Allows you to use set circle 1133
     geometricmagic.set.1222:
@@ -136,11 +167,17 @@ permissions:
     geometricmagic.bypass.sacrifice:
         description: Allows you to bypass human transmutation sacrificing your alchemy abilities forever
 commands:
-  setcircle:
-    description: This command sets a sacrifice's right-click circle.
-    permission: geometricmagic.setcircle
-    usage: Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####
-  circles:
-    description: This command displays a list of set circles.
-    permission: geometricmagic.listcircles
-    usage: /circles
+    setcircle:
+        description: This command sets a sacrifice's right-click circle.
+        permission: geometricmagic.command.setcircle
+        usage: "Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####"
+        aliases: sc
+    circles:
+        description: This command displays a list of set circles.
+        permission: geometricmagic.command.circles
+        usage: "/circles"
+    geometricmagic:
+        description: This command displays general plugin help or executes the given sub-command.
+        permission: geometricmagic.command.geometricmagic
+        usage: "/geometricmagic [Sub-Command]"
+        aliases: [gem, geom, gmagic]

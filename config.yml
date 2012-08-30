@@ -16,8 +16,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# DO NOT MODIFY THIS VALUE!
+version: 2.7.6
+
+# GENERAL SECTION
+general:
+
+    # Automatic notification of plugin updates
+    auto-update-notify: true
+
 # TRANSMUTATION SECTION
 transmutation:
+
+    # Rate (in milliseconds) at which blocks are updated
+    rate: 10
 
     # Cool down time between transmutations in seconds
     cooldown: 10
@@ -41,6 +53,14 @@ setcircles:
     # Limit number of nearby arrows to check
     limitarrows: 3
 
+    # Spawn weapon circle
+    1111:
+        # The cost of this circle in hunger
+        cost: 5
+        # The item ID to be given to the player
+        # Default: Iron sword
+        item: 267
+    
     # Repair Circle
     1133: []
     

@@ -19,10 +19,7 @@
 package me.cakenggt.GeometricMagic;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -43,6 +40,8 @@ public class GeometricMagic extends JavaPlugin {
 	private Listener entityListener;
 	private static Economy economy;
 	File configFile;
+	public boolean autoUpdateNotify;
+	public boolean upToDate = true;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
@@ -53,8 +52,8 @@ public class GeometricMagic extends JavaPlugin {
 			if (sender instanceof Player) {
 				player = (Player) sender;
 
-				if (!player.hasPermission("geometricmagic.setcircle")) {
-					player.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+				if (!player.hasPermission("geometricmagic.command.setcircle")) {
+					player.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
 					return true;
 				}
 				
@@ -121,7 +120,7 @@ public class GeometricMagic extends JavaPlugin {
 				return false;
 			}
 		} else if (cmd.getName().equalsIgnoreCase("circles")) {
-			if (sender.hasPermission("geometricmagic.listcircles") || sender.isOp()) {
+			if (sender.hasPermission("geometricmagic.command.circles")) {
 				sender.sendMessage(ChatColor.GREEN + "1133" + ChatColor.RESET + " Repair Circle");
 				sender.sendMessage(ChatColor.GREEN + "1222" + ChatColor.RESET + " Conversion Circle");
 				sender.sendMessage(ChatColor.GREEN + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
@@ -138,10 +137,48 @@ public class GeometricMagic extends JavaPlugin {
 				sender.sendMessage(ChatColor.GREEN + "0144" + ChatColor.RESET + " Sheep Circle");
 				sender.sendMessage(ChatColor.GREEN + "0244" + ChatColor.RESET + " Cow Circle");
 				sender.sendMessage(ChatColor.GREEN + "0344" + ChatColor.RESET + " Chicken Circle");
-			} else {
+			} else
 				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
-			}
 			return true;
+		} else if (cmd.getName().equalsIgnoreCase("geometricmagic")) {
+			if (sender.hasPermission("geometricmagic.command.geometricmagic")) {
+				if (args.length == 0) {
+					sender.sendMessage(ChatColor.GREEN + "*********** GeometricMagic Help ***********");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "************* User Commands *************");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*" + ChatColor.YELLOW + " /geometricmagic" + ChatColor.WHITE + " - Display this help dialogue");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*" + ChatColor.YELLOW + " /setcircle <####>" + ChatColor.WHITE + " - Bind set circle #### to flint. 0 resets");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*" + ChatColor.YELLOW + " /circles" + ChatColor.WHITE + " - List all set circles");
+					sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.GRAY + "*****************************************");
+					if (sender.hasPermission("geometricmagic.command.geometricmagic.reload")) {
+						sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.RED + "************* Admin Commands ************");
+						sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.RED + "*" + ChatColor.YELLOW + " /geometricmagic reload" + ChatColor.WHITE + " - Reload config file");
+						sender.sendMessage(ChatColor.GREEN + "*" + ChatColor.RED + "*****************************************");
+					}
+					sender.sendMessage(ChatColor.GREEN + "******************************************");
+					return true;
+				}
+				else if (args.length == 1) {
+					if (args[0].equalsIgnoreCase("reload")) {
+						if (sender.hasPermission("geometricmagic.command.geometricmagic.reload")) {
+							reloadConfig();
+							sender.sendMessage(ChatColor.GREEN + "Config reload successfully!");
+							return true;
+						}
+						else {
+							sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+							return true;
+						}
+					}
+					else
+						return false;
+				}
+				else if (args.length > 1)
+					return false;
+			}
+			else {
+				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+				return true;
+			}
 		}
 		// If this has happened the function will break and return true. if this
 		// hasn't happened the a value of false will be returned.
@@ -244,21 +281,25 @@ public class GeometricMagic extends JavaPlugin {
 
 		// Copy default config file if it doesn't exist
 		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			copy(this.getResource("config.yml"), configFile);
+			saveDefaultConfig();
+			System.out.println("[GeometricMagic] Config file generated!");
 		}
-
-		// Copy config defaults
-		getConfig().options().copyDefaults(true);
+		else {
+			try {
+				GeometricMagicConfigUpdater.updateConfig(this);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		// Transmutation mode: Vault
 		if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("vault")) {
 			// Vault Support
 			if (!setupEconomy()) {
-				System.out.println("[" + this + "] ERROR: You have your transmutation system set to Vault, and yet you don't have Vault. Disabling plugin!");
+				System.out.println("[GeometricMagic] ERROR: You have your transmutation system set to Vault, and yet you don't have Vault. Disabling plugin!");
 				getServer().getPluginManager().disablePlugin(this);
 			} else {
-				System.out.println("[" + this + "] Transmutation cost system set to Vault");
+				System.out.println("[GeometricMagic] Transmutation cost system set to Vault");
 
 				// Register events
 				playerListener = new GeometricMagicPlayerListener(this);
@@ -272,7 +313,7 @@ public class GeometricMagic extends JavaPlugin {
 		}
 		// Transmutation mode: XP
 		else if (getConfig().getString("transmutation.cost").toString().equalsIgnoreCase("xp")) {
-			System.out.println("[" + this + "] Transmutation cost system set to XP");
+			System.out.println("[GeometricMagic] Transmutation cost system set to XP");
 
 			// Register events
 			playerListener = new GeometricMagicPlayerListener(this);
@@ -285,12 +326,20 @@ public class GeometricMagic extends JavaPlugin {
 		}
 		// Transmutation mode: Unknown
 		else {
-			System.out.println("[" + this + "] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
+			System.out.println("[GeometricMagic] ERROR: You have your transmutation cost system set to an unknown value. Disabling plugin!");
 			getServer().getPluginManager().disablePlugin(this);
 		}
-
+		
 		// Plugin metrics
 		startPluginMetrics();
+		
+		// Get plugin version for auto-update
+		int pluginVersion = Integer.parseInt(this.getDescription().getVersion().replace(".", ""));
+		
+		// Start auto-update if applicable
+		if (getConfig().getBoolean("auto-update-notify")) {
+			new Thread((new GeometricMagicAutoUpdater(this, pluginVersion))).start();
+		}
 	}
 
 	// Vault Support
@@ -306,22 +355,6 @@ public class GeometricMagic extends JavaPlugin {
 	// Vault Support
 	public static Economy getEconomy() {
 		return economy;
-	}
-
-	// Copy method
-	private void copy(InputStream in, File file) {
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void startPluginMetrics() {
