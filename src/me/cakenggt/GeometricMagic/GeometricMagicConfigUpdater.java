@@ -209,6 +209,44 @@ public class GeometricMagicConfigUpdater {
 					return;
 				}
 			}
+			else if (plugin.getConfig().getString("version").equals("2.7.6")) {
+				System.out.println("[GeometricMagic] Updating config to v2.8.0...");
+				List<String> strList = new ArrayList<String>();
+				
+				File myFile = new File("plugins/GeometricMagic/config.yml");
+				if (myFile.exists()) {
+					Scanner in = new Scanner(myFile);
+					while (in.hasNextLine()) {
+						String nextLine = in.nextLine();
+						if (!nextLine.contains("version:")
+								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
+							strList.add(nextLine);
+						else
+							in.nextLine();
+					}
+					in.close();
+					
+					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
+					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
+					for (String s : strList) {
+						out.println(s);
+					}
+					
+					out.println();
+					out.println("# DO NOT MODIFY THIS VALUE!");
+					out.println("version: 2.8.0");
+					out.close();
+					
+					plugin.reloadConfig();
+				}
+				else
+					return;
+				
+				if (!isUpdated()) {
+					updateConfig(instance);
+					return;
+				}
+			}
 		}
 		// If the config is updated
 		else {
