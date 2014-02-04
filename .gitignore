@@ -1,0 +1,18 @@
+# Compiled source #
+###################
+*.class
+*.jar
+
+# Eclipse #
+###########
+*.classpath
+*.project
+
+# System #
+##########
+.directory
+*~
+
+# Unknown #
+###########
+*.orig

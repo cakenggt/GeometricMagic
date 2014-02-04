@@ -1,0 +1,1098 @@
+#
+# GeometricMagic allows players to draw redstone circles on the ground to do things such as teleport and transmute blocks.
+# Copyright (C) 2012  Alec Cox (cakenggt), Andrew Stevanus (Hoot215) <hoot893@gmail.com>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# DO NOT MODIFY THIS VALUE!
+version: 2.7.6
+
+# GENERAL SECTION
+general:
+
+    # Automatic notification of plugin updates
+    auto-update-notify: true
+
+# TRANSMUTATION SECTION
+transmutation:
+
+    # Rate (in milliseconds) at which blocks are updated
+    rate: 10
+
+    # Cool down time between transmutations in seconds
+    cooldown: 10
+
+    # What system to use for transmutation cost
+    # Possible values: xp, vault (requires Vault)
+    cost: xp
+
+    # Apply Philosopher's Stone to transmutes (true or false)
+    stone: true
+
+# SET CIRCLES SECTION
+setcircles:
+
+    # Cool down time between using set circles in seconds
+    cooldown: 10
+
+    # Limit augmentation size for set circles
+    limitsize: 5
+
+    # Limit number of nearby arrows to check
+    limitarrows: 3
+
+    # Spawn weapon circle
+    1111:
+        # The cost of this circle in hunger
+        cost: 5
+        # The item ID to be given to the player
+        # Default: Iron sword
+        item: 267
+    
+    # Repair Circle
+    1133: []
+    
+    # Conversion Circle
+    1222:
+        # The cost of this circle in hunger
+        cost: 1
+    
+    # Philosopher's Stone Circle
+    1233:
+        # The cost of this circle in hunger
+        cost: 20
+    
+    # Boron Circle
+    1234:
+        # The cost of this circle in hunger
+        cost: 1
+        # The number of redstone to drop
+        amount: 1
+    
+    # Soul Circle
+    2223:
+        # The cost of this circle in hunger
+        cost: 10
+    
+    # Homunculus Circle
+    2224:
+        # The cost of this circle in hunger
+        cost: 10
+    
+    # Safe Teleportation Circle
+    2244:
+        # The cost of this circle in hunger
+        cost: 1
+    
+    # Explosion Circle
+    2333:
+        # The cost of this circle in hunger
+        # Formula: cost + circle size (can be augmented) / 2
+        cost: 2
+    
+    # Fire Circle
+    3334:
+        # The cost of this circle in hunger
+        cost: 5
+        # The size of this circle in blocks cubed
+        size: 3
+    
+    # Fire Explosion Circle
+    3344:
+        # The cost of this circle in hunger
+        # Formula: cost + circle size (can be augmented) / 2
+        cost: 10
+        # The size of this circle in blocks cubed
+        size: 3
+    
+    # Human Transmutation Circle
+    3444:
+        # The cost of this circle in hunger
+        cost: 20
+    
+    # Bed Circle (0111)
+    x111:
+        # The cost of this circle in hunger
+        cost: 16
+    
+    # Pig Circle (0044)
+    x044:
+        # The cost of this circle in hunger
+        cost: 10
+    
+    # Sheep Circle (0144)
+    x144:
+        # The cost of this circle in hunger
+        cost: 10
+    
+    # Cow Circle (0244)
+    x244:
+        # The cost of this circle in hunger
+        cost: 10
+    
+    # Chicken Circle (0344)
+    x344:
+        # The cost of this circle in hunger
+        cost: 10
+
+# PHILOSOPHER'S STONE SECTION
+philosopherstone:
+
+    # The multiplier modifier of the philosopher's stone
+    # Possible values: any integer
+    # Formula: 1 / (2 to the power of (number of philosopher's stones in inventory) * modifier)
+    modifier: 1
+
+# BLACKLIST SECTION
+blacklist:
+
+    # The blacklist used for breaking blocks with transmutation
+    break:
+    - 7
+    - 19
+    - 52
+    - 54
+    - 61
+    - 62
+    - 63
+    - 64
+    - 68
+    - 71
+    - 90
+    - 95
+    - 97
+    - 117
+    
+    # The blacklist used for placing blocks with transmutation
+    place:
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 19
+    - 34
+    - 36
+    - 52
+    - 90
+    - 95
+    - 97
+
+# VALUES SECTION (Values of blocks for transmutation)
+values:
+
+    # AIR
+    0:
+        0: 0
+    # STONE
+    1:
+        0: 1
+    # GRASS
+    2:
+        0: 1
+    # DIRT
+    3:
+        0: 1
+    # COBBLESTONE
+    4:
+        0: 1
+    # WOOD
+    5:
+        0: 8
+        1: 8
+        2: 8
+        3: 8
+    # SAPLING
+    6:
+        0: 32
+        1: 32
+        2: 32
+        3: 32
+        4: 32
+    # BEDROCK
+    7:
+        0: 0
+    # WATER
+    8:
+        0: 1
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+    # STATIONARY_WATER
+    9:
+        0: 1
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+    # LAVA
+    10:
+        0: 64
+        2: 0
+        4: 0
+        6: 0
+        8: 0
+    # STATIONARY_LAVA
+    11:
+        0: 64
+        2: 0
+        4: 0
+        6: 0
+        8: 0
+    # SAND
+    12:
+        0: 1
+    # GRAVEL
+    13:
+        0: 4
+    # GOLD_ORE
+    14:
+        0: 2048
+    # IRON_ORE
+    15:
+        0: 256
+    # COAL_ORE
+    16: 128
+    # LOG
+    17:
+        0: 32
+    # LEAVES
+    18:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+    # SPONGE
+    19:
+        0: 0
+    # GLASS
+    20:
+        0: 1
+    # LAPIS_ORE
+    21:
+        0: 6912
+    # LAPIS_BLOCK
+    22:
+        0: 7776
+    # DISPENSER
+    23:
+        2: 119
+        3: 119
+        4: 119
+        5: 119
+    # SANDSTONE
+    24:
+        0: 4
+        1: 4
+        2: 4
+    # NOTE_BLOCK
+    25:
+        0: 40
+    # BED_BLOCK
+    26:
+        0: 48
+        1: 48
+        2: 48
+        3: 48
+        4: 48
+        8: 48
+    # POWERED_RAIL
+    27:
+        0: 2048
+        1: 2048
+        2: 2048
+        3: 2048
+        4: 2048
+        5: 2048
+        8: 2048
+    # DETECTOR_RAIL
+    28:
+        0: 256
+        1: 256
+        2: 256
+        3: 256
+        4: 256
+        5: 256
+        8: 256
+    # PISTON_STICKY_BASE
+    29:
+        0: 372
+        1: 372
+        2: 372
+        3: 372
+        4: 372
+        5: 372
+    # WEB
+    30:
+        0: 12
+    # LONG_GRASS
+    31:
+        0: 0
+        1: 0
+        2: 0
+    # DEAD_BUSH
+    32:
+        0: 1
+    # PISTON_BASE
+    33:
+        0: 348
+        1: 348
+        2: 348
+        3: 348
+        4: 348
+        5: 348
+    # PISTON_EXTENSION
+    34:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+    # WOOL
+    35:
+        0: 48
+        1: 48
+        2: 48
+        3: 48
+        4: 48
+        5: 48
+        6: 48
+        7: 48
+        8: 48
+        9: 48
+        10: 48
+        11: 48
+        12: 48
+        13: 48
+        14: 48
+        15: 48
+    # PISTON_MOVING_PIECE
+    36: 
+        0: 0
+    # YELLOW_FLOWER
+    37:
+        0: 16
+    # RED_ROSE
+    38:
+        0: 16
+    # BROWN_MUSHROOM
+    39:
+        0: 32
+    # RED_MUSHROOM
+    40:
+        0: 32
+    # GOLD_BLOCK
+    41:
+        0: 18432
+    # IRON_BLOCK
+    42:
+        0: 2304
+    # DOUBLE_STEP
+    43:
+        0: 1
+        1: 4
+        2: 8
+        3: 1
+        4: 256
+        5: 1
+    # STEP
+    44:
+        0: 1
+        1: 2
+        2: 4
+        3: 1
+        4: 128
+        5: 1
+    # BRICK
+    45:
+        0: 256
+    # TNT
+    46:
+        0: 964
+    # BOOKSHELF
+    47:
+        0: 336
+    # MOSSY_COBBLESTONE
+    48:
+        0: 145
+    # OBSIDIAN
+    49:
+        0: 64
+    # TORCH
+    50:
+        0: 9
+        1: 9
+        2: 9
+        3: 9
+        4: 9
+        5: 9
+    # FIRE
+    51:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+        4: 1
+        5: 1
+        6: 1
+        7: 1
+        8: 1
+        9: 1
+        10: 1
+        11: 1
+        12: 1
+        13: 1
+        14: 1
+        15: 1
+    # MOB_SPAWNER
+    52:
+        0: 0
+    # WOOD_STAIRS
+    53:
+        0: 12
+        1: 12
+        2: 12
+        3: 12
+        4: 12
+    # CHEST
+    54:
+        2: 64
+        3: 64
+        4: 64
+        5: 64
+    # REDSTONE_WIRE
+    55: 
+        0: 64
+        1: 64
+        2: 64
+        3: 64
+        4: 64
+        5: 64
+        6: 64
+        7: 64
+        8: 64
+        9: 64
+        10: 64
+        11: 64
+        12: 64
+        13: 64
+        14: 64
+        15: 64
+    # DIAMOND_ORE
+    56:
+        0: 8192
+    # DIAMOND_BLOCK
+    57:
+        0: 73728
+    # WORKBENCH
+    58:
+        0: 32
+    # CROPS
+    59:
+        0: 16
+        1: 16
+        2: 16
+        3: 16
+        4: 16
+        5: 16
+        6: 16
+        7: 24
+    # SOIL
+    60:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+        4: 1
+        5: 1
+        6: 1
+        7: 1
+        8: 1
+    # FURNACE
+    61:
+        2: 8
+        3: 8
+        4: 8
+        5: 8
+    # BURNING_FURNACE
+    62:
+        2: 8
+        3: 8
+        4: 8
+        5: 8
+    # SIGN_POST
+    63:
+        0: 52
+        1: 52
+        2: 52
+        3: 52
+        4: 52
+        5: 52
+        6: 52
+        7: 52
+        8: 52
+        9: 52
+        10: 52
+        11: 52
+        12: 52
+        13: 52
+        14: 52
+        15: 52
+    # WOODEN_DOOR
+    64:
+        0: 24
+        1: 24
+        2: 24
+        3: 24
+        4: 24
+        5: 24
+        6: 24
+        7: 24
+        8: 24
+        9: 24
+        10: 24
+        11: 24
+        12: 24
+        13: 24
+        14: 24
+        15: 24
+    # LADDER
+    65:
+        2: 14
+        3: 14
+        4: 14
+        5: 14
+    # RAILS
+    66:
+        0: 96
+        1: 96
+        2: 96
+        3: 96
+        4: 96
+        5: 96
+        6: 96
+        7: 96
+        8: 96
+        9: 96
+    # COBBLESTONE_STAIRS
+    67:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+    # WALL_SIGN
+    68:
+        2: 52
+        3: 52
+        4: 52
+        5: 52
+    # LEVER
+    69:
+        6: 5
+        7: 5
+        8: 5
+        9: 5
+        10: 5
+        11: 5
+        12: 5
+        13: 5
+        14: 5
+    # STONE_PLATE
+    70:
+        0: 2
+        1: 2
+    # IRON_DOOR_BLOCK
+    71:
+        0: 768
+        1: 768
+        2: 768
+        3: 768
+        4: 768
+        5: 768
+        6: 768
+        7: 768
+        8: 768
+        9: 768
+        10: 768
+        11: 768
+        12: 768
+        13: 768
+        14: 768
+        15: 768
+    # WOOD_PLATE
+    72:
+        0: 16
+        1: 16
+    # REDSTONE_ORE
+    73:
+        0: 256
+    # GLOWING_REDSTONE_ORE
+    74:
+        0: 256
+    # REDSTONE_TORCH_OFF
+    75:
+        0: 68
+        1: 68
+        2: 68
+        3: 68
+        4: 68
+        5: 68
+    # REDSTONE_TORCH_ON
+    76:
+        0: 68
+        1: 68
+        2: 68
+        3: 68
+        4: 68
+        5: 68
+    # STONE_BUTTON
+    77:
+        0: 2
+        1: 2
+        2: 2
+        3: 2
+        4: 2
+        5: 2
+        6: 2
+        7: 2
+        8: 2
+        9: 2
+        10: 2
+        11: 2
+        12: 2
+        13: 2
+        14: 2
+        15: 2
+    # SNOW
+    78:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+        4: 1
+        5: 1
+        6: 1
+        7: 1
+        8: 1
+        9: 1
+        10: 1
+        11: 1
+        12: 1
+        13: 1
+        14: 1
+        15: 1
+    # ICE
+    79:
+        0: 1
+    # SNOW_BLOCK
+    80:
+        0: 1
+    # CACTUS
+    81:
+        0: 8
+        1: 8
+        2: 8
+        3: 8
+        4: 8
+        5: 8
+        6: 8
+        7: 8
+        8: 8
+        9: 8
+        10: 8
+        11: 8
+        12: 8
+        13: 8
+        14: 8
+        15: 8
+    # CLAY
+    82:
+        0: 64
+    # SUGAR_CANE_BLOCK
+    83:
+        0: 32
+        1: 32
+        2: 32
+        3: 32
+        4: 32
+        5: 32
+        6: 32
+        7: 32
+        8: 32
+        9: 32
+        10: 32
+        11: 32
+        12: 32
+        13: 32
+        14: 32
+        15: 32
+    # JUKEBOX
+    84:
+        0: 8256
+        1: 8256
+        2: 8256
+        3: 8256
+        4: 8256
+        5: 8256
+        6: 8256
+        7: 8256
+        8: 8256
+        9: 8256
+        10: 8256
+        11: 8256
+    # FENCE
+    85:
+        0: 12
+    # PUMPKIN
+    86:
+        0: 144
+        1: 144
+        2: 144
+        3: 144
+    # NETHERRACK
+    87:
+        0: 1
+    # SOUL_SAND
+    88:
+        0: 49
+    # GLOWSTONE
+    89:
+        0: 1536
+    # PORTAL
+    90:
+        0: 0
+    # JACK_O_LANTERN
+    91:
+        0: 144
+        1: 144
+        2: 144
+        3: 144
+    # CAKE_BLOCK
+    92:
+        0: 363
+        1: 363
+        2: 363
+        3: 363
+        4: 363
+        5: 363
+    # DIODE_BLOCK_OFF
+    93:
+        0: 203
+        1: 203
+        2: 203
+        3: 203
+        4: 203
+        5: 203
+        6: 203
+        7: 203
+        8: 203
+        9: 203
+        10: 203
+        11: 203
+        12: 203
+        13: 203
+        14: 203
+        15: 203
+    # DIODE_BLOCK_ON
+    94:
+        0: 203
+        1: 203
+        2: 203
+        3: 203
+        4: 203
+        5: 203
+        6: 203
+        7: 203
+        8: 203
+        9: 203
+        10: 203
+        11: 203
+        12: 203
+        13: 203
+        14: 203
+        15: 203
+    # LOCKED_CHEST
+    95:
+        0: 0
+    # TRAP_DOOR
+    96:
+        0: 24
+        1: 24
+        2: 24
+        3: 24
+        4: 24
+        5: 24
+        6: 24
+        7: 24
+    # MONSTER_EGGS
+    97:
+        0: 0
+        1: 0
+        2: 0
+    # SMOOTH_BRICK
+    98:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+    # HUGE_MUSHROOM_1
+    99:
+        0: 32
+        1: 32
+        2: 32
+        3: 32
+        4: 32
+        5: 32
+        6: 32
+        7: 32
+        8: 32
+        9: 32
+        10: 32
+    # HUGE_MUSHROOM_2
+    100:
+        0: 32
+        1: 32
+        2: 32
+        3: 32
+        4: 32
+        5: 32
+        6: 32
+        7: 32
+        8: 32
+        9: 32
+        10: 32
+    # IRON_FENCE
+    101:
+        0: 96
+    # THIN_GLASS
+    102:
+        0: 1
+    # MELON_BLOCK
+    103:
+        0: 144
+    # PUMPKIN_STEM
+    104:
+        0: 36
+        1: 36
+        2: 36
+        3: 36
+        4: 36
+        5: 36
+        6: 36
+        7: 36
+    # MELON_STEM
+    105:
+        0: 16
+        1: 16
+        2: 16
+        3: 16
+        4: 16
+        5: 16
+        6: 16
+        7: 16
+    # VINE
+    106:
+        0: 8
+        1: 8
+        2: 8
+        3: 8
+        4: 8
+        5: 8
+        6: 8
+        7: 8
+        8: 8
+        9: 8
+        10: 8
+        11: 8
+        12: 8
+        13: 8
+        14: 8
+        15: 8
+    # FENCE_GATE
+    107:
+        0: 32
+        1: 32
+        2: 32
+        3: 32
+        4: 32
+        5: 32
+        6: 32
+        7: 32
+    # BRICK_STAIRS
+    108:
+        0: 384
+        1: 384
+        2: 384
+        3: 384
+    # SMOOTH_STAIRS
+    109:
+        0: 1
+        1: 1
+        2: 1
+        3: 1
+    # MYCEL
+    110:
+        0: 1
+    # WATER_LILY
+    111:
+        0: 16
+    # NETHER_BRICK
+    112:
+        0: 4
+    # NETHER_FENCE
+    113:
+        0: 4
+    # NETHER_BRICK_STAIRS
+    114:
+        0: 6
+        1: 6
+        2: 6
+        3: 6
+    # NETHER_WARTS
+    115:
+        0: 24
+        1: 24
+        2: 24
+        3: 24
+    # ENCHANTMENT_TABLE
+    116:
+        0: 16736
+    # BREWING_STAND
+    117:
+        0: 1539
+        1: 1539
+        2: 1539
+        3: 1539
+        4: 1539
+        5: 1539
+        6: 1539
+        7: 1539
+    # CAULDRON
+    118:
+        0: 1280
+        1: 1280
+        2: 1280
+        3: 1280
+    # ENDER_PORTAL
+    119:
+        0: 0
+    # ENDER_PORTAL_FRAME
+    120:
+        0: 0
+    # ENDER_STONE
+    121:
+        0: 1
+    # DRAGON_EGG
+    122:
+        0: 139264
+    # REDSTONE_LAMP_OFF
+    123:
+        0: 1792
+    # REDSTONE_LAMP_ON
+    124:
+        0: 1792
+    # WOOD_DOUBLE_STEP
+    125:
+        0: 8
+        1: 8
+        2: 8
+        3: 8
+    # WOOD_STEP
+    126:
+        0: 4
+        1: 4
+        2: 4
+        3: 4
+        4: 4
+    # COCOA
+    127:
+        0: 128
+    # SANDSTONE_STAIRS
+    128:
+        0: 6
+        1: 6
+        2: 6
+        3: 6
+    # EMERALD_ORE
+    129:
+        0: 16384
+    # ENDER_CHEST
+    130:
+        2: 2304
+        3: 2304
+        4: 2304
+        5: 2304
+    # TRIPWIRE_HOOK
+    131:
+        0: 134
+        1: 134
+        2: 134
+        3: 134
+        4: 134
+        5: 134
+        6: 134
+        7: 134
+        8: 134
+        9: 134
+        10: 134
+        11: 134
+        12: 134
+        13: 134
+        14: 134
+        15: 134
+    # TRIPWIRE
+    132:
+        0: 12
+        1: 12
+        2: 12
+        3: 12
+        4: 12
+    # EMERALD_BLOCK
+    133:
+        0: 147456
+    # SPRUCE_WOOD_STAIRS
+    134:
+        0: 12
+        1: 12
+        2: 12
+        3: 12
+    # BIRCH_WOOD_STAIRS
+    135:
+        0: 12
+        1: 12
+        2: 12
+        3: 12
+    # JUNGLE_WOOD_STAIRS
+    136:
+        0: 12
+        1: 12
+        2: 12
+        3: 12

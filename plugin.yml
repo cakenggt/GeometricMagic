@@ -1,31 +1,183 @@
+#
+# GeometricMagic allows players to draw redstone circles on the ground to do things such as teleport and transmute blocks.
+# Copyright (C) 2012  Alec Cox (cakenggt), Andrew Stevanus (Hoot215) <hoot893@gmail.com>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 name: GeometricMagic
 main: me.cakenggt.GeometricMagic.GeometricMagic
-version: 2.13
-author: cakenggt
+version: 2.8.0
+authors: [cakenggt, Hoot215]
+softdepend: [Vault, AntiCheat]
 permissions:
-    GeometricMagic.circle.*:
-        description: Gives access to all circles
+    geometricmagic.*:
+        description: Gives access to all circles /setcircle and /circles
+        default: op
         children:
-            circle.teleportation: true
-            circle.micro: true
-            circle.transmutation: true
-            circle.set.*: true
-    circle.teleportation:
+            geometricmagic.notify: true
+            geometricmagic.standard: true
+            geometricmagic.transmutation.*: true
+            geometricmagic.bypass.*: true
+            geometricmagic.command.geometricmagic.reload: true
+    geometricmagic.notify:
+        description: Notifies you if a newer version of GeometricMagic is available
+    geometricmagic.standard:
+        description: Gives access to standard circles /setcircle and /circles
+        default: true
+        children:
+            geometricmagic.teleportation: true
+            geometricmagic.micro: true
+            geometricmagic.transmutation.1: true
+            geometricmagic.storage.*: true
+            geometricmagic.set: true
+            geometricmagic.command.geometricmagic: true
+    geometricmagic.teleportation:
         description: Allows you to use teleportation circles
-        default: true
-    circle.micro:
+    geometricmagic.micro:
         description: Allows you to use micro circles
-        default: true
-    circle.transmutation:
-        description: Allows you to use transmutation circles
-        default: true
-    circle.set.*:
-        description: Allows you to use all set circles
-        default: true
+    geometricmagic.transmutation.*:
+        description: Allows you to use all transmutation circles
         children:
-            circle.set.1234: true
+            geometricmagic.transmutation.1: true
+            geometricmagic.transmutation.3: true
+            geometricmagic.transmutation.5: true
+            geometricmagic.transmutation.7: true
+            geometricmagic.transmutation.9: true
+    geometricmagic.transmutation.1:
+        description: Allows you to use transmutation circles of size 1
+    geometricmagic.transmutation.3:
+        description: Allows you to use transmutation circles of size 3
+    geometricmagic.transmutation.5:
+        description: Allows you to use transmutation circles of size 5
+    geometricmagic.transmutation.7:
+        description: Allows you to use transmutation circles of size 7
+    geometricmagic.transmutation.9:
+        description: Allows you to use transmutation circles of size 9
+    geometricmagic.storage.*:
+        description: Allows you to use all storage circles
+        children:
+            geometricmagic.storage.1: true
+            geometricmagic.storage.3: true
+            geometricmagic.storage.5: true
+            geometricmagic.storage.7: true
+            geometricmagic.storage.9: true
+    geometricmagic.storage.1:
+        description: Allows you to use storage circles of size 1
+    geometricmagic.storage.3:
+        description: Allows you to use storage circles of size 3
+    geometricmagic.storage.5:
+        description: Allows you to use storage circles of size 5
+    geometricmagic.storage.7:
+        description: Allows you to use storage circles of size 7
+    geometricmagic.storage.9:
+        description: Allows you to use storage circles of size 9
+    geometricmagic.set:
+        description: Allows you to use all set circles and set circle commands
+        children:
+            geometricmagic.set.*: true
+            geometricmagic.command.setcircle: true
+            geometricmagic.command.circles: true
+    geometricmagic.command.setcircle:
+        description: Allows you to use /setcircle
+    geometricmagic.command.circles:
+        description: Allows you to use /circles
+    geometricmagic.command.geometricmagic:
+        description: Allows you to use /geometricmagic
+    geometricmagic.command.geometricmagic.reload:
+        description: 'Allows you to use "/geometricmagic reload"'
+    geometricmagic.set.*:
+        description: Allows you to use all set circles
+        children:
+            geometricmagic.set.1111: true
+            geometricmagic.set.1133: true
+            geometricmagic.set.1222: true
+            geometricmagic.set.1233: true
+            geometricmagic.set.1234: true
+            geometricmagic.set.2223: true
+            geometricmagic.set.2224: true
+            geometricmagic.set.2244: true
+            geometricmagic.set.2333: true
+            geometricmagic.set.3334: true
+            geometricmagic.set.3344: true
+            geometricmagic.set.3444: true
+            geometricmagic.set.0111: true
+            geometricmagic.set.0044: true
+            geometricmagic.set.0144: true
+            geometricmagic.set.0244: true
+            geometricmagic.set.0344: true
+    geometricmagic.set.1111:
+        description: Allows you to use set circle 1111
+    geometricmagic.set.1133:
+        description: Allows you to use set circle 1133
+    geometricmagic.set.1222:
+        description: Allows you to use set circle 1222
+    geometricmagic.set.1233:
+        description: Allows you to use set circle 1233
+    geometricmagic.set.1234:
+        description: Allows you to use set circle 1234
+    geometricmagic.set.2223:
+        description: Allows you to use set circle 2223
+    geometricmagic.set.2224:
+        description: Allows you to use set circle 2224
+    geometricmagic.set.2244:
+        description: Allows you to use set circle 2244
+    geometricmagic.set.2333:
+        description: Allows you to use set circle 2333
+    geometricmagic.set.3334:
+        description: Allows you to use set circle 3334
+    geometricmagic.set.3344:
+        description: Allows you to use set circle 1133
+    geometricmagic.set.3444:
+        description: Allows you to use set circle 3444
+    geometricmagic.set.0111:
+        description: Allows you to use set circle 0111
+    geometricmagic.set.0044:
+        description: Allows you to use set circle 0044
+    geometricmagic.set.0144:
+        description: Allows you to use set circle 0144
+    geometricmagic.set.0244:
+        description: Allows you to use set circle 0244
+    geometricmagic.set.0344:
+        description: Allows you to use set circle 0344
+    geometricmagic.bypass.*:
+        description: Grants all bypass permissions
+        children:
+            geometricmagic.bypass.cooldown: true
+            geometricmagic.bypass.crafting: true
+            geometricmagic.bypass.hunger: true
+            geometricmagic.bypass.sacrifice: true
+    geometricmagic.bypass.cooldown:
+        description: Allows you to bypass transmutation and set circle cooldowns
+    geometricmagic.bypass.crafting:
+        description: Allows you to bypass crafting being taken away by human transmutation
+    geometricmagic.bypass.hunger:
+        description: Allows you to bypass hunger being taken away
+    geometricmagic.bypass.sacrifice:
+        description: Allows you to bypass human transmutation sacrificing your alchemy abilities forever
 commands:
-  setcircle:
-    description: This command sets a sacrifice's right-click circle.
-    permission: GeometricMagic.setcircle
-    usage: /setcircle 3344
+    setcircle:
+        description: This command sets a sacrifice's right-click circle.
+        permission: geometricmagic.command.setcircle
+        usage: "Hold the flint from your inventory in your hand and right-click to cast a set circle. Use /circles to list all set circles. To bind a set circle to the flint use /setcircle ####"
+        aliases: sc
+    circles:
+        description: This command displays a list of set circles.
+        permission: geometricmagic.command.circles
+        usage: "/circles"
+    geometricmagic:
+        description: This command displays general plugin help or executes the given sub-command.
+        permission: geometricmagic.command.geometricmagic
+        usage: "/geometricmagic [Sub-Command]"
+        aliases: [gem, geom, gmagic]
